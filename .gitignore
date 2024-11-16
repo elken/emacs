@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+*.log
+tmp/
+.local/
+*.elc
+eln-cache/
+
+config.el
+/history
+/places
+/tree-sitter/
