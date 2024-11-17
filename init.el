@@ -600,7 +600,7 @@ create it."
     "Rename initial perspective to the project name when a new frame
 is created in a known project."
     (with-selected-frame frame
-      (when (projectile-project-p)
+      (when (project-current)
         (persp-rename (project-name (project-current)))))))
 
 (use-package doom-themes
