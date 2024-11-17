@@ -610,7 +610,10 @@ is created in a known project."
   (doom-themes-treemacs-config)
   (doom-themes-org-config)
   :init
-  (load-theme 'doom-nord t))
+  (load-theme 'doom-nord t)
+  (custom-theme-set-faces
+   'doom-nord
+   `(corfu-default ((t (:font "MonaspiceNe NFM" :background ,(doom-color 'bg-alt) :foreground ,(doom-color 'fg)))))))
 
 (use-package marginalia
   :bind (:map minibuffer-local-map
