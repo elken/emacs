@@ -1235,15 +1235,31 @@ library/userland functions"
   :diminish
   :hook ((lisp-mode emacs-lisp-mode) . redshank-mode))
 
+(use-package org-modern
+  :hook (after-init . global-org-modern-mode))
+
+(use-package org-journal
+  :hook (org-journal-after-entry-create-hook . (cmd! (kill-buffer-and-window)))
+  :custom
+  (org-journal-find-file #'find-file-other-window)
+  (org-journal-dir "~/Nextcloud/org/journal")
+  :config
+  (with-eval-after-load 'meow
+    (meow-leader-define-key
+     '("j" . org-journal-new-entry))))
+
 (use-package visual-fill-column
   :custom
   (visual-fill-column-width 300)
   (visual-fill-column-center-text t)
   :hook (org-mode . visual-fill-column-mode))
 
+(use-package org-capture
+  :ensure nil
+  :hook (org-capture-mode . hide-mode-line-mode))
+
 (use-package doct
   :after org-capture
-  :commands (doct)
   :config
   (defun org-capture-select-template (&optional keys)
     "Select a capture template, in a prettier way than default
@@ -1335,6 +1351,10 @@ is selected, only the bare key is returned."
                   (goto-char (point-min))
                   (unless (pos-visible-in-window-p (point-max))
                     (org-fit-window-to-buffer))
+		  ;; When we call this via our popup script, set the windows up
+		  (when (frame-parameter nil 'popup-frame)
+		    (delete-other-windows)
+		    (hide-mode-line-mode))
                   (let ((pressed (org--mks-read-key allowed-keys prompt nil)))
                     (setq current (concat current pressed))
                     (cond
@@ -1531,6 +1551,73 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
            (when (eq org-fold-core-style 'text-properties)
 	     (remove-text-properties from to (list (org-fold-core--property-symbol-get-create spec) nil)))))))))
 
+(use-package org-appear
+  :after org
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t))
+
+;; (use-package org-roam
+;;   :custom
+;;   (org-roam-directory (expand-file-name "roam" org-directory))
+;;   (org-roam-capture-templates
+;;    `(("d" "default" plain
+;;       (file ,(expand-file-name "templates/roam-default.org" user-emacs-directory))
+;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "")
+;;       :unnarrowed t))))
+
+(use-package org-protocol
+  :ensure nil
+  :config
+  (defun popup-frame-delete (&rest _)
+    "Kill selected frame if it has parameter `popup-frame'."
+    (when-let ((bundle (frame-parameter nil 'bundle-identifier)))
+      (ns-do-applescript (format "tell application id \"%s\" to activate" bundle)))
+    (when (frame-parameter nil 'popup-frame)
+      (delete-frame)))
+
+  (defmacro popup-frame-define (command)
+    "Define interactive function to call COMMAND in frame with TITLE."
+    `(defun ,(intern (format "popup-frame-%s" command)) ()
+       (interactive)
+       (let* ((display-buffer-alist '(("")
+                                      (display-buffer-full-frame)))
+	      (bundle-identifier (when IS-MAC
+				   (ns-do-applescript "tell application \"System Events\" to get bundle identifier of first process whose frontmost is true")))
+	      (frame (make-frame
+		      `((title . ,(format "popup-frame-%s" ',command))
+			(window-system . ns)
+			(menu-bar-lines . 1)
+			(transient . t)
+			(height . 25)
+			(width . 70)
+			(popup-frame . t)
+			(bundle-identifier . ,bundle-identifier)))))
+	 (select-frame-set-input-focus frame)
+	 (switch-to-buffer " popup-frame-hidden-buffer")
+	 (condition-case nil
+             (progn
+               (call-interactively ',command)
+	       (delete-other-windows)
+	       (hide-mode-line-mode))
+	   ((quit error user-error)
+	    (progn
+	      (when bundle-identifier
+		(ns-do-applescript (format "tell application id \"%s\" to activate" bundle-identifier)))
+	      (delete-frame frame)))))))
+  
+  (popup-frame-define org-capture)
+  (add-hook 'org-capture-after-finalize-hook #'popup-frame-delete))
+
+(use-package server
+  :ensure nil
+  :defer 1
+  :config
+  (unless (server-running-p)
+    (server-start)))
+
 (setopt org-hide-emphasis-markers t)
 
 (setopt org-startup-with-inline-images t
@@ -1549,6 +1636,102 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
 	org-ellipsis " ▾")
 
 (setopt org-startup-folded 'content)
+(setopt org-agenda-start-with-log-mode t
+	org-log-done 'time
+	org-log-into-drawer t
+	org-cycle-emulate-tab nil)
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "INPROG(i)" "PROJ(p)" "STORY(s)" "WAIT(w@/!)" "|" "DONE(d@/!)" "KILL(k@/!)")
+        (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)"))
+      ;; The triggers break down to the following rules:
+
+      ;; - Moving a task to =KILLED= adds a =killed= tag
+      ;; - Moving a task to =WAIT= adds a =waiting= tag
+      ;; - Moving a task to a done state removes =WAIT= and =HOLD= tags
+      ;; - Moving a task to =TODO= removes all tags
+      ;; - Moving a task to =NEXT= removes all tags
+      ;; - Moving a task to =DONE= removes all tags
+      org-todo-state-tags-triggers
+      '(("KILL" ("killed" . t))
+        ("HOLD" ("hold" . t))
+        ("WAIT" ("waiting" . t))
+        (done ("waiting") ("hold"))
+        ("TODO" ("waiting") ("cancelled") ("hold"))
+        ("NEXT" ("waiting") ("cancelled") ("hold"))
+        ("DONE" ("waiting") ("cancelled") ("hold")))
+
+      ;; This settings allows to fixup the state of a todo item without
+      ;; triggering notes or log.
+      org-treat-S-cursor-todo-selection-as-state-change nil)
+
+(defun lkn/org-remove-kill-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-cut-subtree)
+     (pop kill-ring)
+     (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+   "/KILL" 'file))
+
+;; (keymap-set 'org-mode-map (kbd "C-c DEL k") #'lkn/org-remove-kill-tasks)
+
+(setq enable-dir-local-variables t)
+(defun elken/find-time-property (property)
+  "Find the PROPETY in the current buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (let ((first-heading
+           (save-excursion
+             (re-search-forward org-outline-regexp-bol nil t))))
+      (when (re-search-forward (format "^#\\+%s:" property) nil t)
+        (point)))))
+
+(defun lkn/has-time-property-p (property)
+  "Gets the position of PROPETY if it exists, nil if not and empty string if it's undefined."
+  (when-let ((pos (elken/find-time-property property)))
+    (save-excursion
+      (goto-char pos)
+      (if (and (looking-at-p " ")
+               (progn (forward-char)
+                      (org-at-timestamp-p 'lax)))
+          pos
+        ""))))
+
+(defun lkn/set-time-property (property &optional pos)
+  "Set the PROPERTY in the current buffer.
+Can pass the position as POS if already computed."
+  (when-let ((pos (or pos (elken/find-time-property property))))
+    (save-excursion
+      (goto-char pos)
+      (if (looking-at-p " ")
+          (forward-char)
+        (insert " "))
+      (delete-region (point) (line-end-position))
+      (let* ((now (format-time-string "<%Y-%m-%d %H:%M>")))
+        (insert now)))))
+
+(defun lkn/org-mode-update-properties ()
+  (when (derived-mode-p 'org-mode)
+    (lkn/set-time-property "LAST_MODIFIED")
+    (lkn/set-time-property "DATE_UPDATED")))
+
+(add-hook 'before-save-hook #'lkn/org-mode-update-properties)
+
+(defun org-id-complete-link (&optional arg)
+  "Create an id: link using completion"
+  (concat "id:" (org-id-get-with-outline-path-completion)))
+
+(with-eval-after-load 'org
+  (org-link-set-parameters "id" :complete 'org-id-complete-link))
+
+(use-package org-tempo
+  :ensure nil
+  :after org
+  :init
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("els" . "src elisp"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")))
 
 (use-package jinx
   :init (global-jinx-mode)
