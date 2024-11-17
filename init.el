@@ -25,7 +25,6 @@
   (package-install 'use-package))
 (require 'use-package)
 (setopt dired-listing-switches "-ahl -v --group-directories-first")
-
 (setopt scroll-preserve-screen-position t)
 (setopt confirm-kill-emacs #'yes-or-no-p)
 
@@ -468,53 +467,6 @@
         transient-values-file  (expand-file-name "transient/values" no-littering-var-directory)
         transient-history-file (expand-file-name "transient/history" no-littering-var-directory)
         transient-default-level 5))
-
-(use-package git-gutter-fringe
-  :hook (prog-mode . git-gutter-mode)
-  :hook (focus-in . git-gutter:update-all-windows)
-  :hook (after-revert . (lambda () (when git-gutter-mode (git-gutter))))
-  :hook (apheleia-post-format . (lambda () (when git-gutter-mode (git-gutter))))
-  :custom
-  (git-gutter:disabled-modes '(fundamental-mode image-mode pdf-view-mode))
-  (git-gutter:handled-backends '(git))
-  (git-gutter:window-width 2)
-  :config
-  ;; Adjust some of the hooks `git-gutter' uses
-  (remove-hook 'post-command-hook #'git-gutter:post-command-hook)
-  (advice-remove #'quit-window #'git-gutter:quit-window)
-  (advice-remove #'switch-to-buffer #'git-gutter:switch-to-buffer)
-
-  (defvar git-gutter-last-buffer-and-window nil
-    "Cons of current buffer and selected window before last command.
-This is used to detect when the current buffer or selected window
-changes, which means that `git-gutter' needs to be re-run.")
-
-  (defun git-gutter--on-buffer-or-window-change ()
-    "Update `git-gutter' when current buffer or selected window changes."
-    (let ((new (cons (current-buffer) (selected-window))))
-      (unless (equal new git-gutter-last-buffer-and-window)
-        (setq git-gutter-last-buffer-and-window new)
-        ;; Sometimes the current buffer has not gotten updated yet
-        ;; after switching window, for example after `quit-window'.
-        (with-current-buffer (window-buffer)
-          (when git-gutter-mode
-            (when buffer-file-name
-              (unless (file-remote-p buffer-file-name)
-                (git-gutter))))))))
-
-  (defun git-gutter--init-maybe ()
-    (when (and (buffer-file-name (buffer-base-buffer))
-               (file-remote-p buffer-file-name)
-               (bound-and-true-p git-gutter-mode))
-      (git-gutter-mode)))
-
-  (add-hook 'post-command-hook #'git-gutter--on-buffer-or-window-change)
-  (add-hook 'apheleia-post-format-hook #'git-gutter--on-buffer-or-window-change)
-
-  ;; Add some nice colouring
-  (set-face-foreground 'git-gutter:modified (face-attribute 'warning :foreground))
-  (set-face-foreground 'git-gutter:added (face-attribute 'success :foreground))
-  (set-face-foreground 'git-gutter:deleted (face-attribute 'error :foreground)))
 
 (use-package hide-mode-line)
 
