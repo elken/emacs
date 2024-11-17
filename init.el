@@ -862,7 +862,7 @@ is created in a known project."
   :after perspective
   :init (popper-mode)
   :hook (popper-mode . popper-echo-mode)
-  :bind (("M-`"   . popper-toggle-latest)
+  :bind (("M-`"   . popper-toggle)
          ("C-`"   . popper-cycle)
          ("C-M-`" . popper-toggle-type))
   :custom
@@ -878,6 +878,7 @@ is created in a known project."
      helpful-mode
      Info-mode
      vterm-mode
+     org-journal-mode
      "\\*Org Select\\*"
      compilation-mode)))
 
