@@ -1598,26 +1598,3 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
   (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
   (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
   (customize-set-variable 'tab-bar-mode t))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(apheleia cape consult-dir corfu doom-themes elisp-def embark-consult
-     eros exec-path-from-shell hide-mode-line highlight-defined
-     highlight-numbers highlight-quoted macrostep magit-delta
-     marginalia meow-tree-sitter meow-vterm nerd-icons-completion
-     nerd-icons-corfu no-littering orderless package-capf perspective
-     rainbow-delimiters rbenv redshank smartparens treesit-auto
-     vertico vterm))
- '(package-vc-selected-packages
-   '((package-capf :url "https://github.com/elken/package-capf"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t :background unspecified :box unspecified :overline "#4C566A")))
- '(mode-line-inactive ((t :background unspecified :foreground "#4C566A" :box unspecified :overline "#4C566A"))))
