@@ -1807,6 +1807,10 @@ Can pass the position as POS if already computed."
   :custom
   (dockerfile-mode-command (if IS-LINUX "podman" "docker")))
 
+(use-package request)
+(use-package jira-workflow
+  :ensure (:host github :repo "elken/jira-workflow"))
+
 (require 'lkn-modeline)
 (with-eval-after-load 'lkn-modeline
   (setopt mode-line-compact nil)
