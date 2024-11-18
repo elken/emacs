@@ -10,3 +10,4 @@ config.el
 /history
 /places
 /tree-sitter/
+/init-local.el

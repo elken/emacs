@@ -17,13 +17,13 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (defvar elpaca-installer-version 0.8)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-directory (expand-file-name "elpaca/" LITTER-DIR))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                       :ref nil :depth 1
-                       :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                       :build (:not elpaca--activate-package)))
+			      :ref nil :depth 1
+			      :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+			      :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
@@ -56,13 +56,10 @@
 (elpaca `(,@elpaca-order))
 
 (elpaca elpaca-use-package
-	(elpaca-use-package-mode))
+  (elpaca-use-package-mode))
 
 ;; Initialize use-package
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-(require 'use-package)
-(setopt dired-listing-switches "-ahl -v --group-directories-first")
+(setopt dired-listing-switches "-ahl -v --group-directories-first --color=auto")
 (setopt scroll-preserve-screen-position t)
 (setopt confirm-kill-emacs #'yes-or-no-p)
 
@@ -1838,3 +1835,6 @@ Can pass the position as POS if already computed."
   (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
   (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
   (customize-set-variable 'tab-bar-mode t))
+
+(when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
+  (load (expand-file-name "init-local.el" user-emacs-directory)))
