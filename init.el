@@ -109,7 +109,13 @@
 
 (global-so-long-mode)
 
-(savehist-mode)
+(use-package savehist
+  :ensure nil
+  :after no-littering
+  :custom
+  (savehist-additional-variables '(kill-ring search-ring))
+  :config
+  (savehist-mode))
 
 (electric-pair-mode)
 
@@ -359,7 +365,6 @@
 
 (set-face-attribute 'default nil :font "MonaspiceNe NFM" :height 150)
 (set-face-attribute 'variable-pitch nil :font "Montserrat")
-(savehist-mode)
 
 (defun lkn/goto-matching-paren (&optional arg)
   "Go to the matching parenthesis if on parenthesis."
@@ -1881,7 +1886,7 @@ Can pass the position as POS if already computed."
 (use-package yaml-mode
   :mode (".snyk" . yaml-mode))
 
-(elpaca--queue)
+(elpaca-process-queues)
 
 (require 'lkn-modeline)
 (with-eval-after-load 'lkn-modeline
