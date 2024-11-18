@@ -339,7 +339,8 @@
    '("p" . meow-yank)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
-   '("s" . meow-kill)
+   '("s" . meow-avy-goto-char)
+   '("S" . meow-avy-goto-char-expand)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . undo-redo)
@@ -825,6 +826,55 @@ is created in a known project."
           (push formatted-replacement which-key-replacement-alist)))))
 
   (which-key-setup-side-window-bottom))
+
+(use-package avy
+  :config
+  (defvar meow--last-avy-char)
+
+  (defun meow-avy-goto-char (char &optional arg expand)
+    "Goto using avy"
+    (interactive (list (read-char "goto: " t)
+                       current-prefix-arg))
+    (let* ((beg (point))
+           (end (save-mark-and-excursion
+                  (avy-goto-char char arg)
+                  (point))))
+      (thread-first
+	(meow--make-selection '(select . avy)
+                              beg end expand)
+	(meow--select)))
+    (setq meow--last-avy-char char))
+
+  (defun meow-avy-goto-char-expand (char &optional arg)
+    "Goto using avy expand"
+    (interactive (list (read-char "Expand goto: " t)
+                       current-prefix-arg))
+    (meow-avy-goto-char char arg t))
+
+  (defun meow--add-beacons-for-avy ()
+    "Add beacon for avy movement"
+    (let ((ch-str (if (eq meow--last-avy-char 13)
+                      "\n"
+                    (char-to-string meow--last-avy-char))))
+      (save-restriction
+	(meow--narrow-secondary-selection)
+	(let ((orig (point))
+              (case-fold-search t))
+          (save-mark-and-excursion
+            (goto-char (point-max))
+            (while (search-backward ch-str nil t)
+              (unless (= (point) orig)
+		(meow--beacon-add-overlay-at-point (point)))))))
+      (meow--beacon-shrink-selection)))
+
+  (defun meow--beacon-update-overlays-custom ()
+    (when (meow--beacon-inside-secondary-selection)
+      (let* ((ex (car (meow--selection-type)))
+             (type (cdr (meow--selection-type))))
+        (cl-case type
+          ((avy) (meow--add-beacons-for-avy))))))
+
+  (advice-add 'meow--beacon-update-overlays :after #'meow--beacon-update-overlays-custom))
 
 (use-package corfu
   :demand t
