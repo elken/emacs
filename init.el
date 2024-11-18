@@ -14,11 +14,49 @@
   (add-to-list 'load-path (locate-user-emacs-file path)))
 
 ;; Package management setup
-(require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
+
+(defvar elpaca-installer-version 0.8)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                       :ref nil :depth 1
+                       :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                       :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                  ,@(when-let* ((depth (plist-get order :depth)))
+                                                      (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                  ,(plist-get order :repo) ,repo))))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                                        (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+
+(elpaca elpaca-use-package
+	(elpaca-use-package-mode))
 
 ;; Initialize use-package
 (unless (package-installed-p 'use-package)
@@ -393,6 +431,10 @@
         ("M-q" . vertico-quick-insert)
         ("C-q" . vertico-quick-exit)))
 
+(use-package vertico-prescient
+  :after vertico
+  :hook (vertico-mode . vertico-prescient-mode))
+
 (use-package embark
   :custom
   (prefix-help-command #'embark-prefix-help-command)
@@ -412,29 +454,42 @@
   :after (embark consult)
   :hook  (embark-collect-mode . consult-preview-at-point-mode))
 
-;; (use-package embark-vc
-;;   :after (embark magit)
-;;   :vc (:url "https://github.com/elken/embark-vc"))
+(use-package embark-vc
+  :after (embark magit forge)
+  :ensure (:host github :repo "elken/embark-vc"))
+
+(use-package k8s-mode)
+(use-package kubel
+  :after vterm
+  :config
+  (kubel-vterm-setup))
 
 (use-package magit)
+
+(use-package magit-file-icons
+  :after magit
+  :init
+  (magit-file-icons-mode 1))
+
 (use-package forge
-  :commands (forge-create-pullreq forge-create-issue)
+  :after magit
   :preface
   (setq forge-database-file (lkn/cache-dir "forge/forge-database.sqlite")
         forge-add-default-bindings nil
         forge-owned-accounts '(("elken")))
-  :bind
-  ((:map forge-topic-list-mode-map
-         ("q" . kill-current-buffer))
-   (:map magit-mode-map
-         ([remap magit-browse-thing] . forge-browse-dwim))
-   (:map magit-remote-section-map
-         ([remap magit-browse-thing] . forge-browse-remote))
-   (:map magit-branch-section-map
-         ([remap magit-browse-thing] . forge-browse-branch))))
+  ;; :bind
+  ;; ((:map forge-topic-list-mode-map
+  ;;        ("q" . kill-current-buffer))
+  ;;  (:map magit-mode-map
+  ;;        ([remap magit-browse-thing] . forge-browse-dwim))
+  ;;  (:map magit-remote-section-map
+  ;;        ([remap magit-browse-thing] . forge-browse-remote))
+  ;;  (:map magit-branch-section-map
+  ;;        ([remap magit-browse-thing] . forge-browse-branch)))
+  )
 
 (use-package code-review
-  :vc (:url "https://github.com/doomelpa/code-review")
+  :ensure (:host github :repo "doomelpa/code-review")
   :after (magit forge)
   :preface
   (setq code-review-db-database-file (lkn/cache-dir "code-review/code-review-db-file.sqlite")
@@ -457,8 +512,6 @@
 	  "--color-only")))
 
 (use-package transient
-  :ensure nil
-  :pin "melpa"
   :bind
   (:map transient-map
         ([escape] . transient-quit-one))
@@ -471,7 +524,6 @@
 (use-package hide-mode-line)
 
 (use-package vterm
-  :commands (vterm vterm-other-window lkn/vterm-toggle)
   :hook (vterm-mode . hide-mode-line-mode)
   :custom
   (vterm-shell "/bin/zsh")
@@ -511,19 +563,19 @@ create it."
     (interactive)
     (let ((buffer
            (seq-find (lambda (buffer)
-                       (and (buffer-live-p buffer)
+		       (and (buffer-live-p buffer)
                             (string= "*vterm*" (buffer-name buffer))))
                      (persp-current-buffers* t))))
       (when-let ((root (project-current)))
         (setq-local default-directory (project-root root)))
       (if buffer
           (if-let (win (get-buffer-window buffer))
-              (delete-window win)
+	      (delete-window win)
             (pop-to-buffer buffer))
         (vterm-other-window)))))
 
 (use-package meow-vterm
-  :vc (:url "https://github.com/accelbread/meow-vterm")
+  :ensure (:host github :repo "accelbread/meow-vterm")
   :after (meow vterm)
   :hook (meow-mode . meow-vterm-enable))
 
@@ -590,7 +642,7 @@ create it."
            (persp (gethash name (perspectives-hash)))
            (command (if (symbolp project-switch-commands)
                         project-switch-commands
-                      (project--switch-project-command)))
+		      (project--switch-project-command)))
            (project-current-directory-override project))
       (persp-switch name)
       (unless (equal persp (persp-curr))
@@ -617,7 +669,7 @@ is created in a known project."
 
 (use-package marginalia
   :bind (:map minibuffer-local-map
-              ("M-A" . marginalia-cycle))
+	      ("M-A" . marginalia-cycle))
   :init (marginalia-mode)
   :config
   (setq marginalia-censor-variables nil)
@@ -625,8 +677,8 @@ is created in a known project."
   (defun marginalia--annotate-local-file (cand)
     "Improved local file annotations for CAND, coloured based on recency."
     (when-let (attrs (file-attributes (substitute-in-file-name
-                                       (marginalia--full-candidate cand))
-                                      'integer))
+				       (marginalia--full-candidate cand))
+				      'integer))
       (marginalia--fields
        ((marginalia--file-owner attrs)
         :width 12 :face 'marginalia-file-owner)
@@ -651,7 +703,7 @@ is created in a known project."
     "Improved local file annotations, coloured based on SIZE."
     (let* ((size-index (/ (log (+ 1 size)) 7.0))
            (color (if (< size-index 10000000) ; 10m
-                      (doom-blend 'orange 'green size-index)
+		      (doom-blend 'orange 'green size-index)
                     (doom-blend 'red 'orange (- size-index 1)))))
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 
@@ -782,6 +834,10 @@ is created in a known project."
   (corfu-quick2 ((t (:foreground unspecified :background unspecified :inherit vertico-quick2))))
   :init (global-corfu-mode))
 
+(use-package corfu-prescient
+  :after corfu
+  :hook (corfu-mode . corfu-prescient-mode))
+
 (use-package nerd-icons-completion
   :after marginalia
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
@@ -813,7 +869,7 @@ is created in a known project."
   (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
 
 (use-package package-capf
-  :vc (:url "https://github.com/elken/package-capf")
+  :ensure (:host github :repo "elken/package-capf")
   :after cape
   :hook (emacs-lisp-mode . lkn/corfu--set-emacs-lisp-capfs)
   :init
@@ -899,6 +955,7 @@ is created in a known project."
 
 ;; Eglot configuration
 (use-package eglot
+  :ensure nil
   :defer t
   :custom
   (eglot-autoshutdown t)
@@ -946,12 +1003,12 @@ is created in a known project."
             (message "Emacs loaded in %s with %d garbage collections."
                      (format "%.2f seconds"
                              (float-time
-                              (time-subtract after-init-time before-init-time)))
+			      (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 (defun lkn-elisp-setup ()
   "Setup function to be called before all Emacs Lisp buffers."
   (setq-local lkn/elisp-imenu-expressions
-              `(("Section" "^[ \t]*;;;*\\**[ \t]+\\([^\n]+\\)" 1)
+	      `(("Section" "^[ \t]*;;;*\\**[ \t]+\\([^\n]+\\)" 1)
                 ("Evil commands" "^\\s-*(evil-define-\\(?:command\\|operator\\|motion\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
                 ("Unit tests" "^\\s-*(\\(?:ert-deftest\\|describe\\) +\"\\([^\")]+\\)\"" 1)
                 ("Package" "^\\s-*\\(?:;;;###package\\|(use-package?\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
@@ -1011,7 +1068,7 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
             ;; Yes, but is there a containing sexp after that?
             (let ((peek (parse-partial-sexp calculate-lisp-indent-last-sexp
                                             indent-point 0)))
-              (if (setq retry (car (cdr peek))) (setq state peek)))))
+	      (if (setq retry (car (cdr peek))) (setq state peek)))))
       (if retry
           nil
         ;; Innermost containing sexp found
@@ -1030,37 +1087,37 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                  ;; This is the first line to start within the containing sexp.
                  ;; It's almost certainly a function call.
                  (if (or
-                      ;; Containing sexp has nothing before this line except the
-                      ;; first element. Indent under that element.
-                      (= (point) calculate-lisp-indent-last-sexp)
+		      ;; Containing sexp has nothing before this line except the
+		      ;; first element. Indent under that element.
+		      (= (point) calculate-lisp-indent-last-sexp)
 
-                      (or
-                       ;; Align keywords in plists if each newline begins with
-                       ;; a keyword. This is useful for "unquoted plist
-                       ;; function" macros, like `map!' and `defhydra'.
-                       (when-let ((first (elt state 1))
+		      (or
+		       ;; Align keywords in plists if each newline begins with
+		       ;; a keyword. This is useful for "unquoted plist
+		       ;; function" macros, like `map!' and `defhydra'.
+		       (when-let ((first (elt state 1))
                                   (char (char-after (1+ first))))
                          (and (eq char ?:)
-                              (ignore-errors
+			      (ignore-errors
                                 (or (save-excursion
-                                      (goto-char first)
-                                      ;; FIXME Can we avoid `syntax-ppss'?
-                                      (when-let* ((parse-sexp-ignore-comments t)
+				      (goto-char first)
+				      ;; FIXME Can we avoid `syntax-ppss'?
+				      (when-let* ((parse-sexp-ignore-comments t)
                                                   (end (scan-lists (point) 1 0))
                                                   (depth (ppss-depth (syntax-ppss))))
                                         (and (re-search-forward "^\\s-*:" end t)
                                              (= (ppss-depth (syntax-ppss))
                                                 (1+ depth)))))
                                     (save-excursion
-                                      (cl-loop for pos in (reverse (elt state 9))
-                                               unless (memq (char-after (1+ pos)) '(?: ?\())
-                                               do (goto-char (1+ pos))
-                                               for fn = (read (current-buffer))
-                                               if (symbolp fn)
-                                               return (function-get fn 'indent-plists-as-data)))))))
+				      (cl-loop for pos in (reverse (elt state 9))
+					       unless (memq (char-after (1+ pos)) '(?: ?\())
+					       do (goto-char (1+ pos))
+					       for fn = (read (current-buffer))
+					       if (symbolp fn)
+					       return (function-get fn 'indent-plists-as-data)))))))
 
-                       ;; Check for quotes or backquotes around.
-                       (let ((positions (elt state 9))
+		       ;; Check for quotes or backquotes around.
+		       (let ((positions (elt state 9))
                              (quotep 0))
                          (while positions
                            (let ((point (pop positions)))
@@ -1073,11 +1130,11 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                                            (skip-chars-forward "( ")
                                            (when-let (fn (ignore-errors (read (current-buffer))))
                                              (if (and (symbolp fn)
-                                                      (fboundp fn)
-                                                      ;; Only special forms and
-                                                      ;; macros have special
-                                                      ;; indent needs.
-                                                      (not (functionp fn)))
+						      (fboundp fn)
+						      ;; Only special forms and
+						      ;; macros have special
+						      ;; indent needs.
+						      (not (functionp fn)))
                                                  (setq quotep 0))))
                                          (cl-incf quotep)))
                                     ((memq char '(?, ?@))
@@ -1097,8 +1154,8 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                    ;; argument of the function call) and indent under.
                    (progn (forward-sexp 1)
                           (parse-partial-sexp (point)
-                                              calculate-lisp-indent-last-sexp
-                                              0 t)))
+					      calculate-lisp-indent-last-sexp
+					      0 t)))
                  (backward-prefix-chars))
                 (t
                  ;; Indent beneath first sexp on same line as
@@ -1114,15 +1171,15 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
       ;; if the desired indentation has already been computed.
       (let ((normal-indent (current-column)))
         (cond ((elt state 3)
-               ;; Inside a string, don't change indentation.
-               nil)
-              ((and (integerp lisp-indent-offset) containing-sexp)
-               ;; Indent by constant offset
-               (goto-char containing-sexp)
-               (+ (current-column) lisp-indent-offset))
-              ;; in this case calculate-lisp-indent-last-sexp is not nil
-              (calculate-lisp-indent-last-sexp
-               (or
+	       ;; Inside a string, don't change indentation.
+	       nil)
+	      ((and (integerp lisp-indent-offset) containing-sexp)
+	       ;; Indent by constant offset
+	       (goto-char containing-sexp)
+	       (+ (current-column) lisp-indent-offset))
+	      ;; in this case calculate-lisp-indent-last-sexp is not nil
+	      (calculate-lisp-indent-last-sexp
+	       (or
                 ;; try to align the parameters of a known function
                 (and lisp-indent-function
                      (not retry)
@@ -1132,23 +1189,23 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                 ;; last preceding constant symbol, if there is such one of the
                 ;; last 2 preceding symbols, in the previous uncommented line.
                 (and (save-excursion
-                       (goto-char indent-point)
-                       (skip-chars-forward " \t")
-                       (looking-at ":"))
+		       (goto-char indent-point)
+		       (skip-chars-forward " \t")
+		       (looking-at ":"))
                      ;; The last sexp may not be at the indentation where it
                      ;; begins, so find that one, instead.
                      (save-excursion
-                       (goto-char calculate-lisp-indent-last-sexp)
-                       ;; Handle prefix characters and whitespace following an
-                       ;; open paren. (Bug#1012)
-                       (backward-prefix-chars)
-                       (while (not (or (looking-back "^[ \t]*\\|([ \t]+"
+		       (goto-char calculate-lisp-indent-last-sexp)
+		       ;; Handle prefix characters and whitespace following an
+		       ;; open paren. (Bug#1012)
+		       (backward-prefix-chars)
+		       (while (not (or (looking-back "^[ \t]*\\|([ \t]+"
                                                      (line-beginning-position))
-                                       (and containing-sexp
+				       (and containing-sexp
                                             (>= (1+ containing-sexp) (point)))))
                          (forward-sexp -1)
                          (backward-prefix-chars))
-                       (setq calculate-lisp-indent-last-sexp (point)))
+		       (setq calculate-lisp-indent-last-sexp (point)))
                      (> calculate-lisp-indent-last-sexp
                         (save-excursion
                           (goto-char (1+ containing-sexp))
@@ -1156,20 +1213,20 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                           (point)))
                      (let ((parse-sexp-ignore-comments t)
                            indent)
-                       (goto-char calculate-lisp-indent-last-sexp)
-                       (or (and (looking-at ":")
+		       (goto-char calculate-lisp-indent-last-sexp)
+		       (or (and (looking-at ":")
                                 (setq indent (current-column)))
                            (and (< (line-beginning-position)
                                    (prog2 (backward-sexp) (point)))
                                 (looking-at ":")
                                 (setq indent (current-column))))
-                       indent))
+		       indent))
                 ;; another symbols or constants not preceded by a constant as
                 ;; defined above.
                 normal-indent))
-              ;; in this case calculate-lisp-indent-last-sexp is nil
-              (desired-indent)
-              (normal-indent))))))
+	      ;; in this case calculate-lisp-indent-last-sexp is nil
+	      (desired-indent)
+	      (normal-indent))))))
 
 (advice-add #'calculate-lisp-indent :override #'lkn-elisp--calculate-lisp-indent)
 
@@ -1184,10 +1241,10 @@ library/userland functions"
     (while (re-search-forward "\\(?:\\sw\\|\\s_\\)+" end t)
       (let ((ppss (save-excursion (syntax-ppss))))
         (cond ((nth 3 ppss)  ; strings
-               (search-forward "\"" end t))
-              ((nth 4 ppss)  ; comments
-               (forward-line +1))
-              ((let ((symbol (intern-soft (match-string-no-properties 0))))
+	       (search-forward "\"" end t))
+	      ((nth 4 ppss)  ; comments
+	       (forward-line +1))
+	      ((let ((symbol (intern-soft (match-string-no-properties 0))))
                  (and (cond ((null symbol) nil)
                             ((eq symbol t) nil)
                             ((keywordp symbol) nil)
@@ -1198,17 +1255,17 @@ library/userland functions"
                                   (not (memq (char-before (1- (match-beginning 0)))
                                              (list ?\' ?\`))))
                              (let ((unaliased (indirect-function symbol)))
-                               (unless (or (macrop unaliased)
+			       (unless (or (macrop unaliased)
                                            (special-form-p unaliased))
                                  (let (unadvised)
                                    (while (not (eq (setq unadvised (ad-get-orig-definition unaliased))
                                                    (setq unaliased (indirect-function unadvised)))))
                                    unaliased)
                                  (setq lkn-elisp--face
-                                       (if (subrp unaliased)
+				       (if (subrp unaliased)
                                            'font-lock-constant-face
                                          'font-lock-function-name-face))))))
-                      (throw 'matcher t)))))))
+		      (throw 'matcher t)))))))
     nil))
 
 (font-lock-add-keywords
@@ -1268,11 +1325,11 @@ Lisp programs can force the template by setting KEYS to a string."
            (or (org-contextualize-keys
                 (org-capture-upgrade-templates org-capture-templates)
                 org-capture-templates-contexts)
-               '(("t" "Task" entry (file+headline "" "Tasks")
+	       '(("t" "Task" entry (file+headline "" "Tasks")
                   "* TODO %?\n  %u\n  %a")))))
       (if keys
           (or (assoc keys org-capture-templates)
-              (error "No capture template referred to by \"%s\" keys" keys))
+	      (error "No capture template referred to by \"%s\" keys" keys))
         (org-mks org-capture-templates
                  "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
                  "Template key: "
@@ -1310,28 +1367,28 @@ is selected, only the bare key is returned."
             current)
         (unwind-protect
             (catch 'exit
-              (while t
+	      (while t
                 (setq-local evil-normal-state-cursor (list nil))
                 (erase-buffer)
                 (insert title "\n\n")
                 (let ((des-keys nil)
-                      (allowed-keys '("\C-g"))
-                      (tab-alternatives '("\s" "\t" "\r"))
-                      (cursor-type nil))
+		      (allowed-keys '("\C-g"))
+		      (tab-alternatives '("\s" "\t" "\r"))
+		      (cursor-type nil))
                   ;; Populate allowed keys and descriptions keys
                   ;; available with CURRENT selector.
                   (let ((re (format "\\`%s\\(.\\)\\'"
                                     (if current (regexp-quote current) "")))
                         (prefix (if current (concat current " ") "")))
                     (dolist (entry table)
-                      (pcase entry
+		      (pcase entry
                         ;; Description.
                         (`(,(and key (pred (string-match re))) ,desc)
                          (let ((k (match-string 1 key)))
                            (push k des-keys)
                            ;; Keys ending in tab, space or RET are equivalent.
                            (if (member k tab-alternatives)
-                               (push "\t" allowed-keys)
+			       (push "\t" allowed-keys)
                              (push k allowed-keys))
                            (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) (propertize "›" 'face 'font-lock-comment-face) "  " desc "…" "\n")))
                         ;; Usable entry.
@@ -1344,8 +1401,8 @@ is selected, only the bare key is returned."
                   (when specials
                     (insert "─────────────────────────\n")
                     (pcase-dolist (`(,key ,description) specials)
-                      (insert (format "%s   %s\n" (propertize key 'face '(bold nerd-icons-red)) description))
-                      (push key allowed-keys)))
+		      (insert (format "%s   %s\n" (propertize key 'face '(bold nerd-icons-red)) description))
+		      (push key allowed-keys)))
                   ;; Display UI and let user select an entry or
                   ;; a sub-level prefix.
                   (goto-char (point-min))
@@ -1395,9 +1452,9 @@ is selected, only the bare key is returned."
       (setq doct-templates (mapcar (lambda (template)
                                      (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
                                                  (spec (plist-get (plist-get props :doct) :icon)))
-                                       (setf (nth 1 template) (concat (doct-icon-declaration-to-icon spec)
-                                                                      "\t"
-                                                                      (nth 1 template))))
+				       (setf (nth 1 template) (concat (doct-icon-declaration-to-icon spec)
+								      "\t"
+								      (nth 1 template))))
                                      template)
                                    templates))))
 
@@ -1431,7 +1488,7 @@ is selected, only the bare key is returned."
                  :function (lambda ()
                              (org-journal-new-entry t)
                              (unless (eq org-journal-file-type 'daily)
-                               (org-narrow-to-subtree))
+			       (org-narrow-to-subtree))
                              (goto-char (point-max)))
                  :template "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
                  :jump-to-captured t
@@ -1493,24 +1550,24 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
        (when (eq org-fold-core-style 'overlays)
          (if org-fold-core--keep-overlays
              (mapc
-              (lambda (ov)
+	      (lambda (ov)
                 (when (or (not spec)
                           (eq spec (overlay-get ov 'invisible)))
                   (when (and org-fold-core--isearch-active
                              (overlay-get ov 'invisible)
                              (org-fold-core-get-folding-spec-property
-                              (overlay-get ov 'invisible) :isearch-open))
+			      (overlay-get ov 'invisible) :isearch-open))
                     (when (overlay-get ov 'invisible)
-                      (overlay-put ov 'org-invisible (overlay-get ov 'invisible)))
+		      (overlay-put ov 'org-invisible (overlay-get ov 'invisible)))
                     (overlay-put ov 'invisible nil)
                     (when org-fold-core--isearch-active
-                      (cl-pushnew ov org-fold-core--isearch-overlays)))))
-              (overlays-in from to))
+		      (cl-pushnew ov org-fold-core--isearch-overlays)))))
+	      (overlays-in from to))
            (remove-overlays from to 'org-invisible spec)
            (remove-overlays from to 'invisible spec)))
        (if flag
 	   (if (not spec)
-               (error "Calling `org-fold-core-region' with missing SPEC")
+	       (error "Calling `org-fold-core-region' with missing SPEC")
              (if (eq org-fold-core-style 'overlays)
                  ;; Use `front-advance' since text right before to the beginning of
                  ;; the overlay belongs to the visible line than to the contents.
@@ -1529,7 +1586,7 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
 	       (put-text-property from to (org-fold-core--property-symbol-get-create spec) spec)
 	       (put-text-property from to 'isearch-open-invisible #'org-fold-core--isearch-show)
 	       (put-text-property from to 'isearch-open-invisible-temporary #'org-fold-core--isearch-show-temporary)
-               (when (memql 'grab-invisible org-fold-core--optimise-for-huge-buffers)
+	       (when (memql 'grab-invisible org-fold-core--optimise-for-huge-buffers)
                  ;; If the SPEC has highest priority, assign it directly
                  ;; to 'invisible property as well.  This is done to speed
                  ;; up Emacs redisplay on huge (Mbs) folded regions where
@@ -1539,12 +1596,12 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
          (if (not spec)
              (mapc (lambda (spec) (org-fold-core-region from to nil spec)) (org-fold-core-folding-spec-list))
            (when (and (memql 'grab-invisible org-fold-core--optimise-for-huge-buffers)
-                      (eq org-fold-core-style 'text-properties))
+		      (eq org-fold-core-style 'text-properties))
              (when (eq spec (caar org-fold-core--specs))
-               (let ((pos from))
+	       (let ((pos from))
                  (while (< pos to)
                    (if (eq spec (get-text-property pos 'invisible))
-                       (let ((next (org-fold-core-next-folding-state-change spec pos to)))
+		       (let ((next (org-fold-core-next-folding-state-change spec pos to)))
                          (remove-text-properties pos next '(invisible t))
                          (setq pos next))
                      (setq pos (next-single-char-property-change pos 'invisible nil to)))))))
@@ -1583,7 +1640,7 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
     `(defun ,(intern (format "popup-frame-%s" command)) ()
        (interactive)
        (let* ((display-buffer-alist '(("")
-                                      (display-buffer-full-frame)))
+				      (display-buffer-full-frame)))
 	      (bundle-identifier (when IS-MAC
 				   (ns-do-applescript "tell application \"System Events\" to get bundle identifier of first process whose frontmost is true")))
 	      (frame (make-frame
@@ -1599,7 +1656,7 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
 	 (switch-to-buffer " popup-frame-hidden-buffer")
 	 (condition-case nil
              (progn
-               (call-interactively ',command)
+	       (call-interactively ',command)
 	       (delete-other-windows)
 	       (hide-mode-line-mode))
 	   ((quit error user-error)
@@ -1693,8 +1750,8 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
     (save-excursion
       (goto-char pos)
       (if (and (looking-at-p " ")
-               (progn (forward-char)
-                      (org-at-timestamp-p 'lax)))
+	       (progn (forward-char)
+		      (org-at-timestamp-p 'lax)))
           pos
         ""))))
 
