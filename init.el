@@ -203,6 +203,23 @@
   (declare (doc-string 1) (pure t) (side-effect-free t))
   `(lambda (&rest _) (interactive) ,@body))
 
+(defun lkn/toggle-case-dwim ()
+  "Toggle case of active region or word at point."
+  (interactive "*")
+  (let* ((bounds (if (use-region-p)
+                     (cons (region-beginning) (region-end))
+                   (bounds-of-thing-at-point 'word)))
+         (text (when bounds 
+                 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+    (when text
+      (delete-region (car bounds) (cdr bounds))
+      (insert (apply #'string 
+                     (mapcar (lambda (char)
+                               (if (eq (upcase char) char)
+                                   (downcase char)
+				 (upcase char)))
+                             (string-to-list text)))))))
+
 (defun lkn/meow-kill-dwim ()
   "DWIM delete that preserves the kill ring."
   (interactive)
@@ -282,6 +299,7 @@
    '("3" . meow-expand-3)
    '("2" . meow-expand-2)
    '("1" . meow-expand-1)
+   '("~" . lkn/toggle-case-dwim)
    '("-" . negative-argument)
    '(";" . meow-reverse)
    '("/" . consult-line)
