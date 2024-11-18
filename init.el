@@ -454,10 +454,6 @@
         ("M-q" . vertico-quick-insert)
         ("C-q" . vertico-quick-exit)))
 
-(use-package vertico-prescient
-  :after vertico
-  :hook (vertico-mode . vertico-prescient-mode))
-
 (use-package embark
   :custom
   (prefix-help-command #'embark-prefix-help-command)
@@ -904,10 +900,6 @@ is created in a known project."
   (corfu-quick1 ((t (:foreground unspecified :background unspecified :inherit vertico-quick1))))
   (corfu-quick2 ((t (:foreground unspecified :background unspecified :inherit vertico-quick2))))
   :init (global-corfu-mode))
-
-(use-package corfu-prescient
-  :after corfu
-  :hook (corfu-mode . corfu-prescient-mode))
 
 (use-package nerd-icons-completion
   :after marginalia
