@@ -1878,6 +1878,11 @@ Can pass the position as POS if already computed."
 (use-package jira-workflow
   :ensure (:host github :repo "elken/jira-workflow"))
 
+(use-package yaml-mode
+  :mode (".snyk" . yaml-mode))
+
+(elpaca--queue)
+
 (require 'lkn-modeline)
 (with-eval-after-load 'lkn-modeline
   (setopt mode-line-compact nil)
