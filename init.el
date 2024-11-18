@@ -371,6 +371,7 @@
         ((looking-back "\\s\(" 1) (backward-char) (forward-sexp 1))))
 
 (use-package no-littering
+  :demand t
   :init
   (setopt no-littering-etc-directory (expand-file-name "config/" LITTER-DIR)
           no-littering-var-directory (expand-file-name "share/" LITTER-DIR)
