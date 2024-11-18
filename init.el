@@ -397,7 +397,11 @@
   (add-to-list 'recentf-exclude LITTER-DIR))
 
 (use-package gcmh
-  :hook (emacs-startup . gcmh-mode))
+  :custom
+  (gc-cons-threshold 100000000)
+  (gc-cons-percentage 0.1)
+  :hook (emacs-startup . gcmh-mode)
+  :hook (focus-out . garbage-collect))
 
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode)
