@@ -573,8 +573,7 @@ create it."
 
 (use-package meow-vterm
   :ensure (:host github :repo "accelbread/meow-vterm")
-  :after (meow vterm)
-  :hook (meow-mode . meow-vterm-enable))
+  :init (meow-vterm-enable))
 
 (use-package perspective
   :init (persp-mode)
