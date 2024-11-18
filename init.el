@@ -792,10 +792,9 @@ is created in a known project."
   (meow-global-mode 1))
 
 (use-package orderless
-  :demand t
   :custom
   (completion-styles '(orderless partial-completion))
-  (completion-category-overrides '((file (styles . (partial-completion)))
+  (completion-category-overrides '((file (styles partial-completion))
 				   (eglot (styles orderless))
 				   (eglot-capf (styles orderless))))
   (orderless-component-separator "[ &]")
