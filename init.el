@@ -67,6 +67,9 @@
                              (format "[%%b%s] - %s"
                                      (if (buffer-modified-p) " •" "")
                                      system-name)))
+(setopt enable-recursive-minibuffers t)
+(setopt read-extended-command-predicate #'command-completion-default-include-p)
+(setopt vc-follow-symlinks nil)
 
 (setopt create-lockfiles nil
 	make-backup-files nil)
