@@ -429,8 +429,6 @@
   (global-set-key [remap describe-symbol]   #'helpful-symbol))
 
 (use-package apheleia
-  :init
-  (apheleia-global-mode)
   :config
   (cl-defun save-buffer-maybe-format (orig-fn &optional arg)
     "Allow universal argument to disable formatting."
@@ -1030,9 +1028,10 @@ is created in a known project."
   (eglot-confirm-server-edits nil)
   :hook
   ((ruby-mode ruby-ts-mode) . eglot-ensure)
+  (before-save . eglot-format-buffer)
   :config
-  (add-to-list 'eglot-server-programs '(ruby-mode . ("ruby-lsp")))
-  (add-to-list 'eglot-server-programs '(ruby-ts-mode . ("ruby-lsp")))
+  (add-to-list 'eglot-server-programs `(ruby-mode ,(executable-find "ruby-lsp")))
+  (add-to-list 'eglot-server-programs `(ruby-ts-mode ,(executable-find "ruby-lsp")))
   (setq-default eglot-workspace-configuration
 		'((:ruby-lsp . (:formatter (:enable t))))))
 
