@@ -32,7 +32,8 @@
   :group 'lkn-tab-bar)
 
 (defface lkn-tab-bar-workspace-tab
-  '((t :inherit default))
+  `((t :inherit doom-modeline
+       :foreground ,(face-attribute 'default :foreground)))
   "Face for a workspace tab."
   :group 'lkn-tab-bar-faces)
 
