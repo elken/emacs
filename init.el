@@ -1034,10 +1034,35 @@ is created in a known project."
   ((ruby-mode ruby-ts-mode) . eglot-ensure)
   (before-save . eglot-format-buffer)
   :config
-  (add-to-list 'eglot-server-programs `(ruby-mode ,(executable-find "ruby-lsp")))
-  (add-to-list 'eglot-server-programs `(ruby-ts-mode ,(executable-find "ruby-lsp")))
+  ;; Solargraph is a big liar and claims it doesn't support formatting when it does
+  (cl-defmethod eglot-client-capabilities :around (server)
+    (let ((caps (cl-call-next-method)))
+      (when (cl-find "solargraph" (process-command (jsonrpc--process server))
+                     :test #'string-match)
+	(setf (cl-getf (cl-getf (cl-getf caps :textDocument) :formatting)
+                       :dynamicRegistration) t)
+	(setf (cl-getf caps :documentFormattingProvider) t))
+      caps))
+
+  (cl-defmethod eglot-register-capability :around (server method id &rest params)
+  (if (and (string= method "textDocument/formatting")
+           (cl-find "solargraph" (process-command (jsonrpc--process server))
+                    :test #'string-match))
+      t  ; Force registration of formatting capability
+    (apply #'cl-call-next-method server method id params)))
+  
+  (cl-defmethod eglot--capabilities :around ((server eglot-lsp-server))
+    (let ((caps (cl-call-next-method)))
+      (when (cl-find "solargraph" (process-command (jsonrpc--process server))
+                     :test #'string-match)
+	(setf (cl-getf caps :documentFormattingProvider) t))
+      caps))
+  
+  (add-to-list 'eglot-server-programs '(ruby-ts-mode . ("solargraph" "stdio")))
   (setq-default eglot-workspace-configuration
-		'((:ruby-lsp . (:formatter (:enable t))))))
+		'((:solargraph . (:formatting t
+				  :diagnostics t))
+		  (:ruby-lsp . (:formatter (:enable t))))))
 
 (use-package treesit-auto
   :demand t
