@@ -489,6 +489,10 @@
 
 (use-package magit)
 
+(use-package magit-todos
+  :after magit
+  :config (magit-todos-mode 1))
+
 (use-package magit-file-icons
   :after magit
   :init
