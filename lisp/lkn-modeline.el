@@ -20,6 +20,8 @@
 ;;; Commentary:
 ;;; My custom modeline heavily inspired from
 ;;; <https://git.sr.ht/~protesilaos/dotfiles/tree/master/item/emacs/.emacs.d>.
+;;; Currently not in use, but should serve as a good reference for
+;;; those wanting to make their own.
 ;;; Code:
 
 (defgroup lkn-modeline nil
@@ -30,7 +32,7 @@
   "Faces for my custom modeline."
   :group 'lkn-modeline)
 
-(defcustom lkn-modeline-max-length 25
+(defcustom lkn-modeline-max-length 40
   "Maximum length of strings before they get trimmed."
   :type 'natnum)
 
@@ -114,7 +116,7 @@
   (if (and (< (window-total-width) split-width-threshold)
            (> (length str) lkn-modeline-max-length)
            (not (one-window-p :no-minibuffer)))
-      (truncate-string-to-width str lkn-modeline-string-max-length 0 nil "...")
+      (truncate-string-to-width str lkn-modeline-max-length 0 nil "...")
     str))
 
 (defmacro lkn-modeline-defsegment (name &rest body)
@@ -169,7 +171,7 @@ since it also marks the needed variable as risky."
 (lkn-modeline-defsegment
  lkn-modeline-buffer-name
  (when-let ((name (buffer-name)))
-   (let ((name (lkn-modeline-trim name))
+   (let ((name (if (project-current) (file-relative-name name (project-root (project-current))) name))
          (icon (and buffer-read-only ""))
          (echo-text (or (buffer-file-name) (format "No file associated.\n%s" default-directory))))
      (propertize

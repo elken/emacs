@@ -375,6 +375,10 @@
         ((looking-at "\\s\)") (forward-char) (backward-sexp 1))
         ((looking-back "\\s\(" 1) (backward-char) (forward-sexp 1))))
 
+(use-package diminish
+  :demand t
+  :diminish (subword-mode eldoc-mode))
+
 (use-package no-littering
   :demand t
   :init
@@ -406,6 +410,7 @@
   :custom
   (gc-cons-threshold 100000000)
   (gc-cons-percentage 0.1)
+  :diminish gcmh-mode
   :hook (emacs-startup . gcmh-mode)
   :hook (focus-out . garbage-collect))
 
@@ -795,6 +800,7 @@ is created in a known project."
 
 (use-package meow
   :demand t
+  :diminish (meow-normal-mode meow-insert-mode meow-keypad-mode meow-esc-mode meow-motion-mode meow-beacon-mode)
   :config
   (meow-setup)
   (meow-global-mode 1))
@@ -1372,6 +1378,7 @@ library/userland functions"
   :hook (emacs-lisp-mode . highlight-quoted-mode))
 
 (use-package elisp-def
+  :diminish elisp-def-mode
   :hook (emacs-lisp-mode . elisp-def-mode))
 
 (use-package macrostep)
@@ -1385,7 +1392,7 @@ library/userland functions"
   :hook (emacs-lisp-mode . eros-mode))
 
 (use-package redshank
-  :diminish
+  :diminish redshank-mode
   :hook ((lisp-mode emacs-lisp-mode) . redshank-mode))
 
 (use-package org-modern
@@ -1888,6 +1895,7 @@ Can pass the position as POS if already computed."
 
 (use-package jinx
   :init (global-jinx-mode)
+  :diminish (jinx-mode)
   :custom
   (jinx-languages "en_GB")
   (jinx-include-modes '(text-mode prog-mode))
@@ -1914,29 +1922,22 @@ Can pass the position as POS if already computed."
 (use-package yaml-mode
   :mode (".snyk" . yaml-mode))
 
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :custom
+  (doom-modeline-buffer-file-name-style 'relative-to-project)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-github nil)
+  (doom-modeline-minor-modes t)
+  (auto-revert-check-vc-info t)
+  (doom-modeline-vcs-max-length 60)
+  :config
+  (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
+  (doom-modeline-def-modeline 'main
+    '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs matches media-info info-nodes pdf-pages git-timemachine eldoc)
+    '(compilation objed-state process minor-modes github mu4e grip gnus check misc-info repl lsp " ")))
+ 
 (elpaca-process-queues)
-
-(require 'lkn-modeline)
-(with-eval-after-load 'lkn-modeline
-  (setopt mode-line-compact nil)
-  (setq-default mode-line-format
-                '("%e"
-                  lkn-modeline-macro
-                  lkn-modeline-narrow
-                  lkn-modeline-remote
-                  " "
-                  lkn-modeline-meow-mode
-                  lkn-modeline-major-mode
-                  " "
-                  lkn-modeline-buffer-name
-                  " "
-                  lkn-modeline-git-branch
-                  " "
-                  lkn-modeline-flymake))
-  (let ((subtle (face-foreground 'shadow)))
-    (custom-set-faces
-     `(mode-line ((t :background unspecified :box unspecified :overline ,subtle)))
-     `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified :overline ,subtle))))))
 
 (require 'lkn-tab-bar)
 (with-eval-after-load 'lkn-tab-bar
