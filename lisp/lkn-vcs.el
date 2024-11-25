@@ -123,7 +123,12 @@ window that already exists in that direction. It will split otherwise."
     (when magit-stale-p
       (magit-revert-buffer (current-buffer))))
 
+  (defun magit-set-git-executable-h ()
+    (when-let (path (executable-find magit-git-executable t))
+      (setq-local magit-git-executable path)))
+
   (add-hook 'buffer-list-update-hook #'magit-revert-buffer-maybe-h)
+  (add-hook 'magit-status-mode-hook #'magit-set-git-executable-h)
   (advice-add 'magit-checkout :after #'magit-mark-stale-buffers-a)
   (advice-add 'magit-branch-and-checkout :after #'magit-mark-stale-buffers-a))
 

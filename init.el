@@ -97,17 +97,16 @@
   :hook (focus-out . garbage-collect))
 
 (use-package exec-path-from-shell
+  :demand t
   :custom
-  (exec-path-from-shell-arguments '("-l"))
-  :config
-  (when (daemonp)
-    (exec-path-from-shell-initialize)))
+  (exec-path-from-shell-arguments '("-l")))
 
 (use-package server
   :ensure nil
   :defer 1
   :config
   (unless (server-running-p)
+    (exec-path-from-shell-initialize)
     (server-start)))
 
 (require 'lkn-defaults)
