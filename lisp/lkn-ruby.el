@@ -1,7 +1,7 @@
 ;;; lkn-ruby.el -- The least shit Kaiser Chiefs song -*- lexical-binding: t -*-
 ;; Sources are available from https://github.com/elken/emacs
 
-;; Copyright (C) 2022-2024Ellis Kenyő
+;; Copyright (C) 2022-2024 Ellis Kenyő
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 (use-package rbenv
   :defer t
-  :hook (ruby-mode . global-rbenv-mode))
+  :hook ((ruby-ts-mode ruby-mode) . global-rbenv-mode))
 
 (provide 'lkn-ruby)
 ;;; lkn-ruby.el ends here
