@@ -50,11 +50,12 @@
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
 ;; awkward flashing. Also get rid of the dumb startup message
+(set-face-attribute 'fringe nil :background "#000000")
 (setq-default
  default-frame-alist
- '((background-color . "#2E3440")    ; Default background color
+ '((background-color . "#000000")    ; Default background color
    (bottom-divider-width . 1)        ; Thin horizontal window divider
-   (foreground-color . "#ECEFF4")    ; Default foreground color
+   (foreground-color . "#f4f4f4")    ; Default foreground color
    (fullscreen . (if IS-MAC nil maximized))          ; Maximize the window by default
    (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
    (left-fringe . 8)                 ; Thin left fringe
@@ -91,11 +92,11 @@
 ;; Compute and print the startup time for Emacs after loading
 (defun display-startup-time ()
   (message "Emacs loaded %d packages in %s with %d garbage collections."
-           (length package-activated-list)
+	   (length (mapcar #'car (elpaca--queued)))
            (format "%.2f seconds"
                    (float-time
                      (time-subtract after-init-time before-init-time)))
            gcs-done))
 
 
-(add-hook 'emacs-startup-hook #'display-startup-time)
+(add-hook 'elpaca-after-init-hook #'display-startup-time)

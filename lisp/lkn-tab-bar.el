@@ -38,7 +38,7 @@
   :group 'lkn-tab-bar-faces)
 
 (defface lkn-tab-bar-selected-workspace-tab
-  '((t :inherit (highlight lkn-tab-bar-workspace-tab)))
+  '((t :inherit (cursor lkn-tab-bar-workspace-tab)))
   "Face for a selected workspace tab."
   :group 'lkn-tab-bar-faces)
 
@@ -53,15 +53,15 @@
           (let ((face (if (equal persp elm)
                           'lkn-tab-bar-selected-workspace-tab
                         'lkn-tab-bar-workspace-tab)))
-            (add-to-list
-             'acc
-             (concat
+            (push
+	     (concat
               (propertize (format " %d" (1+ (cl-position elm persps)))
                           'face
                           `(:inherit ,face
                             :weight bold))
               (propertize (format " %s " elm)
-                          'face `,face)))))
+                          'face `,face))
+	     acc)))
         persps
         `(,(propertize (persp-current-name) 'invisible t)))))))
 
