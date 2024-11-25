@@ -96,10 +96,12 @@
   :hook (emacs-startup . gcmh-mode)
   :hook (focus-out . garbage-collect))
 
-;; Replace exec-path-from-shell with direct path setting
-(when (memq window-system '(mac ns x))
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/opt/homebrew/bin"))
-  (setq exec-path (append exec-path '("/usr/local/bin" "/opt/homebrew/bin"))))
+(use-package exec-path-from-shell
+  :custom
+  (exec-path-from-shell-arguments '("-l"))
+  :config
+  (when (daemonp)
+    (exec-path-from-shell-initialize)))
 
 (use-package server
   :ensure nil
