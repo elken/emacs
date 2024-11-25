@@ -190,7 +190,39 @@
    `(rainbow-delimiters-depth-8-face ((,class (:foreground ,cyan-50))))
    `(rainbow-delimiters-depth-9-face ((,class (:foreground ,purple-50))))
    `(rainbow-delimiters-mismatched-face ((,class (:foreground ,red-50 :weight bold))))
-   `(rainbow-delimiters-unmatched-face ((,class (:foreground ,red-50 :weight bold)))))
+   `(rainbow-delimiters-unmatched-face ((,class (:foreground ,red-50 :weight bold))))
+   
+   ;; Terminal colors
+   `(term-color-black ((,class (:foreground ,black :background ,black))))
+   `(term-color-red ((,class (:foreground ,red-50 :background ,red-50))))
+   `(term-color-green ((,class (:foreground ,green-40 :background ,green-40))))
+   `(term-color-yellow ((,class (:foreground ,orange-40 :background ,orange-40))))
+   `(term-color-blue ((,class (:foreground ,blue-50 :background ,blue-50))))
+   `(term-color-magenta ((,class (:foreground ,magenta-50 :background ,magenta-50))))
+   `(term-color-cyan ((,class (:foreground ,cyan-40 :background ,cyan-40))))
+   `(term-color-white ((,class (:foreground ,white :background ,white))))
+
+   ;; ANSI Term default colors
+   `(term ((,class (:foreground ,white :background ,black))))
+   `(term-bold ((,class (:weight bold))))
+   `(term-color-bold-black ((,class (:foreground ,gray-70 :background ,gray-70))))
+   `(term-color-bold-red ((,class (:foreground ,red-50 :background ,red-50 :weight bold))))
+   `(term-color-bold-green ((,class (:foreground ,green-40 :background ,green-40 :weight bold))))
+   `(term-color-bold-yellow ((,class (:foreground ,orange-40 :background ,orange-40 :weight bold))))
+   `(term-color-bold-blue ((,class (:foreground ,blue-40 :background ,blue-40 :weight bold))))
+   `(term-color-bold-magenta ((,class (:foreground ,magenta-40 :background ,magenta-40 :weight bold))))
+   `(term-color-bold-cyan ((,class (:foreground ,cyan-40 :background ,cyan-40 :weight bold))))
+   `(term-color-bold-white ((,class (:foreground ,white-100 :background ,white-100 :weight bold))))
+
+   ;; ansi-term support
+   `(ansi-term-color-black ((,class (:foreground ,black))))
+   `(ansi-term-color-red ((,class (:foreground ,red-50))))
+   `(ansi-term-color-green ((,class (:foreground ,green-40))))
+   `(ansi-term-color-yellow ((,class (:foreground ,orange-40))))
+   `(ansi-term-color-blue ((,class (:foreground ,blue-50))))
+   `(ansi-term-color-magenta ((,class (:foreground ,magenta-50))))
+   `(ansi-term-color-cyan ((,class (:foreground ,cyan-40))))
+   `(ansi-term-color-white ((,class (:foreground ,white)))))
   )
 
 ;;;###autoload
