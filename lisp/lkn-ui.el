@@ -257,5 +257,16 @@ Adds icons, proper spacing, and clean line wrapping for readability."
     ("TAB" . dired-subtree-toggle)
     ("<backtab>" . dired-subtree-remove)
     ("S-TAB" . dired-subtree-remove)))
+
+(use-package trashed
+  :after dired
+  :disabled IS-MAC
+  :commands (trashed)
+  :config
+  (setq trashed-action-confirmer 'y-or-n-p)
+  (setq trashed-use-header-line t)
+  (setq trashed-sort-key '("Date deleted" . t))
+  (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
