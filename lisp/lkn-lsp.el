@@ -35,7 +35,8 @@
     "Allow universal argument to disable formatting."
     (interactive "P")
     (when (and (null arg)
-	       (eglot-current-server))
+	       (eglot-current-server)
+	       (null apheleia-mode))
       (eglot-format-buffer)))
   
   ;; Solargraph is a big liar and claims it doesn't support formatting when it does
@@ -69,7 +70,12 @@
 
   ;; Have to specifically use stdio because for jsonrpc processes that
   ;; are network types, we can't get the command from it
-  (add-to-list 'eglot-server-programs '(ruby-ts-mode . ("solargraph" "stdio")))
+  ;; (add-to-list 'eglot-server-programs '(ruby-ts-mode . ("solargraph" "stdio")) nil #'car)
+
+  (setq eglot-server-programs 
+      (cons '(ruby-ts-mode . ("ruby-lsp"))
+            (cl-remove-if (lambda (x) (eq (car-safe x) 'ruby-ts-mode))
+                         eglot-server-programs)))
 
   ;; Enable formatters, just in case
   (setq-default eglot-workspace-configuration
@@ -77,6 +83,22 @@
 				  :diagnostics t))
 		  (:ruby-lsp . (:formatter (:enable t))))))
 
+(use-package consult-xref-stack
+  :ensure
+  (:host github :repo "brett-lempereur/consult-xref-stack" :branch "main")
+  :bind
+  (("C-," . consult-xref-stack-backward)))
+
+(use-package eglot-booster
+  :ensure
+  (:host github
+   :repo "jdtsmith/eglot-booster"
+   :post-build
+   (unless (executable-find "emacs-lsp-booster")
+     (when (executable-find "cargo")
+       (shell-command "cargo install --git https://github.com/blahgeek/emacs-lsp-booster" "*emacs-lsp-booster-install*" "*emacs-lsp-booster-install-errors*"))))
+  :after eglot
+  :config (eglot-booster-mode))
 
 (provide 'lkn-lsp)
 ;;; lkn-lsp.el ends here
