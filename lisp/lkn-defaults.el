@@ -213,9 +213,7 @@ The DWIM behaviour of this command is as follows:
     "Find file relative to Emacs' start-up directory."
     (interactive)
     (let ((default-directory user-emacs-directory))
-      (project-find-file)))
-
-  )
+      (project-find-file))))
 
 (use-package savehist
   :ensure nil
@@ -231,6 +229,22 @@ The DWIM behaviour of this command is as follows:
   :after no-littering
   :config
   (add-to-list 'recentf-exclude LITTER-DIR))
+
+(use-package dired
+  :ensure nil
+  :commands (dired)
+  :custom
+  (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'always)
+  (delete-by-moving-to-trash t)
+  (dired-dwim-target t)
+  :hook
+  ((dired-mode . dired-hide-details-mode)
+   (dired-mode . hl-line-mode)))
+
+(use-package repeat
+  :ensure nil
+  :hook (after-init . repeat-mode))
 
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
