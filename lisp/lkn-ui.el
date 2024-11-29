@@ -247,5 +247,15 @@ Adds icons, proper spacing, and clean line wrapping for readability."
   :config
   (kubel-vterm-setup))
 
+(use-package dired-subtree
+  :after dired
+  :custom
+  (dired-subtree-use-backgrounds nil)
+  :bind
+  (:map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB" . dired-subtree-remove)))
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
