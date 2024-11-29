@@ -268,5 +268,14 @@ Adds icons, proper spacing, and clean line wrapping for readability."
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
+(use-package eldoc-box
+  :after eldoc
+  :hook (eldoc-mode . eldoc-box-hover-at-point-mode)
+  :diminish (eldoc-box-hover-mode eldoc-box-hover-at-point-mode)
+  :custom
+  (eldoc-box-only-multi-line t)
+  :custom-face
+  (eldoc-box-body ((t (:font ,lkn-variable-pitch-font)))))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
