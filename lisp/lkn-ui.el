@@ -49,7 +49,16 @@
           doom-themes-treemacs-theme "doom-colors")
   (doom-themes-treemacs-config)
   (doom-themes-org-config)
+  :hook (after-load-theme . reset-theme)
   :init
+  (defun reset-theme ()
+    "Ensure that we load the theme correctly.
+We do this by disabling all other themes then loading ours."
+    (let ((themes custom-enabled-themes)
+	  (  at line 58after-load-theme-hook nil))
+      (mapc #'disable-theme custom-enabled-themes)
+      (load-theme (car themes) t)))
+  
   (require 'carbon-theme)
   (load-theme 'carbon t)
 
