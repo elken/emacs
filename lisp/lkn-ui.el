@@ -63,9 +63,8 @@ We do this by disabling all other themes then loading ours."
   (load-theme 'carbon t)
 
   ;; Ensure the font is correct for mixed-pitch modes
-  (custom-theme-set-faces
-   'carbon
-   `(corfu-default ((t (:font ,lkn-default-font))))))
+  (set-face-attribute 'corfu-current nil :font lkn-default-font)
+  (set-face-attribute 'corfu-default nil :font lkn-default-font))
 
 (use-package which-key
   :init (which-key-mode)
