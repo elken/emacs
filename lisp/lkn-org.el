@@ -25,7 +25,7 @@
 
 (use-package org-modern
   :after org
-  :hook (after-init . global-org-modern-mode))
+  :hook (org-mode . org-modern-mode))
 
 (use-package org-journal
   :commands org-journal-new-entry
