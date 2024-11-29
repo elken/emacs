@@ -25,8 +25,21 @@
   :custom
   (magit-auto-revert-mode nil)
   :init
-  ;; Borrwed from Doom
-  ;;;###autoload
+  ;; Borrowed from Doom
+  (defun display-buffer-full-frame-restore (buffer alist)
+  "Display BUFFER in full frame and restore the layout when done."
+  (if-let ((window (get-buffer-window buffer)))
+      window  ; If buffer is already displayed, just return its window
+    (let ((conf (current-window-configuration)))
+      (delete-other-windows)
+      (with-current-buffer buffer
+        (setq-local quit-restore-window nil)
+        (add-hook 'kill-buffer-hook
+                  (lambda () (set-window-configuration conf))
+                  nil t))
+      (display-buffer-full-frame buffer alist))))
+  
+;;;###autoload
   (defun magit-display-buffer-fn (buffer)
     "Same as `magit-display-buffer-traditional', except...
 
@@ -48,15 +61,16 @@
                               0.7)))
                   `(display-buffer-below-selected
                     . ((window-height . ,(truncate (* (window-height) size)))))))
-
+               ((eq buffer-mode 'magit-status-mode)
+		'(display-buffer-full-frame-restore))
+             
                ;; Everything else should reuse the current window.
                ((or (not (derived-mode-p 'magit-mode))
                     (not (memq (with-current-buffer buffer major-mode)
                                '(magit-process-mode
 				 magit-revision-mode
 				 magit-diff-mode
-				 magit-stash-mode
-				 magit-status-mode))))
+				 magit-stash-mode))))
 		'(display-buffer-same-window))
 
                ('(magit--display-buffer-in-direction))))))
@@ -95,8 +109,9 @@ window that already exists in that direction. It will split otherwise."
 
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)
-        magit-display-buffer-function #'magit-display-buffer-fn
-        magit-bury-buffer-function #'magit-mode-quit-window)
+        magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
+        magit-bury-buffer-function #'magit-restore-window-configuration)
+
   (defvar magit-stale-p nil)
 
   (defun magit-revert-buffer (buffer)
