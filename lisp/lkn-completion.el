@@ -207,9 +207,9 @@
 	("C-p"   . corfu-previous)
 	("C-q"   . corfu-quick-insert))
   :hook
-  (corfu-history-mode . corfu-mode)
-  (corfu-echo-mode . corfu-mode)
-  (corfu-popupinfo-mode . corfu-mode)
+  (corfu-mode . corfu-history-mode)
+  (corfu-mode . corfu-echo-mode)
+  (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-auto t)
   (corfu-on-exact-match nil)
@@ -218,10 +218,15 @@
   (completion-cycle-threshold 1)
   (tab-always-indent 'complete)
   (corfu-min-width 50)
+  (corfu-popupinfo-delay '(1.25 . 0.5))
+  (corfu-preview-current nil)
   :custom-face
   (corfu-quick1 ((t (:foreground unspecified :background unspecified :inherit vertico-quick1))))
   (corfu-quick2 ((t (:foreground unspecified :background unspecified :inherit vertico-quick2))))
-  :init (global-corfu-mode))
+  :init
+  (global-corfu-mode)
+  (with-eval-after-load 'savehist
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 (provide 'lkn-completion)
 ;;; lkn-completion.el ends here
