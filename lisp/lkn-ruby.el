@@ -26,5 +26,16 @@
   :defer t
   :hook ((ruby-ts-mode ruby-mode) . global-rbenv-mode))
 
+(use-package rspec-mode
+  :custom
+  (rspec-use-spring-when-possible nil)
+  :config
+  (defadvice rspec-compile (around rspec-compile-around)
+    "Use BASH shell for running the specs because of ZSH issues."
+    (let ((shell-file-name "/bin/bash"))
+      ad-do-it))
+
+  (ad-activate 'rspec-compile))
+
 (provide 'lkn-ruby)
 ;;; lkn-ruby.el ends here
