@@ -126,8 +126,8 @@
 (require 'lkn-completion)
 
 (use-package request)
-;; (use-package jira-workflow
-;;   :ensure (:host github :repo "elken/jira-workflow"))
+(use-package jira-workflow
+  :ensure (:host github :repo "elken/jira-workflow"))
 
 (when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
   (load (expand-file-name "init-local.el" user-emacs-directory)))
