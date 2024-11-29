@@ -111,6 +111,11 @@ We do this by disabling all other themes then loading ours."
     (nerd-icons-install-fonts t))
   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Fonts Mono") nil 'prepend))
 
+(use-package nerd-icons-dired
+  :after nerd-icons
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
