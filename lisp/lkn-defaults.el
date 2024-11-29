@@ -28,7 +28,8 @@ support for nerd icons."
   :initialize 'custom-initialize-set
   :set (lambda (var val)
 	 (set-default var val)
-	 (set-face-attribute 'default nil :font val))
+	 (set-face-attribute 'default nil :font val)
+	 (set-face-attribute 'fixed-pitch nil :font val))
   :group 'lkn)
 
 (defcustom lkn-default-font-height 150
@@ -37,7 +38,8 @@ support for nerd icons."
   :initialize 'custom-initialize-set
   :set (lambda (var val)
 	 (set-default var val)
-	 (set-face-attribute 'default nil :height val))
+	 (set-face-attribute 'default nil :height val)
+	 (set-face-attribute 'fixed-pitch nil :height val))
   :group 'lkn)
 
 (defcustom lkn-variable-pitch-font "Montserrat"
@@ -46,6 +48,7 @@ This should just be a nice, readable font to represent prose well."
   :type 'string
   :initialize 'custom-initialize-set
   :set (lambda (var val)
+	 (set-default var val)
 	 (set-face-attribute 'variable-pitch nil :font val))
   :group 'lkn)
 
