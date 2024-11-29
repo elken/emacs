@@ -42,26 +42,38 @@
 (defun lkn/meow-kill-dwim ()
   "DWIM delete that preserves the kill ring."
   (interactive)
-  (if (region-active-p)
-      (progn
-	(kill-region (region-beginning) (region-end))
-	(meow-cancel-selection))
-    (if smartparens-strict-mode
-	(when-let ((char (char-after)))
-	  (sp-delete-char 1)
-	  (kill-new (char-to-string char)))
-      (kill-forward-chars 1))))
+  (cond
+   ((region-active-p)
+    (cond
+     (paredit-mode (paredit-kill-region (region-beginning) (region-end)))
+     (smartparens-strict-mode (sp-kill-region (region-beginning) (region-end)))
+     (t (kill-region (region-beginning) (region-end))))
+    (meow-cancel-selection))
+   (paredit-mode
+    (when-let ((char (char-after)))
+      (paredit-forward-delete)
+      (kill-new (char-to-string char))))
+   (smartparens-strict-mode
+    (when-let ((char (char-after)))
+      (sp-delete-char 1)
+      (kill-new (char-to-string char))))
+   (t (kill-forward-chars 1))))
 
 (defun lkn/meow-delete-dwim ()
   "DWIM delete that doesn't use the kill ring."
   (interactive)
-  (if (region-active-p)
-      (progn
-	(delete-region (region-beginning) (region-end))
-	(meow-cancel-selection))
-    (if smartparens-strict-mode
-	(sp-delete-char 1)
-      (delete-char 1))))
+  (cond
+   ((region-active-p)
+    (cond
+     (paredit-mode (paredit-delete-region (region-beginning) (region-end)))
+     (smartparens-strict-mode (sp-delete-region (region-beginning) (region-end)))
+     (t (delete-region (region-beginning) (region-end))))
+    (meow-cancel-selection))
+   (paredit-mode
+    (paredit-forward-delete))
+   (smartparens-strict-mode
+    (sp-delete-char 1))
+   (t (delete-char 1))))
 
 (defun lkn/meow-append-after ()
   "Behave more like Vim/Helix's `a'."

@@ -106,9 +106,15 @@
 
 (use-package smartparens
   :defer t
-  :hook ((prog-mode text-mode org-mode markdown-mode) . smartparens-strict-mode)
+  :hook ((prog-mode text-mode org-mode markdown-mode) . smartparens-mode)
   :config
   (require 'smartparens-config))
+
+(use-package paredit
+  :hook (emacs-lisp-mode . paredit-mode)
+  :hook (clojure-mode . paredit-mode)
+  :hook (lisp-mode . paredit-mode)
+  :hook (common-lisp-mode . paredit-mode))
 
 (use-package jinx
   :init (global-jinx-mode)
