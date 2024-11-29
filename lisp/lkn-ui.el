@@ -66,7 +66,9 @@ We do this by disabling all other themes then loading ours."
   (set-face-attribute 'corfu-current nil :font lkn-default-font)
   (set-face-attribute 'corfu-default nil :font lkn-default-font))
 
+;; Disabled for now as I debate if it's needed
 (use-package which-key
+  :disabled t
   :init (which-key-mode)
   :diminish which-key-mode
   :config
