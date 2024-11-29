@@ -135,12 +135,46 @@
   (("M-$" . jinx-correct)))
 
 (use-package apheleia
+  :hook ((ruby-mode ruby-ts-mode) . apheleia-mode)
   :config
   (cl-defun save-buffer-maybe-format (orig-fn &optional arg)
     "Allow universal argument to disable formatting."
     (let ((apheleia-mode (and apheleia-mode (member arg '(nil 1)))))
       (funcall orig-fn)))
-  (advice-add 'save-buffer :around #'save-buffer-maybe-format))
+  (advice-add 'save-buffer :around #'save-buffer-maybe-format)
+
+  ;; Replace the built-in rubocop to use our config
+  (setf (alist-get 'rubocop apheleia-formatters)
+	'("apheleia-from-project-root"
+	  ".rubocop.yml"
+	  "bundle"
+	  "exec"
+	  "rubocop"
+	  "-a"
+	  "--stderr"
+	  "--stdin" filepath
+	  "--format" "quiet"
+	  "--fail-level" "fatal"))
+
+  ;; Add Ruby file types to use rubocop formatter
+  (setf (alist-get 'ruby-mode apheleia-mode-alist)
+        '(rubocop))
+  (setf (alist-get 'ruby-ts-mode apheleia-mode-alist)
+        '(rubocop))
+  (setf (alist-get 'enh-ruby-mode apheleia-mode-alist)
+        '(rubocop)))
+
+(use-package combobulate
+  :ensure (:host github :repo "mickeynp/combobulate" :branch "development" :files (:defaults "tests/*.el"))
+  :when (treesit-available-p)
+  :custom
+  ;; You can customize Combobulate's key prefix here.
+  ;; Note that you may have to restart Emacs for this to take effect!
+  (combobulate-key-prefix "C-c o")
+  :hook ((prog-mode . combobulate-mode))
+  :config
+  (load (expand-file-name "combobulate/tests/combobulate-test-prelude.el" elpaca-repos-directory) t)
+  (require 'combobulate-debug))
 
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
