@@ -93,8 +93,34 @@ This should just be a nice, readable font to represent prose well."
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   :bind
   (("C-x k" . kill-current-buffer)
-   ("C-s" . save-buffer))
+   ("C-s" . save-buffer)
+   ("C-g" . lkn/keyboard-quit-dwim))
   :init
+  ;; Borrowed with love from prot
+  (defun lkn/keyboard-quit-dwim ()
+    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
+  
   ;; Setup modes to disable line numbers
   (defvar lkn/global-no-numbers-modes
     '(org-mode-hook
