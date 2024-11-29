@@ -51,8 +51,13 @@
    `(line-number-current-line ((,class (:foreground ,magenta-50 :background ,black :weight bold))))
    `(hl-line ((,class (:background ,gray-90))))
    `(region ((,class (:background ,magenta-50 :foreground ,white))))
+   `(highlight ((,class (:background ,magenta-50 :foreground ,white))))
    `(minibuffer-prompt ((,class (:foreground ,magenta-50 :weight bold))))
-
+   `(error ((,class (:foreground ,red-50))))
+   `(warning ((,class (:foreground ,orange-40))))
+   `(success ((,class (:foreground ,green-40))))
+   `(shadow ((,class (:foreground ,gray-50))))
+   
    ;; Tab bar faces
    `(tab-bar ((,class (:background ,black :foreground ,gray-40))))
    `(tab-bar-tab ((,class (:background ,gray-90 :foreground ,white :weight bold))))
@@ -222,7 +227,68 @@
    `(ansi-term-color-blue ((,class (:foreground ,blue-50))))
    `(ansi-term-color-magenta ((,class (:foreground ,magenta-50))))
    `(ansi-term-color-cyan ((,class (:foreground ,cyan-40))))
-   `(ansi-term-color-white ((,class (:foreground ,white)))))
+   `(ansi-term-color-white ((,class (:foreground ,white))))
+
+  ;; Org document structure
+  `(org-document-title ((,class (:foreground ,purple-50 :weight bold :height 1.4))))
+  `(org-document-info ((,class (:foreground ,gray-30))))
+  `(org-document-info-keyword ((,class (:foreground ,gray-50))))
+
+  ;; Headlines - purple primary, using blue as accent
+  `(org-level-1 ((,class (:foreground ,purple-50 :weight bold :height 1.2))))
+  `(org-level-2 ((,class (:foreground ,cyan-40 :weight bold))))
+  `(org-level-3 ((,class (:foreground ,magenta-40 :weight bold))))
+  `(org-level-4 ((,class (:foreground ,blue-40 :weight bold))))
+  `(org-level-5 ((,class (:foreground ,teal-40 :weight bold))))
+  `(org-level-6 ((,class (:foreground ,purple-50 :weight bold))))
+  `(org-level-7 ((,class (:foreground ,cyan-50 :weight bold))))
+  `(org-level-8 ((,class (:foreground ,magenta-50 :weight bold))))
+
+  ;; Structure and blocks
+  `(org-block ((,class (:background ,gray-90 :extend t))))
+  `(org-block-begin-line ((,class (:foreground ,gray-50 :background ,gray-90 :extend t))))
+  `(org-block-end-line ((,class (:foreground ,gray-50 :background ,gray-90 :extend t))))
+  `(org-quote ((,class (:background ,gray-90 :slant italic :extend t))))
+  `(org-code ((,class (:foreground ,cyan-40))))
+  `(org-verbatim ((,class (:foreground ,blue-40))))  ; Changed to blue since it's not primary
+  `(org-table ((,class (:foreground ,purple-50))))   ; Interactive elements in purple
+
+  ;; Lists and TODO states
+  `(org-todo ((,class (:foreground ,red-50 :weight bold))))
+  `(org-done ((,class (:foreground ,green-40 :weight bold))))
+  `(org-checkbox ((,class (:foreground ,purple-50 :weight bold))))  ; Interactive
+  `(org-checkbox-statistics-todo ((,class (:foreground ,red-50 :weight bold))))
+  `(org-checkbox-statistics-done ((,class (:foreground ,green-40 :weight bold))))
+  `(org-list-dt ((,class (:foreground ,purple-50))))  ; Interactive term
+  `(org-footnote ((,class (:foreground ,cyan-40))))   ; Supporting info
+
+  ;; Meta elements
+  `(org-tag ((,class (:foreground ,gray-40))))
+  `(org-priority ((,class (:foreground ,orange-40))))
+  `(org-special-keyword ((,class (:foreground ,gray-50))))
+  `(org-drawer ((,class (:foreground ,gray-50))))
+  `(org-ellipsis ((,class (:foreground ,purple-50))))  ; Interactive indicator
+  `(org-column ((,class (:background ,gray-90))))
+  `(org-column-title ((,class (:background ,gray-90 :foreground ,purple-50 :weight bold :underline t))))
+
+  ;; Links and timestamps
+  `(org-link ((,class (:foreground ,purple-50 :underline t))))  ; Primary interactive
+  `(org-date ((,class (:foreground ,cyan-40 :underline t))))
+  `(org-timestamp ((,class (:foreground ,cyan-40))))
+  `(org-timestamp-kwd ((,class (:foreground ,gray-40))))
+
+  ;; Agenda
+  `(org-agenda-structure ((,class (:foreground ,purple-50 :weight bold))))  ; Primary structure
+  `(org-agenda-date ((,class (:foreground ,cyan-40))))
+  `(org-agenda-date-today ((,class (:foreground ,purple-50 :weight bold))))  ; Current focus
+  `(org-agenda-date-weekend ((,class (:foreground ,gray-40))))
+  `(org-agenda-done ((,class (:foreground ,green-40))))
+  `(org-scheduled ((,class (:foreground ,cyan-40))))
+  `(org-scheduled-today ((,class (:foreground ,purple-50))))  ; Today's items
+  `(org-scheduled-previously ((,class (:foreground ,orange-40))))
+  `(org-upcoming-deadline ((,class (:foreground ,red-50))))
+  `(org-agenda-calendar-event ((,class (:foreground ,purple-50))))  ; Interactive events
+  )
   )
 
 ;;;###autoload
