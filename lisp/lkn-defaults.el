@@ -246,5 +246,10 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :hook (after-init . repeat-mode))
 
+(use-package treesit
+  :ensure nil
+  :custom
+  (treesit-font-lock-level 5))
+
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here

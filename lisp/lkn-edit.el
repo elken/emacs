@@ -98,6 +98,12 @@
   (treesit-auto-install 'prompt)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
+  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					    :lang 'embedded-template
+					    :ts-mode 'erb-ts-mode
+					    :remap 'web-mode
+					    :url "https://github.com/tree-sitter/tree-sitter-embedded-template"
+					    :ext "\\.erb\\"))
   (global-treesit-auto-mode))
 
 (use-package elixir-ts-mode
