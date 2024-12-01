@@ -124,6 +124,8 @@
 (require 'lkn-lisp)
 (require 'lkn-docs)
 (require 'lkn-completion)
+(when IS-MAC
+  (require 'lkn-macos))
 
 (use-package request)
 (use-package jira-workflow
