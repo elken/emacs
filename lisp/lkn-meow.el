@@ -203,6 +203,8 @@
 (use-package meow
   :demand t
   :diminish (meow-normal-mode meow-insert-mode meow-keypad-mode meow-esc-mode meow-motion-mode meow-beacon-mode)
+  :custom
+  (meow-use-clipboard t)
   :config
   (meow-setup)
   (meow-global-mode 1))

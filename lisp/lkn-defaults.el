@@ -79,6 +79,7 @@ This should just be a nice, readable font to represent prose well."
   (display-line-numbers-type 'relative)
   (use-short-answers t)
   (native-comp-async-report-warnings-errors 'silent)
+  (select-enable-clipboard t)
   :hook
   (text-mode . display-line-numbers-mode)
   (prog-mode . display-line-numbers-mode)
@@ -140,6 +141,7 @@ The DWIM behaviour of this command is as follows:
   ;; Needed so magit can access GPG and SSH keys
   (defun lkn/keychain-setup ()
     "Load keychain env after emacs"
+    (interactive)
     (when (executable-find "keychain")
       (let* ((ssh (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
              (gpg (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
