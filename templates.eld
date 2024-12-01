@@ -40,7 +40,7 @@ emacs-lisp-mode
 (header ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
         " -- " p " -*- lexical-binding: t -*-" n
 	";; Sources are available from https://github.com/elken/emacs" n n
-	";; Copyright (C) 2022-" (format-time-string "%Y") "Ellis Kenyő" n n
+	";; Copyright (C) 2022-" (format-time-string "%Y") " " (i me) n n
 	";; This file is free software; you can redistribute it and/or modify" n
 	";; it under the terms of the GNU General Public License as published by" n
 	";; the Free Software Foundation; either version 3, or (at your option)" n
@@ -58,7 +58,7 @@ emacs-lisp-mode
          ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
          " ends here" n)
 (package (i header) r n n (i provide))
-(use-package "(use-package " p n> r>
+(usep "(use-package " p n> r>
 	 ")")
 
 ;; Local Variables:
