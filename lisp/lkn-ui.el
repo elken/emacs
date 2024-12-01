@@ -277,14 +277,14 @@ Adds icons, proper spacing, and clean line wrapping for readability."
   :custom-face
   (eldoc-box-body ((t (:font ,lkn-variable-pitch-font)))))
 
-(use-package dape
-  :hook
-  (kill-emacs . dape-breakpoint-save)
-  (after-init . dape-breakpoint-load)
-  (after-init . dape-breakpoint-global-mode)
-  (dape-compile . kill-buffer)
-  :custom
-  (dape-inlay-hints t))
+;; (use-package dape
+;;   :hook
+;;   (kill-emacs . dape-breakpoint-save)
+;;   (after-init . dape-breakpoint-load)
+;;   (after-init . dape-breakpoint-global-mode)
+;;   (dape-compile . kill-buffer)
+;;   :custom
+;;   (dape-inlay-hints t))
 
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
