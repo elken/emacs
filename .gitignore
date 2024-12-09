@@ -11,3 +11,4 @@ config.el
 /places
 /tree-sitter/
 /init-local.el
+/.emacs-colours.el

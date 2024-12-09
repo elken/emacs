@@ -50,23 +50,25 @@
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
 ;; awkward flashing. Also get rid of the dumb startup message
-(set-face-attribute 'fringe nil :background "#000000")
+(when (file-exists-p (expand-file-name ".emacs-colours.el" user-emacs-directory))
+  (load-file (expand-file-name ".emacs-colours.el" user-emacs-directory)))
+
 (setq-default
  default-frame-alist
- '((background-color . "#000000")    ; Default background color
-   (bottom-divider-width . 1)        ; Thin horizontal window divider
-   (foreground-color . "#f4f4f4")    ; Default foreground color
-   (fullscreen . (if IS-MAC nil maximized))          ; Maximize the window by default
+ `((background-color . ,(face-attribute 'fringe :background)) ; Default background color
+   (bottom-divider-width . 1)	      ; Thin horizontal window divider
+   (foreground-color . ,(face-attribute 'fringe :foreground)) ; Default foreground color
+   (fullscreen . (if IS-MAC nil maximized)) ; Maximize the window by default
    (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
    (left-fringe . 8)                 ; Thin left fringe
    (right-fringe . 8)                ; Thin right fringe
    (right-divider-width . 10)        ; Spacious padding
    (internal-border-width . 0)       ; My WM should add padding
-   (menu-bar-lines . 0)                      ; No menu bar
-   (tool-bar-lines . 0)                      ; No tool bar
-   (undecorated-round . IS-MAC)                      ; Remove extraneous X decorations
+   (menu-bar-lines . 0)		     ; No menu bar
+   (tool-bar-lines . 0)		     ; No tool bar
+   (undecorated-round . IS-MAC)	     ; Remove extraneous X decorations
    (inhibit-double-buffering  . t)   ; Resolves random flickering
-   (alpha-background . 90)        ; Transparency (29+)
+   (alpha-background . 90)	     ; Transparency (29+)
    (vertical-scroll-bars . nil))     ; No vertical scroll-bars
  inhibit-startup-message t
  mode-line-format nil)

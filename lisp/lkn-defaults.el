@@ -52,6 +52,17 @@ This should just be a nice, readable font to represent prose well."
 	 (set-face-attribute 'variable-pitch nil :font val))
   :group 'lkn)
 
+(defcustom lkn-theme 'carbon
+  "The default flavour-of-the-month theme.
+Usually defaults to Nord or my Carbon theme."
+  :type 'symbol
+  :set (lambda (var val)
+	 (set-default var val)
+	 (with-eval-after-load 'doom-themes
+	   (require `,(intern (format "%s-theme" val)))
+	   (load-theme val t)))
+  :group 'lkn)
+
 ;;; Macros
 
 (defmacro cmd! (&rest body)
