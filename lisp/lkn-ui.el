@@ -75,11 +75,10 @@ We do this by disabling all other themes then loading ours."
 
 ;; Disabled for now as I debate if it's needed
 (use-package which-key
-  :disabled t
   :init (which-key-mode)
   :diminish which-key-mode
   :config
-  (setopt which-key-idle-delay 0.3
+  (setopt which-key-idle-delay 1
           which-key-separator " → "
           which-key-sort-order #'which-key-key-order-alpha
           which-key-sort-uppercase-first nil
@@ -90,16 +89,7 @@ We do this by disabling all other themes then loading ours."
           which-key-side-window-slot -10
           which-key-allow-multiple-replacements t
           which-key-ellipsis "…")
-  (let ((replacements (list '("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)")
-                            '("\\`g s" . "\\`evilem--?motion-\\(.*\\)"))))
-    ;; Iterate over each replacement
-    (dolist (replacement replacements which-key-replacement-alist)
-      (let ((formatted-replacement (cons replacement '(" \\1"))))
-        ;; Only add replacement if it's not already present
-        (unless (member formatted-replacement which-key-replacement-alist)
-          (push formatted-replacement which-key-replacement-alist)))))
-
-  (which-key-setup-side-window-bottom))
+    (which-key-setup-side-window-bottom))
 
 (use-package nerd-icons-completion
   :after marginalia
