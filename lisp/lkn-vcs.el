@@ -187,6 +187,7 @@ window that already exists in that direction. It will split otherwise."
 
 (use-package magit-delta
   :after magit
+  :disabled t
   :hook (magit-mode . magit-delta-mode)
   :config
   (setq magit-delta-delta-args

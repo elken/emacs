@@ -95,7 +95,7 @@ We do this by disabling all other themes then loading ours."
           which-key-side-window-slot -10
           which-key-allow-multiple-replacements t
           which-key-ellipsis "…")
-    (which-key-setup-side-window-bottom))
+  (which-key-setup-side-window-bottom))
 
 (use-package nerd-icons-completion
   :after marginalia
