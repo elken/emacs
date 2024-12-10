@@ -44,6 +44,7 @@
   (global-set-key [remap describe-symbol]   #'helpful-symbol))
 
 (use-package doom-themes
+  :demand t
   :config
   (setopt doom-themes-enable-bold t
           doom-themes-treemacs-theme "doom-colors")
