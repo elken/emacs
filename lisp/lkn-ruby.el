@@ -27,6 +27,7 @@
   :hook ((ruby-ts-mode ruby-mode) . global-rbenv-mode))
 
 (use-package rspec-mode
+  :hook (ruby-mode . rspec-mode)
   :custom
   (rspec-use-spring-when-possible nil)
   :config
