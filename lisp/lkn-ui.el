@@ -52,6 +52,7 @@
   (doom-themes-org-config)
   :hook (after-load-theme . reset-theme)
   :hook (after-load-theme . update-default-colours)
+  :hook (after-load-theme . update-corfu-faces)
   :init
   (defun reset-theme ()
     "Ensure that we load the theme correctly.
@@ -69,9 +70,14 @@ We do this by disabling all other themes then loading ours."
       (insert (format "(set-face-attribute 'fringe nil :background \"%s\" :foreground \"%s\")\n" (face-attribute 'default :background) (face-attribute 'default :foreground)))))
   
   ;; Ensure the font is correct for mixed-pitch modes
-  (with-eval-after-load 'corfu
-    (set-face-attribute 'corfu-current nil :font lkn-default-font)
-    (set-face-attribute 'corfu-default nil :font lkn-default-font)))
+  (defun update-corfu-faces ()
+    (with-eval-after-load 'corfu
+      (set-face-attribute 'corfu-current nil :font lkn-default-font)
+      (set-face-attribute 'corfu-default nil :font lkn-default-font))))
+
+(use-package solaire-mode
+  :after doom-themes
+  :init (solaire-global-mode))
 
 ;; Disabled for now as I debate if it's needed
 (use-package which-key
