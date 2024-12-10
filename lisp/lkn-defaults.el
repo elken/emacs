@@ -42,7 +42,7 @@ support for nerd icons."
 	 (set-face-attribute 'fixed-pitch nil :height val))
   :group 'lkn)
 
-(defcustom lkn-variable-pitch-font "Montserrat"
+(defcustom lkn-variable-pitch-font "Merriweather"
   "The font used in the variable and mixed-pitch modes.
 This should just be a nice, readable font to represent prose well."
   :type 'string
