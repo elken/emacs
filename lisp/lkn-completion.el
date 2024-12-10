@@ -107,6 +107,7 @@
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 
 (use-package consult
+  :demand t
   :custom
   (consult-narrow-key "<")
   (consult-line-numbers-widen t)
