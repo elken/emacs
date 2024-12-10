@@ -95,7 +95,8 @@
 is created in a known project."
     (with-selected-frame frame
       (when (project-current)
-        (persp-rename (project-name (project-current)))))))
+        (persp-rename (project-name (project-current)))
+	(setq-local default-directory (project-root (project-current)))))))
 
 (provide 'lkn-workspaces)
 ;;; lkn-workspaces.el ends here
