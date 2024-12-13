@@ -91,6 +91,7 @@ Usually defaults to Nord or my Carbon theme."
   (use-short-answers t)
   (native-comp-async-report-warnings-errors 'silent)
   (select-enable-clipboard t)
+  (compilation-scroll-output t)
   :hook
   (text-mode . display-line-numbers-mode)
   (prog-mode . display-line-numbers-mode)
