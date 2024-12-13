@@ -38,7 +38,7 @@
   :group 'lkn-tab-bar-faces)
 
 (defface lkn-tab-bar-selected-workspace-tab
-  '((t :inherit (cursor)))
+  '((t :inherit (highlight lkn-tab-bar-workspace-tab)))
   "Face for a selected workspace tab."
   :group 'lkn-tab-bar-faces)
 
