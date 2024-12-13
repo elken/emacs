@@ -56,34 +56,29 @@
   ;; manually invoke `vterm'
   ;;;###autoload
   (defun lkn/vterm-toggle ()
-    "Toggle a vterm buffer.
-Based on perspective, if a buffer already exists switch to it. Else
-create it."
-    (interactive)
-    (let* ((project (project-current))
-           (buffer-name (if project
-                            (project-root-prefixed-buffer-name "vterm")
-			  "*vterm*"))
-           (default-directory (if project
-				  (project-root project)
-				default-directory))
-           (buffer
-            (or (get-buffer buffer-name)
-		(seq-find (lambda (buffer)
+  "Toggle a vterm buffer.
+Creates or toggles a vterm buffer specific to the current perspective and project."
+  (interactive)
+  (let* ((project (project-current))
+         (buffer-name (if project
+                         (project-root-prefixed-buffer-name (format "%s-vterm" (persp-current-name)))
+			(format "*%s-vterm*" (persp-current-name))))
+         (default-directory (if project
+                              (project-root project)
+                            default-directory))
+         (buffer (seq-find (lambda (buffer)
                             (and (buffer-live-p buffer)
-				 (string= buffer-name (buffer-name buffer))))
-			  (persp-current-buffers*)))))
-      (if buffer
-          (if-let (win (get-buffer-window buffer))
-              (delete-window win)
-            ;; Use display-buffer instead of pop-to-buffer to respect display-buffer-alist
-            (display-buffer buffer))
-	;; Create new vterm in a way that respects display-buffer-alist
-	(let ((buffer (generate-new-buffer buffer-name)))
-          (with-current-buffer buffer
-            (vterm-mode))
-          (display-buffer buffer)
-          (persp-add-buffer buffer))))))
+                                 (string= buffer-name (buffer-name buffer))))
+                          (persp-current-buffers))))
+    (if buffer
+        (if-let (win (get-buffer-window buffer))
+            (delete-window win)
+          (display-buffer buffer))
+      (let ((buffer (generate-new-buffer buffer-name)))
+        (with-current-buffer buffer
+          (vterm-mode))
+        (display-buffer buffer)
+        (persp-add-buffer buffer))))))
 
 (provide 'lkn-terms)
 ;;; lkn-terms.el ends here
