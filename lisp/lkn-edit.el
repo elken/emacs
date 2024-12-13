@@ -104,6 +104,10 @@
 					    :remap 'web-mode
 					    :url "https://github.com/tree-sitter/tree-sitter-embedded-template"
 					    :ext "\\.erb\\"))
+  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
+					  :lang 'jsdoc
+					  :ts-mode 'js-ts-mode
+					  :url "https://github.com/tree-sitter/tree-sitter-jsdoc"))
   (global-treesit-auto-mode))
 
 (use-package elixir-ts-mode
