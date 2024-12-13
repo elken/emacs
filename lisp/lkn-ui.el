@@ -52,7 +52,7 @@
   (doom-themes-org-config)
   :hook (after-load-theme . reset-theme)
   :hook (after-load-theme . update-default-colours)
-  :hook (after-load-theme . update-corfu-faces)
+  :hook (mixed-pitch-mode . update-corfu-faces)
   :init
   (defun reset-theme ()
     "Ensure that we load the theme correctly.
@@ -84,7 +84,7 @@ We do this by disabling all other themes then loading ours."
   :init (which-key-mode)
   :diminish which-key-mode
   :config
-  (setopt which-key-idle-delay 1
+  (setopt which-key-idle-delay 1.0
           which-key-separator " → "
           which-key-sort-order #'which-key-key-order-alpha
           which-key-sort-uppercase-first nil
