@@ -101,7 +101,7 @@ Usually defaults to Nord or my Carbon theme."
   (after-init . global-so-long-mode)
   (after-init . electric-pair-mode)
   (after-init . global-subword-mode)
-
+  (after-init . delete-selection-mode)
   (after-init . lkn/keychain-setup)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   :bind
