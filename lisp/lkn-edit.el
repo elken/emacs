@@ -120,7 +120,8 @@
   :hook (emacs-lisp-mode . paredit-mode)
   :hook (clojure-mode . paredit-mode)
   :hook (lisp-mode . paredit-mode)
-  :hook (common-lisp-mode . paredit-mode))
+  :hook (common-lisp-mode . paredit-mode)
+  :hook (racket-mode . paredit-mode))
 
 (use-package jinx
   :init (global-jinx-mode)

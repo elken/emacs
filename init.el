@@ -121,6 +121,7 @@
 (require 'lkn-lsp)
 (require 'lkn-langs)
 (require 'lkn-ruby)
+(require 'lkn-racket)
 (require 'lkn-lisp)
 (require 'lkn-docs)
 (require 'lkn-completion)

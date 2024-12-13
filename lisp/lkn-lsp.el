@@ -29,6 +29,8 @@
   (eglot-confirm-server-edits nil)
   :hook
   ((ruby-mode ruby-ts-mode) . eglot-ensure)
+  ((clojure-mode clojure-ts-mode) . eglot-ensure)
+  (racket-mode . eglot-ensure)
   (before-save . eglot-maybe-format-buffer)
   :config
   (defun eglot-maybe-format-buffer (&optional arg)
