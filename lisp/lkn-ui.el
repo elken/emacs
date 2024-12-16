@@ -288,5 +288,12 @@ Adds icons, proper spacing, and clean line wrapping for readability."
 ;;   :custom
 ;;   (dape-inlay-hints t))
 
+(use-package ace-window
+  :custom
+  (aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+  :bind
+  (:map global-map
+	("M-o" . ace-window)))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
