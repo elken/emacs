@@ -211,5 +211,10 @@ window that already exists in that direction. It will split otherwise."
         transient-history-file (expand-file-name "transient/history" no-littering-var-directory)
         transient-default-level 5))
 
+(use-package diff-hl
+  :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+  :init
+  (global-diff-hl-mode))
+
 (provide 'lkn-vcs)
 ;;; lkn-vcs.el ends here
