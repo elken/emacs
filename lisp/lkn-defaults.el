@@ -276,5 +276,35 @@ The DWIM behaviour of this command is as follows:
   :custom
   (treesit-font-lock-level 5))
 
+(use-package autorevert
+  :ensure nil
+  :custom
+  (auto-revert-use-notify nil)
+  (auto-revert-stop-on-user-input nil)
+  (revert-without-query (list "."))
+  :hook
+  (focus-in . lkn/auto-revert-buffers)
+  (after-save . lkn/auto-revert-buffers)
+  :init
+;;;###autoload
+  (defun lkn/auto-revert-buffer (&optional window)
+    "Auto revert current buffer, if necessary."
+    (unless (or auto-revert-mode (active-minibuffer-window))
+      (let ((auto-revert-mode t))
+        (auto-revert-handler))))
+
+;;;###autoload
+  (defun lkn/auto-revert-buffers ()
+    "Auto revert stale buffers in visible windows, if necessary."
+    (dolist (buf (delete-dups
+		  (cl-loop for frame in (visible-frame-list)
+			   if (window-list frame)
+			   nconc (mapcar #'window-buffer it))))
+      (with-current-buffer buf
+        (lkn/auto-revert-buffer))))
+
+  (add-hook 'window-selection-change-functions #'lkn/auto-revert-buffer)
+  (add-hook 'window-buffer-change-functions #'lkn/auto-revert-buffer))
+
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
