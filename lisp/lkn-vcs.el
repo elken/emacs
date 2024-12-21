@@ -216,5 +216,12 @@ window that already exists in that direction. It will split otherwise."
   :init
   (global-diff-hl-mode))
 
+(use-package browse-at-remote
+  :custom
+  (browse-at-remote-add-line-number-if-no-region-selected nil)
+  :bind
+  (:map global-map
+	("C-c g y" . browse-at-remote-kill)))
+
 (provide 'lkn-vcs)
 ;;; lkn-vcs.el ends here
