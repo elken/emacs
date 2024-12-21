@@ -515,5 +515,23 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
   (add-to-list 'org-structure-template-alist '("els" . "src elisp"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp")))
 
+(use-package toc-org
+  :hook
+  (org-mode . toc-org-enable)
+  :custom
+  (toc-org-hrefify-default "gh")
+  (toc-org-max-depth 5)
+  :config
+  (defun lkn/toc-org-inhibit-scrolling-a (fn &rest args)
+    "Prevent the jarring scrolling that occurs when ToC is regenerated."
+    (let ((p (set-marker (make-marker) (point)))
+	  (s (window-start)))
+      (prog1 (apply fn args)
+	(goto-char p)
+	(set-window-start nil s t)
+	(set-marker p nil))))
+
+  (advice-add 'toc-org-insert-toc :around #'lkn/toc-org-inhibit-scrolling-a))
+
 (provide 'lkn-org)
 ;;; lkn-org.el ends here
