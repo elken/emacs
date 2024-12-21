@@ -24,6 +24,8 @@
 (use-package magit
   :custom
   (magit-auto-revert-mode nil)
+  :hook
+  (magit-mode . lkn/keychain-setup)
   :init
   ;; Borrowed from Doom
   (defun display-buffer-full-frame-restore (buffer alist)
