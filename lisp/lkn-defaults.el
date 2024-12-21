@@ -192,6 +192,12 @@ The DWIM behaviour of this command is as follows:
   (let ((default-directory user-emacs-directory))
     (project-find-file)))
 
+(defun lkn/fill-region (&optional argument)
+  (interactive "P")
+  (if argument
+      (call-interactively 'fill-paragraph)
+    (prog-fill-reindent-defun)))
+
 ;;; Packages
 
 (use-package emacs
@@ -230,7 +236,7 @@ The DWIM behaviour of this command is as follows:
   (("C-x k" . kill-current-buffer)
    ("C-s" . save-buffer)
    ("C-g" . lkn/keyboard-quit-dwim)
-   ("M-q" . fill-region)
+   ("M-q" . lkn/fill-region)
    ("C-c f p" . lkn/find-file-emacs)
    ("C-x p y" . lkn/yank-buffer-project-path)))
 
