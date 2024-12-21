@@ -1,0 +1,197 @@
+#+title: Config
+#+subtitle: Let go your earthly tether. Enter the void. Empty; and become wind.
+#+author: Ellis Kenyő
+#+email: emacs@lkn.mozmail.com
+#+date: \today
+#+latex_class: chameleon
+#+language: en
+#+options: ':t toc:nil author:t email:t num:t
+#+startup: content indent
+
+* Table of Contents :TOC:
+- [[#intro][Intro]]
+- [[#structure][Structure]]
+  - [[#early-initel][=early-init.el=]]
+  - [[#initel][=init.el=]]
+  - [[#lisp][=lisp=]]
+  - [[#writing-rules][Writing rules]]
+    - [[#co-locate-as-much-as-possible][Co-locate as much as possible]]
+    - [[#use-use-package-for-everything-reasonable][Use =use-package= for everything reasonable]]
+    - [[#if-i-cant-properly-describe-it-it-probably-doesnt-need-to-be-here][If I can't properly describe it, it probably doesn't need to be here]]
+    - [[#if-i-havent-used-something-after-an-arbitrary-period-it-probably-doesnt-need-to-be-here][If I haven't /used/ something after an arbitrary period, it probably doesn't need to be here]]
+    - [[#reach-for-packages-only-when-something-else-doesnt-exist][Reach for packages only when something else /doesn't/ exist]]
+
+* Intro
+:PROPERTIES:
+:ID:       2C285438-98A0-46DF-8C69-84E4C0F5FCC3
+:END:
+What follows is a higgledy mess of Emacs Lisp (no but really). If for
+whatever reason you find something useful here, it would be nice if
+you mentioned me when doing so. It’s just good manners :)
+
+Rather than the traditional front-facing blurb coupled with a
+smattering of text here and there; this setup will try and favour
+smaller files and lots of prose where needed. This idea falls apart
+with the modules concept, but generally I don't have anything /too/
+bespoke yet.
+
+As this is my configuration for me, there is at least an assumption of
+knowledge on my end; but if there is anything here that can be made
+(constructively) clearer then I’m all ears.
+
+Knowledge is like muffins; best shared around.
+* Structure
+:PROPERTIES:
+:ID:       9a36598e-e2c9-420e-8af1-8e82631d95b4
+:END:
+The rough structure of what I have is available below, all modules should have
+some amount of commentary so if you need anything more specific then please look
+deeper.
+
+The list changes so it would be futile for me to refer to them all here.
+** =early-init.el=
+:PROPERTIES:
+:ID:       175e2184-0132-466c-a763-383d6bf6e9aa
+:END:
+A file that gets loaded before both packages and GUI is initialised, so we can
+set things like the location for elpaca/use-package packages properly. There are
+also a couple of performance enhancements for /speeed/ and it's also where we set
+aEsThEtIcS.
+
+We also set as much of =no-littering= bits as we can to pre-empt it loading later.
+** =init.el=
+:PROPERTIES:
+:ID:       edacc7ef-232c-42ba-8225-78adbc3f93d2
+:END:
+Setup elpaca and a couple  of "need-to-run-early" packages, as well as loading all our modules.
+** =lisp=
+:PROPERTIES:
+:ID:       6b17a3b6-2e7a-47f8-a27e-1df7175757da
+:END:
+This is where larger collections of packages and configuration lies,
+and logical constructs like =ui=, =completion= etc. These  are denoted by
+the filename prefix =lkn-=  and anything else is considered arbitrary
+Emacs Lisp.
+
+To make my life easier, there's not  a rigid structure here. If I feel
+like I'm adding a bunch of packages relating to a specific thing, I'll
+move it to a module. I may look at granularity down the line, akin to
+what Doom Emacs offers, but for my needs now this will do.
+** Writing rules
+:PROPERTIES:
+:ID:       5080d65d-e0bc-493a-b786-5887eb464dba
+:END:
+Below are a couple of rules I've given myself to make writing and
+maintaining this config a bit simpler.
+*** Co-locate as much as possible
+:PROPERTIES:
+:ID:       debe0ea8-2045-4c71-bc35-12804ef2ff48
+:END:
+Put simply; keep bindings and setup for a package relative to it where possible.
+One of the reasons I don't like maintaining a large =init.el= file is the tendency
+to just get into a habit of "throwing code at the bottom" and it getting lost
+and hard to find. Whereas for me; it becomes quite simple.
+
+Coupled with some extra additions to imenu to make =use-package= calls show up, it
+becomes very fast for me to identify where something is set.
+*** Use =use-package= for everything reasonable
+:PROPERTIES:
+:ID:       e5ac6d5b-8566-491d-8f32-6ad78cb5a097
+:END:
+=use-package= is a built-in macro for managing packages. An example is included
+below that I will run through after.
+
+#+begin_src emacs-lisp :tangle no
+(use-package package-name
+  :after some-dependent-package
+  :custom
+  (some-custom-value t)
+  :preface
+  (setopt some-value-at-byte-compile t)
+  :init
+  (setopt some-value-before-it-loads t)
+  :config
+  (setopt some-value-after-it-loads t))
+#+end_src
+
+The above shows an average example package and the structure of it. =package-name=
+is the name of some package from MELPA or elsewhere, and the subsequent keywords
+are used to specify rules and conditions for loading the package, and what to do
+after.
+
+It would be pointless of me to expand further here, so I encourage you to read
+the manual for it.
+
+Where the "reasonable" constraint extends  to is dumping lots of =defun=
+calls into =:init= or =:config=. Doing so  makes it much harder to look at
+the source, as it pulls the source of the entire form rather than just
+the function.
+*** If I can't properly describe it, it probably doesn't need to be here
+:PROPERTIES:
+:ID:       ba56f986-6b04-4769-bd35-3038b251d05c
+:END:
+The purpose of a semi-literate configuration like this is to include
+prose alongside code to produce a nice document that describes the
+code well. If all I'm doing is including blank headings with code
+blocks I may as well not bother.
+
+This is fine for quickly testing things, it would be quite
+unproductive of me to have to add a blurb every time I wanted to try
+out a new package; but at commit-time there should definitely be
+something.
+*** If I haven't /used/ something after an arbitrary period, it probably doesn't need to be here
+:PROPERTIES:
+:ID:       8064E767-C876-4A76-A613-6FB878D0D34E
+:END:
+As alluded to in the other rules, there is a tendency to just "over"
+configure. You find a cool plugin that looks like it'll 10x your
+productivity but it comes with a whole ass manual. Looking at you,
+Lispy...
+
+But over time you find yourself only using a couple of bits and you
+never bother to study it again until you see someone else using it and
+you yet again study the manual and pick up a few more.
+
+You spend /so/ long doing this that you don't actually end up improving
+much, or worse than this you just never use the package at all. If
+it's a core editing package and it's not being used daily (not
+something like a google translate plugin, unless translating is
+something you do all the time...), it should be removed.
+
+This rule, due the the specification of it being "arbitrary", is less
+strict than the others; but if I ever find myself going "oh yeah, I
+remember that plugin being great but I never actually used it"; it can
+go. Less plugins is less maintenance.
+*** Reach for packages only when something else /doesn't/ exist
+:PROPERTIES:
+:ID:       CEA37D3F-223D-47A8-B7FA-B1B4C433D774
+:END:
+There's another tendency too to see a cool package that does a load of
+cool things but you only really need 1/2 things.
+
+A great example here is plugins like evil-surround. There's a bunch of
+them around that implement this, and if you're not using Evil like I
+am then you'll need to find a decent alternative.
+
+Sure you could add in a dedicated plugin like surround or many others
+.... but smartparens implements the 3 functions for it that I use (add
+a pair, delete a pair, change a pair). I don't do anything more
+complex than that, and with no complex suite of modes to worry about I
+don't need a complex plugin anymore either.
+
+And since I already /use/ smartparens, I can cut the dependency.
+
+Think most people running their own config like that is in the similar
+boat, but over time Emacs has kept up pace with the other editors
+quite nicely.
+
+Being 40+ years old it of course likely never will be an
+industry-leader (though that does depend who you ask...) but that
+doesn't really matter, it delivers modern features still like
+tree-sitter (which not even vscode has yet) and LSP (again something
+missing from vscode).
+
+Unless there's a specific thing missing from something built-in or it
+just simply doesn't exist, then built-in stuff should be
+preferred. I'll probably run fast and loose with this rule, but in
+general less plugins is less maintenance.
