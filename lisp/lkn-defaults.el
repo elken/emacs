@@ -70,6 +70,128 @@ Usually defaults to Nord or my Carbon theme."
   (declare (doc-string 1) (pure t) (side-effect-free t))
   `(lambda (&rest _) (interactive) ,@body))
 
+;;; Functions
+
+;; Borrowed with love from prot
+(defun lkn/keyboard-quit-dwim ()
+  "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+
+;; Setup modes to disable line numbers
+(defvar lkn/global-no-numbers-modes
+  '(org-mode-hook
+    term-mode-hook
+    shell-mode-hook
+    treemacs-mode-hook
+    pdf-view-mode
+    eshell-mode-hook)
+  "List of modes to not display line numbers on.")
+
+;; Globally disable hooks
+(defun lkn/disable-hooks-setup ()
+  (dolist (mode lkn/global-no-numbers-modes)
+    (add-hook mode (lambda () (display-line-numbers-mode 0)))))
+
+;; Ensure that keychain's environment is setup in Emacs
+;; Needed so magit can access GPG and SSH keys
+(defun lkn/keychain-setup ()
+  "Load keychain env after emacs"
+  (interactive)
+  (when (executable-find "keychain")
+    (let* ((ssh (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
+           (gpg (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
+      (list (and ssh
+                 (string-match "SSH_AUTH_SOCK[=\s]\\([^\s;\n]*\\)" ssh)
+                 (setenv       "SSH_AUTH_SOCK" (match-string 1 ssh)))
+            (and ssh
+                 (string-match "SSH_AGENT_PID[=\s]\\([0-9]*\\)?" ssh)
+                 (setenv       "SSH_AGENT_PID" (match-string 1 ssh)))
+            (and gpg
+                 (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
+                 (setenv       "GPG_AGENT_INFO" (match-string 1 gpg)))))))
+
+;; Only show the compilation buffer if there are errors. Otherwise,
+;; it's useless
+(defun bury-compile-buffer-if-successful (buffer string)
+  "Bury a compilation buffer if succeeded without warnings "
+  (when (and (eq major-mode 'comint-mode)
+             (string-match "finished" string)
+             (not
+	      (with-current-buffer buffer
+                (search-forward "warning" nil t))))
+    (run-with-timer 1 nil
+                    (lambda (buf)
+		      (let ((window (get-buffer-window buf)))
+                        (when (and (window-live-p window)
+                                   (eq buf (window-buffer window)))
+                          (delete-window window))))
+                    buffer)))
+
+;; Borrowed with love from Doom
+(defun lkn/sudo-save-buffer ()
+  "Save the current buffer as root."
+  (interactive)
+  (let ((file (format "/sudo::%s" buffer-file-name)))
+    (if-let (buffer (find-file-noselect file))
+        (let ((origin (current-buffer)))
+          (copy-to-buffer buffer (point-min) (point-max))
+          (unwind-protect
+	      (with-current-buffer buffer
+                (save-buffer))
+            (unless (eq origin buffer)
+	      (kill-buffer buffer))
+            (with-current-buffer origin
+	      (revert-buffer t t))))
+      (user-error "Unable to open %S" file))))
+
+(defun lkn/yank-buffer ()
+  "Yank the contents of the current buffer"
+  (interactive)
+  (clipboard-kill-ring-save (point-min) (point-max)))
+
+(defun lkn/yank-buffer-path (&optional root)
+  "Copy path to file, optionally relative to ROOT."
+  (interactive)
+  (when-let ((file (thread-first
+                     (buffer-base-buffer)
+                     buffer-file-name
+                     abbreviate-file-name))
+             (path (if root (file-relative-name file root) file)))
+    (kill-new path)
+    (message "Copied %s" path)))
+
+(defun lkn/yank-buffer-project-path ()
+  "Copy path to file relative to project root."
+  (interactive)
+  (lkn/yank-buffer-path (project-root (project-current))))
+
+;; Search in my Emacs config directory
+(defun lkn/find-file-emacs ()
+  "Find file relative to Emacs' start-up directory."
+  (interactive)
+  (let ((default-directory user-emacs-directory))
+    (project-find-file)))
+
 ;;; Packages
 
 (use-package emacs
@@ -79,8 +201,8 @@ Usually defaults to Nord or my Carbon theme."
   (confirm-kill-emacs #'y-or-n-p)
   (frame-title-format '(:eval
 			(format "[%%b%s] - %s"
-                                     (if (buffer-modified-p) " •" "")
-                                     system-name)))
+                                (if (buffer-modified-p) " •" "")
+                                system-name)))
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   (vc-follow-symlinks nil)
@@ -107,127 +229,10 @@ Usually defaults to Nord or my Carbon theme."
   :bind
   (("C-x k" . kill-current-buffer)
    ("C-s" . save-buffer)
-   ("C-g" . lkn/keyboard-quit-dwim))
-  :init
-  ;; Borrowed with love from prot
-  (defun lkn/keyboard-quit-dwim ()
-    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
-
-The generic `keyboard-quit' does not do the expected thing when
-the minibuffer is open.  Whereas we want it to close the
-minibuffer, even without explicitly focusing it.
-
-The DWIM behaviour of this command is as follows:
-
-- When the region is active, disable it.
-- When a minibuffer is open, but not focused, close the minibuffer.
-- When the Completions buffer is selected, close it.
-- In every other case use the regular `keyboard-quit'."
-    (interactive)
-    (cond
-     ((region-active-p)
-      (keyboard-quit))
-     ((derived-mode-p 'completion-list-mode)
-      (delete-completion-window))
-     ((> (minibuffer-depth) 0)
-      (abort-recursive-edit))
-     (t
-      (keyboard-quit))))
-  
-  ;; Setup modes to disable line numbers
-  (defvar lkn/global-no-numbers-modes
-    '(org-mode-hook
-      term-mode-hook
-      shell-mode-hook
-      treemacs-mode-hook
-      pdf-view-mode
-      eshell-mode-hook)
-    "List of modes to not display line numbers on.")
-
-  ;; Globally disable hooks
-  (defun lkn/disable-hooks-setup ()
-    (dolist (mode lkn/global-no-numbers-modes)
-      (add-hook mode (lambda () (display-line-numbers-mode 0)))))
-
-  ;; Ensure that keychain's environment is setup in Emacs
-  ;; Needed so magit can access GPG and SSH keys
-  (defun lkn/keychain-setup ()
-    "Load keychain env after emacs"
-    (interactive)
-    (when (executable-find "keychain")
-      (let* ((ssh (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
-             (gpg (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
-	(list (and ssh
-                   (string-match "SSH_AUTH_SOCK[=\s]\\([^\s;\n]*\\)" ssh)
-                   (setenv       "SSH_AUTH_SOCK" (match-string 1 ssh)))
-              (and ssh
-                   (string-match "SSH_AGENT_PID[=\s]\\([0-9]*\\)?" ssh)
-                   (setenv       "SSH_AGENT_PID" (match-string 1 ssh)))
-              (and gpg
-                   (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
-                   (setenv       "GPG_AGENT_INFO" (match-string 1 gpg)))))))
-
-  ;; Only show the compilation buffer if there are errors. Otherwise,
-  ;; it's useless
-  (defun bury-compile-buffer-if-successful (buffer string)
-    "Bury a compilation buffer if succeeded without warnings "
-    (when (and (eq major-mode 'comint-mode)
-               (string-match "finished" string)
-               (not
-		(with-current-buffer buffer
-                  (search-forward "warning" nil t))))
-      (run-with-timer 1 nil
-                      (lambda (buf)
-			(let ((window (get-buffer-window buf)))
-                          (when (and (window-live-p window)
-                                     (eq buf (window-buffer window)))
-                            (delete-window window))))
-                      buffer)))
-  
-  ;; Borrowed with love from Doom
-  (defun lkn/sudo-save-buffer ()
-    "Save the current buffer as root."
-    (interactive)
-    (let ((file (format "/sudo::%s" buffer-file-name)))
-      (if-let (buffer (find-file-noselect file))
-          (let ((origin (current-buffer)))
-            (copy-to-buffer buffer (point-min) (point-max))
-            (unwind-protect
-		(with-current-buffer buffer
-                  (save-buffer))
-              (unless (eq origin buffer)
-		(kill-buffer buffer))
-              (with-current-buffer origin
-		(revert-buffer t t))))
-	(user-error "Unable to open %S" file))))
-
-  (defun lkn/yank-buffer ()
-    "Yank the contents of the current buffer"
-    (interactive)
-    (clipboard-kill-ring-save (point-min) (point-max)))
-
-  (defun lkn/yank-buffer-path (&optional root)
-    "Copy path to file, optionally relative to ROOT."
-    (interactive)
-    (when-let ((file (thread-first
-                       (buffer-base-buffer)
-                       buffer-file-name
-                       abbreviate-file-name))
-               (path (if root (file-relative-name file root) file)))
-      (kill-new path)
-      (message "Copied %s" path)))
-
-  (defun lkn/yank-buffer-project-path ()
-    "Copy path to file relative to project root."
-    (interactive)
-    (lkn/yank-buffer-path (project-root (project-current))))
-
-  ;; Search in my Emacs config directory
-  (defun lkn/find-file-emacs ()
-    "Find file relative to Emacs' start-up directory."
-    (interactive)
-    (let ((default-directory user-emacs-directory))
-      (project-find-file))))
+   ("C-g" . lkn/keyboard-quit-dwim)
+   ("M-q" . fill-region)
+   ("C-c f p" . lkn/find-file-emacs)
+   ("C-x p y" . lkn/yank-buffer-project-path)))
 
 (use-package savehist
   :ensure nil
