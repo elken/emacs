@@ -119,6 +119,9 @@ We do this by disabling all other themes then loading ours."
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
+(use-package colorful-mode
+  :init (global-colorful-mode))
+
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
