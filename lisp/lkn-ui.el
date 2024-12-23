@@ -35,6 +35,9 @@
 
 (use-package helpful
   :hook (helpful-mode . visual-line-mode)
+  :bind
+  (("C-h F" . describe-face)
+   ("C-h '" . describe-char))
   :init
   (setopt apropos-do-all t)
   (global-set-key [remap describe-function] #'helpful-callable)
