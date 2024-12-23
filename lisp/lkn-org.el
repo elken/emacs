@@ -25,6 +25,8 @@
 
 (use-package org-modern
   :after org
+  :custom-face
+  (org-modern-symbol ((t (:font ,lkn-default-font :height 'unspecified))))
   :hook (org-mode . org-modern-mode))
 
 (use-package org-journal
