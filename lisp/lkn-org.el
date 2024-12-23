@@ -25,9 +25,23 @@
 
 (use-package org-modern
   :after org
+  :custom
+  (org-modern-list
+   '((?* . "•")
+     (?+ . "‣")))
+  (org-modern-block-name '("" . ""))
   :custom-face
   (org-modern-symbol ((t (:font ,lkn-default-font :height 'unspecified))))
-  :hook (org-mode . org-modern-mode))
+  :hook
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize . org-modern-agenda))
+
+(use-package org-modern-indent
+  :ensure (:host github :repo "jdtsmith/org-modern-indent")
+  :after org-modern
+  :config
+  ;; Add this late
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 
 (use-package org-journal
   :commands org-journal-new-entry
@@ -270,6 +284,7 @@ is selected, only the bare key is returned."
 (use-package org
   :ensure nil
   :custom
+  (org-startup-indented t)
   (org-hide-emphasis-markers t)
   (org-startup-with-inline-images t)
   (org-image-actual-width 600)
