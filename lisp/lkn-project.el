@@ -31,6 +31,7 @@
      (lkn/vterm-toggle "Terminal" ?t)
      (magit-project-status "Magit" ?m)
      (consult-ripgrep "Search" ?s)))
+  (project-compilation-buffer-name-function #'project-root-prefixed-buffer-name)
   :init
   (defun project-root-prefixed-buffer-name (mode)
     (concat "*"
