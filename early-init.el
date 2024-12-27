@@ -50,15 +50,14 @@
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
 ;; awkward flashing. Also get rid of the dumb startup message
-(when (file-exists-p (expand-file-name ".emacs-colours.el" user-emacs-directory))
-  (load-file (expand-file-name ".emacs-colours.el" user-emacs-directory)))
+(set-face-attribute 'fringe nil :background "#2E3440" :foreground "#ECEFF4")
 
 (setq-default
  default-frame-alist
- `((background-color . ,(face-attribute 'fringe :background)) ; Default background color
+ `((foreground-color . "#ECEFF4")
+   (background-color . "#2E3440")
    (bottom-divider-width . 1)	      ; Thin horizontal window divider
-   (foreground-color . ,(face-attribute 'fringe :foreground)) ; Default foreground color
-   (fullscreen . (if IS-MAC nil maximized)) ; Maximize the window by default
+   (fullscreen . ,(unless IS-MAC 'maximized)) ; Maximize the window by default
    (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
    (left-fringe . 8)                 ; Thin left fringe
    (right-fringe . 8)                ; Thin right fringe
@@ -68,7 +67,7 @@
    (tool-bar-lines . 0)		     ; No tool bar
    (undecorated-round . IS-MAC)	     ; Remove extraneous X decorations
    (inhibit-double-buffering  . t)   ; Resolves random flickering
-   (alpha-background . 90)	     ; Transparency (29+)
+   (alpha-background . 95)	     ; Transparency (29+)
    (vertical-scroll-bars . nil))     ; No vertical scroll-bars
  inhibit-startup-message t
  mode-line-format nil)
