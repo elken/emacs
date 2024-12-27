@@ -308,8 +308,11 @@ library/userland functions"
 ;;   :diminish redshank-mode
 ;;   :hook ((lisp-mode emacs-lisp-mode) . redshank-mode))
 
-(use-package clojure-mode)
-(use-package cider)
+(use-package clojure-mode
+  :mode "\\.clj\\'")
+
+(use-package cider
+  :after clojure-mode)
 
 (provide 'lkn-lisp)
 ;;; lkn-lisp.el ends here

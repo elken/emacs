@@ -20,7 +20,8 @@
 ;;; Trying out this Scheme thing
 ;;; Code:
 
-(use-package racket-mode)
+(use-package racket-mode
+  :mode "\\.rkt\\'")
 
 (provide 'lkn-racket)
 ;;; lkn-racket.el ends here

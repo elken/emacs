@@ -23,7 +23,9 @@
 
 (use-package vterm
   :hook (vterm-mode . hide-mode-line-mode)
-  :after project
+  :defer t
+  :commands
+  (lkn/vterm-toggle)
   :custom
   (vterm-shell "/bin/zsh")
   (vterm-kill-buffer-on-exit t)
