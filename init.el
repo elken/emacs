@@ -64,6 +64,11 @@
 
 (setopt dired-listing-switches "-ahl -v --group-directories-first --color=auto")
 
+(use-package benchmark-init
+  :demand t
+  :config
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (use-package diminish
   :demand t
   :diminish (subword-mode eldoc-mode))
@@ -100,6 +105,11 @@
   :demand t
   :custom
   (exec-path-from-shell-arguments '("-l")))
+
+(use-package async
+  :custom
+  (message-send-mail-function 'async-smtpmail-send-it)
+  :hook (dired-mode . dired-async-mode))
 
 (use-package server
   :ensure nil
