@@ -253,6 +253,7 @@ Adds icons, proper spacing, and clean line wrapping for readability."
 
 (use-package kubel
   :after vterm
+  :when (executable-find "kubectl")
   :config
   (kubel-vterm-setup))
 
