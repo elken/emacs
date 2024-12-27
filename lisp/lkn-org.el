@@ -31,7 +31,7 @@
      (?+ . "‣")))
   (org-modern-block-name '("" . ""))
   :custom-face
-  (org-modern-symbol ((t (:font ,lkn-default-font :height 'unspecified))))
+  (org-modern-symbol ((t (:font ,lkn-default-font :height 100))))
   :hook
   (org-mode . org-modern-mode)
   (org-agenda-finalize . org-modern-agenda))
