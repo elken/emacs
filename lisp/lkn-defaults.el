@@ -114,21 +114,25 @@ The DWIM behaviour of this command is as follows:
 
 ;; Ensure that keychain's environment is setup in Emacs
 ;; Needed so magit can access GPG and SSH keys
+;;;###autoload
 (defun lkn/keychain-setup ()
-  "Load keychain env after emacs"
+  "Load keychain env after Emacs."
   (interactive)
   (when (executable-find "keychain")
-    (let* ((ssh (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
-           (gpg (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
-      (list (and ssh
-                 (string-match "SSH_AUTH_SOCK[=\s]\\([^\s;\n]*\\)" ssh)
-                 (setenv       "SSH_AUTH_SOCK" (match-string 1 ssh)))
-            (and ssh
-                 (string-match "SSH_AGENT_PID[=\s]\\([0-9]*\\)?" ssh)
-                 (setenv       "SSH_AGENT_PID" (match-string 1 ssh)))
-            (and gpg
-                 (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
-                 (setenv       "GPG_AGENT_INFO" (match-string 1 gpg)))))))
+    (make-process
+     :name "keychain-setup"
+     :command '("keychain" "-q" "--noask" "--agents" "ssh,gpg" "--eval")
+     :buffer "*keychain-output*"
+     :sentinel
+     (lambda (process _event)
+       (when (eq 'exit (process-status process))
+         (with-current-buffer (process-buffer process)
+           (let ((output (buffer-string)))
+             (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO"))
+               (when (string-match (format "%s[=\s]\\([^\s;\n]*\\)" var) output)
+                 (setenv var (match-string 1 output))))))
+	 (when (buffer-live-p (get-buffer "*keychain-output*"))
+           (kill-buffer "*keychain-output*")))))))
 
 ;; Only show the compilation buffer if there are errors. Otherwise,
 ;; it's useless
