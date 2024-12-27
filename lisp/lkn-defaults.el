@@ -289,15 +289,15 @@ The DWIM behaviour of this command is as follows:
   :hook
   (focus-in . lkn/auto-revert-buffers)
   (after-save . lkn/auto-revert-buffers)
-  :init
-;;;###autoload
+  :config
   (defun lkn/auto-revert-buffer (&optional window)
     "Auto revert current buffer, if necessary."
-    (unless (or auto-revert-mode (active-minibuffer-window))
+    (unless (or (and (bound-and-true-p auto-revert-mode)
+		     auto-revert-mode)
+		(active-minibuffer-window))
       (let ((auto-revert-mode t))
         (auto-revert-handler))))
 
-;;;###autoload
   (defun lkn/auto-revert-buffers ()
     "Auto revert stale buffers in visible windows, if necessary."
     (dolist (buf (delete-dups
