@@ -23,92 +23,16 @@
 
 (use-package magit
   :custom
-  (magit-auto-revert-mode nil)
+  (magit-refresh-status-buffer nil)
+  (magit-git-global-arguments
+      '("--no-pager"
+        "--literal-pathspecs"
+        "-c" "core.preloadindex=true"
+        "-c" "gc.auto=0"
+        "-c" "core.commitGraph=true"))
+  (magit-git-executable (executable-find "git"))
   :hook
   (magit-mode . lkn/keychain-setup)
-  :init
-  ;; Borrowed from Doom
-  (defun display-buffer-full-frame-restore (buffer alist)
-  "Display BUFFER in full frame and restore the layout when done."
-  (if-let ((window (get-buffer-window buffer)))
-      window  ; If buffer is already displayed, just return its window
-    (let ((conf (current-window-configuration)))
-      (delete-other-windows)
-      (with-current-buffer buffer
-        (setq-local quit-restore-window nil)
-        (add-hook 'kill-buffer-hook
-                  (lambda () (set-window-configuration conf))
-                  nil t))
-      (display-buffer-full-frame buffer alist))))
-  
-;;;###autoload
-  (defun magit-display-buffer-fn (buffer)
-    "Same as `magit-display-buffer-traditional', except...
-
-- If opened from a commit window, it will open below it.
-- Magit process windows are always opened in small windows below the current.
-- Everything else will reuse the same window."
-    (let ((buffer-mode (buffer-local-value 'major-mode buffer)))
-      (display-buffer
-       buffer (cond
-               ((and (eq buffer-mode 'magit-status-mode)
-                     (get-buffer-window buffer))
-		'(display-buffer-reuse-window))
-               ;; Any magit buffers opened from a commit window should open below
-               ;; it. Also open magit process windows below.
-               ((or (bound-and-true-p git-commit-mode)
-                    (eq buffer-mode 'magit-process-mode))
-		(let ((size (if (eq buffer-mode 'magit-process-mode)
-				0.35
-                              0.7)))
-                  `(display-buffer-below-selected
-                    . ((window-height . ,(truncate (* (window-height) size)))))))
-               ((eq buffer-mode 'magit-status-mode)
-		'(display-buffer-full-frame-restore))
-             
-               ;; Everything else should reuse the current window.
-               ((or (not (derived-mode-p 'magit-mode))
-                    (not (memq (with-current-buffer buffer major-mode)
-                               '(magit-process-mode
-				 magit-revision-mode
-				 magit-diff-mode
-				 magit-stash-mode))))
-		'(display-buffer-same-window))
-
-               ('(magit--display-buffer-in-direction))))))
-
-  (defun magit--display-buffer-in-direction (buffer alist)
-    "`display-buffer-alist' handler that opens BUFFER in a direction.
-
-This differs from `display-buffer-in-direction' in one way: it will try to use a
-window that already exists in that direction. It will split otherwise."
-    (let ((direction (or (alist-get 'direction alist)
-			 'right))
-          (origin-window (selected-window)))
-      (if-let (window (window-in-direction direction))
-          (unless magit-display-buffer-noselect
-            (select-window window))
-	(if-let (window (and (not (one-window-p))
-                             (window-in-direction
-                              (pcase direction
-				(`right 'left)
-				(`left 'right)
-				((or `up `above) 'down)
-				((or `down `below) 'up)))))
-            (unless magit-display-buffer-noselect
-              (select-window window))
-          (let ((window (split-window nil nil direction)))
-            (when (and (not magit-display-buffer-noselect)
-                       (memq direction '(right down below)))
-              (select-window window))
-            (display-buffer-record-window 'reuse window buffer)
-            (set-window-buffer window buffer)
-            (set-window-parameter window 'quit-restore (list 'window 'window origin-window buffer))
-            (set-window-prev-buffers window nil))))
-      (unless magit-display-buffer-noselect
-	(switch-to-buffer buffer t t)
-	(selected-window))))
-
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)
         magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
@@ -140,14 +64,25 @@ window that already exists in that direction. It will split otherwise."
     (when magit-stale-p
       (magit-revert-buffer (current-buffer))))
 
-  (defun magit-set-git-executable-h ()
-    (when-let (path (executable-find magit-git-executable t))
-      (setq-local magit-git-executable path)))
-
   (add-hook 'buffer-list-update-hook #'magit-revert-buffer-maybe-h)
-  (add-hook 'magit-status-mode-hook #'magit-set-git-executable-h)
   (advice-add 'magit-checkout :after #'magit-mark-stale-buffers-a)
-  (advice-add 'magit-branch-and-checkout :after #'magit-mark-stale-buffers-a))
+  (advice-add 'magit-branch-and-checkout :after #'magit-mark-stale-buffers-a)
+
+  ;; Taken from https://emacs.stackexchange.com/questions/19440/magit-extremely-slow-in-windows-how-do-i-optimize
+  (defvar-local magit-git--cache
+      (make-hash-table :test 'equal)
+    "Cache for git command results.")
+
+  (defun magit-git--memoize (fn &rest args)
+    "Memoize results of git commands for FN with ARGS."
+    (let* ((key (cons fn args))
+           (cached-val (gethash key magit-git--cache 'not-found)))
+      (if (eq cached-val 'not-found)
+          (puthash key (apply fn args) magit-git--cache)
+	cached-val)))
+
+  (dolist (fn '(magit-rev-parse-safe magit-get magit-get-boolean))
+    (advice-add fn :around #'magit-git--memoize)))
 
 (use-package magit-todos
   :after magit
@@ -164,16 +99,15 @@ window that already exists in that direction. It will split otherwise."
   (setq forge-database-file (lkn/cache-dir "forge/forge-database.sqlite")
         forge-add-default-bindings nil
         forge-owned-accounts '(("elken")))
-  ;; :bind
-  ;; ((:map forge-topic-list-mode-map
-  ;;        ("q" . kill-current-buffer))
-  ;;  (:map magit-mode-map
-  ;;        ([remap magit-browse-thing] . forge-browse-dwim))
-  ;;  (:map magit-remote-section-map
-  ;;        ([remap magit-browse-thing] . forge-browse-remote))
-  ;;  (:map magit-branch-section-map
-  ;;        ([remap magit-browse-thing] . forge-browse-branch)))
-  )
+  :bind
+  ((:map forge-topics-mode-map
+         ("q" . kill-current-buffer))
+   (:map magit-mode-map
+         ([remap magit-browse-thing] . forge-browse-dwim))
+   (:map magit-remote-section-map
+         ([remap magit-browse-thing] . forge-browse-remote))
+   (:map magit-branch-section-map
+         ([remap magit-browse-thing] . forge-browse-branch))))
 
 (use-package code-review
   :ensure (:host github :repo "doomelpa/code-review")
