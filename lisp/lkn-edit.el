@@ -178,7 +178,7 @@
 (use-package combobulate
   :ensure (:host github :repo "mickeynp/combobulate" :branch "development" :files (:defaults "tests/*.el"))
   :when (treesit-available-p)
-  :hook ((prog-mode . combobulate-mode))
+  :hook ((ruby-mode . combobulate-mode))
   :config
   (load (expand-file-name "combobulate/tests/combobulate-test-prelude.el" elpaca-repos-directory) t)
   (require 'combobulate-debug))
