@@ -70,7 +70,11 @@
    (alpha-background . 95)	     ; Transparency (29+)
    (vertical-scroll-bars . nil))     ; No vertical scroll-bars
  inhibit-startup-message t
- mode-line-format nil)
+ mode-line-format nil
+ auto-save-default nil
+ backup-by-copying t
+ inhibit-compacting-font-caches t
+ bidi-inhibit-bpa t)
 
 ;; More free real estate tweaks
 (setq frame-inhibit-implied-resize t
