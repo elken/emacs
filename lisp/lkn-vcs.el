@@ -75,7 +75,7 @@
 
   (defun magit-git--memoize (fn &rest args)
     "Memoize results of git commands for FN with ARGS."
-    (let* ((key (cons fn args))
+    (let* ((key (cons default-directory (cons fn args)))
            (cached-val (gethash key magit-git--cache 'not-found)))
       (if (eq cached-val 'not-found)
           (puthash key (apply fn args) magit-git--cache)
