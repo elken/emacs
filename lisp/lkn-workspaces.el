@@ -29,9 +29,6 @@
   (persp-show-modestring nil)
   (persp-state-default-file (lkn/cache-dir "perspectives"))
   :config
-  ;; Ensure the state always saves on exit
-  (add-hook 'kill-emacs-hook #'persp-state-save)
-
   ;; Adjust the bindings to work with meow
   (with-eval-after-load 'which-key
     (which-key-add-keymap-based-replacements perspective-map
