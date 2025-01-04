@@ -1,4 +1,4 @@
-;;; lkn-ui.el -- Without doubt the most important module -*- lexical-binding: t -*-
+;;; lkn-ui.el -- Without doubt the most important module -*- lexical-binding: t; svg-tag-action-at-point: edit -*-
 ;; Sources are available from https://github.com/elken/emacs
 
 ;; Copyright (C) 2022-2024 Ellis Kenyő
@@ -21,6 +21,120 @@
 ;;;
 ;;; That's quite a loose definition, so what's here tends to be pretty vague.
 ;;; Code:
+
+(use-package svg-tag-mode
+  :hook (prog-mode . svg-tag-mode)
+  :hook (text-mode . svg-tag-mode)
+  :init
+  (defun svg-lib-nerdfont-tag (icon text &rest args)
+    "Create a single tag with an ICON section and a TEXT section.
+ARGS are style properties that affect the whole tag, with special handling for:
+  :icon-foreground - foreground color for the icon part
+  :icon-background - background color for the icon part"
+    (let* ((style (apply #'svg-lib-style (svg-lib-style-default--get) args))
+	   (font-family (plist-get style :font-family))
+	   (base-font-size (plist-get style :font-size))
+	   (icon-font-size (* base-font-size 1.5))
+	   (text-font-size base-font-size)
+	   (font-weight (plist-get style :font-weight))
+	   (text-foreground (or (plist-get args :foreground)
+				(plist-get style :foreground)))
+	   (text-background (or (plist-get args :background)
+				(plist-get style :background)))
+	   (icon-foreground (or (plist-get args :icon-foreground)
+				text-foreground))
+	   (icon-background (or (plist-get args :icon-background)
+				text-background))
+	   (txt-char-width (window-font-width))
+	   (txt-char-height (window-font-height))
+	   (icon-width (* txt-char-width 2))
+	   (text-width (* (+ (length text) 1) txt-char-width))
+	   (total-width (+ icon-width text-width))
+	   (height txt-char-height)
+	   (radius 3)
+	   (svg (svg-create total-width height)))
+
+      (let ((clip-path (svg-clip-path svg :id "rounded-corners")))
+	(svg-rectangle clip-path 0 0 total-width height
+		       :rx radius))
+
+      (svg-rectangle svg 0 0 icon-width height
+		     :fill icon-background
+		     :clip-path "url(#rounded-corners)")
+
+      (svg-rectangle svg icon-width 0 text-width height
+		     :fill text-background
+		     :clip-path "url(#rounded-corners)")
+
+      (svg-text svg icon
+		:font-family font-family
+		:font-weight font-weight
+		:font-size icon-font-size
+		:fill icon-foreground
+		:x (/ icon-width 2)
+		:y (* height 0.82)
+		:text-anchor "middle")
+
+      (svg-text svg text
+		:font-family font-family
+		:font-weight font-weight
+		:font-size text-font-size
+		:fill text-foreground
+		:x (+ icon-width (/ text-width 2))
+		:y (* height 0.82)
+		:text-anchor "middle")
+
+      (svg-lib--image svg :ascent 'center)))
+
+  (defvar svg-tag-cache (make-hash-table :test 'equal))
+
+  (defun svg-tag-make-with-cache (tag &rest args)
+    (with-memoization (gethash `(,(substring-no-properties tag) ,@args) svg-tag-cache)
+      (let* ((face (or (plist-get args :face) 'svg-tag-default-face))
+	     (foreground (svg-tag--face-attribute face :foreground))
+	     (background (svg-tag--face-attribute face :background))
+	     (tag (string-trim tag))
+	     (beg (or (plist-get args :beg) 0))
+	     (end (or (plist-get args :end) nil))
+	     (args (svg-tag--plist-delete args 'font-weight)))
+	(apply #'svg-lib-tag (substring tag beg end) nil
+	       :font-weight 'regular
+	       args))))
+
+  (defun svg-nerdfont-tag-make-with-cache (icon tag &rest args)
+    (with-memoization (gethash `(,(substring-no-properties icon) ,(substring-no-properties tag) ,@args) svg-tag-cache)
+      (let* ((face (or (plist-get args :face) 'svg-tag-default-face))
+	 (foreground (svg-tag--face-attribute face :foreground))
+	 (background (svg-tag--face-attribute face :background))
+	 (tag (string-trim tag))
+	 (beg (or (plist-get args :beg) 0))
+	 (end (or (plist-get args :end) nil))
+	 (args (svg-tag--plist-delete args 'font-weight)))
+    (apply #'svg-lib-nerdfont-tag icon (substring tag beg end)
+	     :font-weight 'regular
+	     args))))
+  :custom
+  ;; TODO: CRM457-2332: Test
+  (svg-tag-tags
+   '(("TODO:" . ((lambda (tag) (svg-tag-make-with-cache
+				"TODO"
+				:foreground (cdr (assoc "TODO" hl-todo-keyword-faces))))))
+     ("CRM457-[0-9]+:" . ((lambda (tag)
+			    (svg-nerdfont-tag-make-with-cache
+			     (nerd-icons-mdicon "nf-md-jira") tag
+			     :font-weight 900
+			     :background (doom-color 'bg-alt)
+			     :icon-background "white"
+			     :icon-foreground "#0052CC"
+			     :end -1))
+			  (lambda (&rest args)
+			    (interactive)
+			    (when-let ((code (substring-no-properties
+					      (thing-at-point 'symbol) 0 -1)))
+			      (when jiralib-url
+				(browse-url-default-browser
+				 (url-recreate-url
+				  (url-generic-parse-url (concat jiralib-url "/browse/" code))))))))))))
 
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode)
@@ -57,7 +171,7 @@
   :demand t
   :config
   (setopt doom-themes-enable-bold t
-          doom-themes-treemacs-theme "doom-colors")
+	  doom-themes-treemacs-theme "doom-colors")
   (doom-themes-treemacs-config)
   (doom-themes-org-config)
   :hook (after-load-theme . reset-theme)
@@ -80,16 +194,16 @@ We do this by disabling all other themes then loading ours."
   :diminish which-key-mode
   :config
   (setopt which-key-idle-delay 1.0
-          which-key-separator " → "
-          which-key-sort-order #'which-key-key-order-alpha
-          which-key-sort-uppercase-first nil
-          which-key-max-description-length 30
-          which-key-add-column-padding 1
-          which-key-max-display-columns nil
-          which-key-min-display-lines 6
-          which-key-side-window-slot -10
-          which-key-allow-multiple-replacements t
-          which-key-ellipsis "…")
+	  which-key-separator " → "
+	  which-key-sort-order #'which-key-key-order-alpha
+	  which-key-sort-uppercase-first nil
+	  which-key-max-description-length 30
+	  which-key-add-column-padding 1
+	  which-key-max-display-columns nil
+	  which-key-min-display-lines 6
+	  which-key-side-window-slot -10
+	  which-key-allow-multiple-replacements t
+	  which-key-ellipsis "…")
   (which-key-setup-side-window-bottom))
 
 (use-package nerd-icons-completion
@@ -134,8 +248,8 @@ We do this by disabling all other themes then loading ours."
   :init (popper-mode)
   :hook (popper-mode . popper-echo-mode)
   :bind (("M-`"   . popper-toggle)
-         ("C-`"   . popper-cycle)
-         ("C-M-`" . popper-toggle-type))
+	 ("C-`"   . popper-cycle)
+	 ("C-M-`" . popper-toggle-type))
   :custom
   (popper-mode-line
    '(:eval
@@ -181,22 +295,22 @@ We do this by disabling all other themes then loading ours."
     "Format DIAGNOSTIC into a modern, visually appealing message.
 Adds icons, proper spacing, and clean line wrapping for readability."
     (let* ((diag-type (flymake-diagnostic-type diagnostic))
-           (diag-face (flymake--lookup-type-property diag-type 'mode-line-face))
-           (border-color (face-attribute diag-face :foreground nil t))
-           (prefix-icon (pcase diag-type
+	   (diag-face (flymake--lookup-type-property diag-type 'mode-line-face))
+	   (border-color (face-attribute diag-face :foreground nil t))
+	   (prefix-icon (pcase diag-type
 			  (:error (nerd-icons-faicon "nf-fa-times"))
 			  (:warning (nerd-icons-faicon "nf-fa-exclamation_triangle"))
 			  (:note (nerd-icons-faicon "nf-fa-info_circle"))
 			  (_ (nerd-icons-faicon "nf-fa-question_circle"))))
-           ;; Context and position calculation
-           (context-data 
-            (when-let* ((buf (flymake-diagnostic-buffer diagnostic))
+	   ;; Context and position calculation
+	   (context-data
+	    (when-let* ((buf (flymake-diagnostic-buffer diagnostic))
 			(beg (flymake-diagnostic-beg diagnostic))
 			((buffer-live-p buf)))
-              (with-current-buffer buf
+	      (with-current-buffer buf
 		(save-excursion
-                  (goto-char beg)
-                  (let* ((line (buffer-substring (line-beginning-position)
+		  (goto-char beg)
+		  (let* ((line (buffer-substring (line-beginning-position)
 						 (line-end-position)))
 			 (trimmed-line (string-trim line))
 			 (left-trim-len (- (length line)
@@ -205,33 +319,33 @@ Adds icons, proper spacing, and clean line wrapping for readability."
 			 (offset (- orig-col left-trim-len))
 			 (len (- (flymake-diagnostic-end diagnostic)
 				 (flymake-diagnostic-beg diagnostic))))
-                    ;; Add bold to the diagnostic portion
-                    (put-text-property offset (+ offset len) 'face
-                                       `(:inherit ,diag-face :weight bold)
-                                       trimmed-line)
-                    (list trimmed-line offset))))))
-           (context (car context-data))
-           (error-col (cadr context-data))
-           (message (car (split-string (flymake-diagnostic-text diagnostic) "[\n\r]" t "[ \t]+")))
-         ;; Title case the first word of the message
-         (message (if (string-match "^\\([a-z]\\)\\([^ ]*\\)\\(.*\\)" message)
-                     (concat (upcase (match-string 1 message))
-                            (match-string 2 message)
-                            (match-string 3 message))
-                   message)))
-    
-    (concat
-     (propertize "╭─╮\n│ " 'face `(:foreground ,border-color))
-     (propertize prefix-icon 'face diag-face) " "
-     (propertize message 'face diag-face) "\n"
-     (when context
-       (concat (propertize "│   " 'face `(:foreground ,border-color))
-               context "\n"))
-     (when error-col
-       (concat (propertize "╰" 'face `(:foreground ,border-color))
-              (propertize (make-string (+ error-col 3) ?─)
-                         'face `(:foreground ,border-color))
-              (propertize "╯" 'face `(:foreground ,border-color))))))))
+		    ;; Add bold to the diagnostic portion
+		    (put-text-property offset (+ offset len) 'face
+				       `(:inherit ,diag-face :weight bold)
+				       trimmed-line)
+		    (list trimmed-line offset))))))
+	   (context (car context-data))
+	   (error-col (cadr context-data))
+	   (message (car (split-string (flymake-diagnostic-text diagnostic) "[\n\r]" t "[ \t]+")))
+	   ;; Title case the first word of the message
+	   (message (if (string-match "^\\([a-z]\\)\\([^ ]*\\)\\(.*\\)" message)
+			(concat (upcase (match-string 1 message))
+				(match-string 2 message)
+				(match-string 3 message))
+		      message)))
+
+      (concat
+       (propertize "╭─╮\n│ " 'face `(:foreground ,border-color))
+       (propertize prefix-icon 'face diag-face) " "
+       (propertize message 'face diag-face) "\n"
+       (when context
+	 (concat (propertize "│   " 'face `(:foreground ,border-color))
+		 context "\n"))
+       (when error-col
+	 (concat (propertize "╰" 'face `(:foreground ,border-color))
+		 (propertize (make-string (+ error-col 3) ?─)
+			     'face `(:foreground ,border-color))
+		 (propertize "╯" 'face `(:foreground ,border-color))))))))
 
 ;; Load the tab bar after elpaca is setup since we loosely depend on
 ;; some packages
