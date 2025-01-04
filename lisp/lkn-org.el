@@ -284,6 +284,7 @@ is selected, only the bare key is returned."
 (use-package org
   :ensure nil
   :custom
+  (org-return-follows-link t)
   (org-startup-indented t)
   (org-hide-emphasis-markers t)
   (org-startup-with-inline-images t)
