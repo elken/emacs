@@ -42,11 +42,11 @@
               use-package-always-ensure t
 	      use-package-compute-statistics t)
 
+;; Need to set this so we can definitely find libgccjit
 (when IS-MAC
-  (setq frame-resize-pixelwise t
-        ns-use-native-fullscreen nil
-        ns-use-proxy-icon nil
-        frame-inhibit-implied-resize t))
+  (setenv "PATH" (concat "/opt/homebrew/bin:" (getenv "PATH")))
+  (setenv "LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LIBRARY_PATH")))
+  (setenv "LD_LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LD_LIBRARY_PATH"))))
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
 ;; awkward flashing. Also get rid of the dumb startup message
@@ -70,6 +70,10 @@
    (alpha-background . 95)	     ; Transparency (29+)
    (vertical-scroll-bars . nil))     ; No vertical scroll-bars
  inhibit-startup-message t
+ inhibit-startup-echo-area-message t
+ inhibit-startup-screen t
+ initial-scratch-message nil
+ cursor-in-non-selected-windows nil
  mode-line-format nil
  auto-save-default nil
  backup-by-copying t
@@ -82,7 +86,8 @@
       load-prefer-newer t
       read-process-output-max (* 1024 1024)
       large-file-warning-threshold (* 100 1024 1024)
-      gc-cons-threshold (* 50 1000 1000)
+      gc-cons-threshold 100000000
+      gc-cons-percentage 0.6
       native-comp-jit-compilation t
       native-comp-async-report-warnings-errors nil
       require-final-newline t)

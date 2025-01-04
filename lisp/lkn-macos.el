@@ -20,6 +20,14 @@
 ;;; I use this a lot for work
 ;;; Code:
 
+(setq frame-resize-pixelwise t
+      ns-use-native-fullscreen nil
+      ns-use-proxy-icon nil
+      frame-inhibit-implied-resize t
+      mac-command-modifier 'super
+      mac-option-modifier 'meta
+      mac-use-title-bar nil)
+
 (defun lkn/paste-from-osx ()
   (shell-command-to-string "pbpaste"))
 
