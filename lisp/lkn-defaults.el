@@ -64,13 +64,169 @@ Usually defaults to Nord or my Carbon theme."
   :group 'lkn)
 
 ;;; Macros
+;; Any macros that have `!' after them can be considerd taken from
+;; Doom Emacs.  At the time of writing, it's
+;; <https://github.com/doomemacs/doomemacs/blob/ea616ebd5bcc98d342ab89bbe02f99dd8c0cd673/lisp/doom-lib.el>
 
 (defmacro cmd! (&rest body)
-  "Returns (lambda () (interactive) ,@body)."
-  (declare (doc-string 1) (pure t) (side-effect-free t))
+  "Returns (lambda () (interactive) ,@body)
+A factory for quickly producing interaction commands, particularly for keybinds
+or aliases."
+  (declare (doc-string 1))
   `(lambda (&rest _) (interactive) ,@body))
 
+(defmacro add-hook! (hooks &rest rest)
+  "A convenience macro for adding N functions to M hooks.
+
+This macro accepts, in order:
+
+  1. The mode(s) or hook(s) to add to. This is either an unquoted mode, an
+     unquoted list of modes, a quoted hook variable or a quoted list of hook
+     variables.
+  2. Optional properties :local, :append, and/or :depth [N], which will make the
+     hook buffer-local or append to the list of hooks (respectively),
+  3. The function(s) to be added: this can be a quoted function, a quoted list
+     thereof, a list of `defun' or `cl-defun' forms, or arbitrary forms (will
+     implicitly be wrapped in a lambda).
+
+\(fn HOOKS [:append :local [:depth N]] FUNCTIONS-OR-FORMS...)"
+  (declare (indent (lambda (indent-point state)
+                     (goto-char indent-point)
+                     (when (looking-at-p "\\s-*(")
+                       (lisp-indent-defform state indent-point))))
+           (debug t))
+  (let* ((hook-forms (doom--resolve-hook-forms hooks))
+         (func-forms ())
+         (defn-forms ())
+         append-p local-p remove-p depth)
+    (while (keywordp (car rest))
+      (pcase (pop rest)
+        (:append (setq append-p t))
+        (:depth  (setq depth (pop rest)))
+        (:local  (setq local-p t))
+        (:remove (setq remove-p t))))
+    (while rest
+      (let* ((next (pop rest))
+             (first (car-safe next)))
+        (push (cond ((memq first '(function nil))
+                     next)
+                    ((eq first 'quote)
+                     (let ((quoted (cadr next)))
+                       (if (atom quoted)
+                           next
+                         (when (cdr quoted)
+                           (setq rest (cons (list first (cdr quoted)) rest)))
+                         (list first (car quoted)))))
+                    ((memq first '(defun cl-defun))
+                     (push next defn-forms)
+                     (list 'function (cadr next)))
+                    ((prog1 `(lambda (&rest _) ,@(cons next rest))
+                       (setq rest nil))))
+              func-forms)))
+    `(progn
+       ,@defn-forms
+       (dolist (hook ',(nreverse hook-forms))
+         (dolist (func (list ,@func-forms))
+           ,(if remove-p
+                `(remove-hook hook func ,local-p)
+              `(add-hook hook func ,(or depth append-p) ,local-p)))))))
+
+(defmacro remove-hook! (hooks &rest rest)
+  "A convenience macro for removing N functions from M hooks.
+
+Takes the same arguments as `add-hook!'.
+
+If N and M = 1, there's no benefit to using this macro over `remove-hook'.
+
+\(fn HOOKS [:append :local] FUNCTIONS)"
+  (declare (indent defun) (debug t))
+  `(add-hook! ,hooks :remove ,@rest))
+
+(defmacro setq-hook! (hooks &rest var-vals)
+  "Sets buffer-local variables on HOOKS.
+
+\(fn HOOKS &rest [SYM VAL]...)"
+  (declare (indent 1))
+  (macroexp-progn
+   (cl-loop for (var val hook fn) in (doom--setq-hook-fns hooks var-vals)
+            collect `(defun ,fn (&rest _)
+                       ,(format "%s = %s" var (pp-to-string val))
+                       (setq-local ,var ,val))
+            collect `(add-hook ',hook #',fn -90))))
+
+(defmacro unsetq-hook! (hooks &rest vars)
+  "Unbind setq hooks on HOOKS for VARS.
+
+\(fn HOOKS &rest [SYM VAL]...)"
+  (declare (indent 1))
+  (macroexp-progn
+   (cl-loop for (_var _val hook fn)
+            in (doom--setq-hook-fns hooks vars 'singles)
+            collect `(remove-hook ',hook #',fn))))
+
+;;; Definers
+(defmacro defadvice! (symbol arglist &optional docstring &rest body)
+  "Define an advice called SYMBOL and add it to PLACES.
+
+ARGLIST is as in `defun'. WHERE is a keyword as passed to `advice-add', and
+PLACE is the function to which to add the advice, like in `advice-add'.
+DOCSTRING and BODY are as in `defun'.
+
+\(fn SYMBOL ARGLIST &optional DOCSTRING &rest [WHERE PLACES...] BODY\)"
+  (declare (doc-string 3) (indent defun))
+  (unless (stringp docstring)
+    (push docstring body)
+    (setq docstring nil))
+  (let (where-alist)
+    (while (keywordp (car body))
+      (push `(cons ,(pop body) (ensure-list ,(pop body)))
+            where-alist))
+    `(progn
+       (defun ,symbol ,arglist ,docstring ,@body)
+       (dolist (targets (list ,@(nreverse where-alist)))
+         (dolist (target (cdr targets))
+           (advice-add target (car targets) #',symbol))))))
+
+(defmacro undefadvice! (symbol _arglist &optional docstring &rest body)
+  "Undefine an advice called SYMBOL.
+
+This has the same signature as `defadvice!' an exists as an easy undefiner when
+testing advice (when combined with `rotate-text').
+
+\(fn SYMBOL ARGLIST &optional DOCSTRING &rest [WHERE PLACES...] BODY\)"
+  (declare (doc-string 3) (indent defun))
+  (let (where-alist)
+    (unless (stringp docstring)
+      (push docstring body))
+    (while (keywordp (car body))
+      (push `(cons ,(pop body) (ensure-list ,(pop body)))
+            where-alist))
+    `(dolist (targets (list ,@(nreverse where-alist)))
+       (dolist (target (cdr targets))
+         (advice-remove target #',symbol)))))
+
 ;;; Functions
+
+(defun lkn/swap-face (face &optional frame inherit)
+  "Given a FACE, swap the background and foreground.
+Same as `invert-face' but returns the new face rather than setting
+everything."
+  (let ((fg (face-foreground face frame inherit))
+	(bg (face-background face frame inherit)))
+    `(:foreground ,bg :background ,fg)))
+
+(defun lkn/combine-faces (&rest faces)
+ (let ((attrs '(:foreground :background :weight :slant :underline)))
+   `((t ,@(cl-loop for attr in attrs
+                   for val = (cl-some (lambda (face)
+                                      (cond 
+                                       ((facep face) 
+                                        (let ((v (face-attribute face attr)))
+                                          (unless (eq v 'unspecified) v)))
+                                       ((listp face)
+                                        (plist-get face attr))))
+                                    faces)
+                   when val collect attr and collect val)))))
 
 ;; Borrowed with love from prot
 (defun lkn/keyboard-quit-dwim ()
@@ -224,6 +380,7 @@ The DWIM behaviour of this command is as follows:
   (native-comp-async-report-warnings-errors 'silent)
   (select-enable-clipboard t)
   (compilation-scroll-output t)
+  (confirm-nonexistent-file-or-buffer nil)
   :hook
   (text-mode . display-line-numbers-mode)
   (prog-mode . display-line-numbers-mode)
@@ -242,13 +399,22 @@ The DWIM behaviour of this command is as follows:
    ("C-g" . lkn/keyboard-quit-dwim)
    ("M-q" . lkn/fill-region)
    ("C-c f p" . lkn/find-file-emacs)
-   ("C-x p y" . lkn/yank-buffer-project-path)))
+   ("C-x p y" . lkn/yank-buffer-project-path))
+  :init
+  ;; Ensure the buffers are correctly encoded
+  (prefer-coding-system       'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-language-environment   'utf-8))
 
 (use-package savehist
   :ensure nil
   :after no-littering
   :custom
   (savehist-additional-variables '(kill-ring search-ring))
+  (history-length 250)
+  (kill-ring-max 25)
   :config
   (savehist-mode))
 
@@ -256,6 +422,8 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :init (recentf-mode)
   :after no-littering
+  :custom
+  (recentf-max-menu-items 25)
   :config
   (add-to-list 'recentf-exclude LITTER-DIR))
 
@@ -283,8 +451,8 @@ The DWIM behaviour of this command is as follows:
 (use-package autorevert
   :ensure nil
   :custom
-  (auto-revert-use-notify nil)
   (auto-revert-stop-on-user-input nil)
+  (auto-revert-avoid-polling t)
   (revert-without-query (list "."))
   :hook
   (focus-in . lkn/auto-revert-buffers)
@@ -309,6 +477,14 @@ The DWIM behaviour of this command is as follows:
 
   (add-hook 'window-selection-change-functions #'lkn/auto-revert-buffer)
   (add-hook 'window-buffer-change-functions #'lkn/auto-revert-buffer))
+
+(use-package uniquify
+  :ensure nil
+  :custom
+  (uniquify-buffer-name-style 'reverse)
+  (uniquify-separator  " • ")
+  (uniquify-after-kill-buffer-p  t)
+  (uniquify-ignore-buffers-re  "^\\*" ))
 
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
