@@ -28,7 +28,7 @@
 	      `(("Section" "^[ \t]*;;;*\\**[ \t]+\\([^\n]+\\)" 1)
                 ("Evil commands" "^\\s-*(evil-define-\\(?:command\\|operator\\|motion\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
                 ("Unit tests" "^\\s-*(\\(?:ert-deftest\\|describe\\) +\"\\([^\")]+\\)\"" 1)
-                ("Package" "^\\s-*\\(?:;;;###package\\|(use-package?\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
+                ("Packages" "^\\s-*\\(?:;;;###package\\|(use-package?\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
                 ("Major modes" "^\\s-*(define-derived-mode +\\([^ ()\n]+\\)" 1)
                 ("Modeline Segment" "(lkn-modeline-defsegment[[:space:]\n]+\\([^[:space:]\n)]+\\)" 1)
                 ("Minor modes" "^\\s-*(define-\\(?:global\\(?:ized\\)?-minor\\|generic\\|minor\\)-mode +\\([^ ()\n]+\\)" 1)
