@@ -156,16 +156,42 @@ ARGS are style properties that affect the whole tag, with special handling for:
 
 (use-package helpful
   :hook (helpful-mode . visual-line-mode)
-  :bind
-  (("C-h F" . describe-face)
-   ("C-h '" . describe-char))
+  :custom
+  (apropos-do-all t)
+  :bind (([remap describe-function] . helpful-callable)
+         ([remap describe-command]  . helpful-command)
+         ([remap describe-variable] . helpful-variable)
+         ([remap describe-key]      . helpful-key)
+         ([remap describe-symbol]   . helpful-symbol)
+	 ("C-h '"                   . describe-char)
+	 ("C-h F"                   . describe-face)
+	 ("C-h C-k"                 . describe-keymap))
   :init
-  (setopt apropos-do-all t)
-  (global-set-key [remap describe-function] #'helpful-callable)
-  (global-set-key [remap describe-command]  #'helpful-command)
-  (global-set-key [remap describe-variable] #'helpful-variable)
-  (global-set-key [remap describe-key]      #'helpful-key)
-  (global-set-key [remap describe-symbol]   #'helpful-symbol))
+  ;; Needed until https://github.com/Wilfred/helpful/pull/344 is resolved
+  (defun helpful--version-info (sym)
+    "If SYM has version information, format and return it.
+Return nil otherwise."
+    (when (symbolp sym)
+      (string-join
+       (list
+	(when-let* ((package-version
+		     (get sym 'custom-package-version)))
+	  (pcase-let ((`(,package . ,version) (if (listp package-version)
+						  package-version
+						`(,(file-name-base
+						    (symbol-file sym))
+						  .
+						  ,package-version))))
+	    (format
+             "This variable was added, or its default value changed, in %s version %s."
+             package
+             version)))
+	(when-let* ((emacs-version
+		     (get sym 'custom-version)))
+	  (format
+           "This variable was added, or its default value changed, in Emacs %s."
+           emacs-version)))
+       "\n\n"))))
 
 (use-package doom-themes
   :demand t
