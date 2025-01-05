@@ -44,34 +44,33 @@
       "0" "switch to 10"))
   
   (with-eval-after-load 'meow
-    (defvar-keymap perspective-map
-      :prefix 'perspective-map
-      "n" #'perspective-next
-      "p" #'perspective-prev
-      "s" #'perspective-switch
-      "S" #'perspective-save-state
-      "L" #'perspective-load-state
-      "a" #'perspective-add-buffer
-      "r" #'perspective-rename
-      "x" #'perspective-kill
-      "c" #'perspective-create
+    (defvar-keymap lkn/perspective-map
+      "n" #'persp-next
+      "p" #'persp-prev
+      "s" #'persp-switch
+      "S" #'persp-state-save
+      "L" #'persp-state-load
+      "a" #'persp-add-buffer
+      "r" #'persp-rename
+      "d" #'persp-kill
       "b" #'persp-switch-to-buffer
-      "`" #'persp-switch-by-number
+      "B" #'persp-switch-to-scratch-buffer
+      "`" #'persp-switch-last
       "k" #'persp-remove-buffer
-      "1" (lambda () (interactive) (persp-switch-by-number 1))
-      "2" (lambda () (interactive) (persp-switch-by-number 2))
-      "3" (lambda () (interactive) (persp-switch-by-number 3))
-      "4" (lambda () (interactive) (persp-switch-by-number 4))
-      "5" (lambda () (interactive) (persp-switch-by-number 5))
-      "6" (lambda () (interactive) (persp-switch-by-number 6))
-      "7" (lambda () (interactive) (persp-switch-by-number 7))
-      "8" (lambda () (interactive) (persp-switch-by-number 8))
-      "9" (lambda () (interactive) (persp-switch-by-number 9))
-      "0" (lambda () (interactive) (persp-switch-by-number 10)))
+      "1" (cmd! (persp-switch-by-number 1))
+      "2" (cmd! (persp-switch-by-number 2))
+      "3" (cmd! (persp-switch-by-number 3))
+      "4" (cmd! (persp-switch-by-number 4))
+      "5" (cmd! (persp-switch-by-number 5))
+      "6" (cmd! (persp-switch-by-number 6))
+      "7" (cmd! (persp-switch-by-number 7))
+      "8" (cmd! (persp-switch-by-number 8))
+      "9" (cmd! (persp-switch-by-number 9))
+      "0" (cmd! (persp-switch-by-number 10)))
 
     (meow-leader-define-key
      '("," . persp-switch-to-buffer*)
-     (cons "TAB" perspective-map)))
+     (cons "TAB" lkn/perspective-map)))
   
   ;; Inspired by <https://github.com/bbatsov/persp-projectile>
   (defadvice project-switch-project (around project-persp-switch-project (project) activate)
