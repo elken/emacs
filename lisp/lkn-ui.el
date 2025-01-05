@@ -190,6 +190,7 @@ We do this by disabling all other themes then loading ours."
 
 ;; Disabled for now as I debate if it's needed
 (use-package which-key
+  :ensure nil
   :init (which-key-mode)
   :diminish which-key-mode
   :config
