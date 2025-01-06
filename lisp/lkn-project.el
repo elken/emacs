@@ -21,7 +21,6 @@
 ;;; Over time it has improved to the point of making projectile redundant now!
 ;;; Code:
 
-
 (use-package project
   :ensure nil
   :demand t

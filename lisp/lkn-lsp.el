@@ -74,7 +74,7 @@
   ;; are network types, we can't get the command from it
   ;; (add-to-list 'eglot-server-programs '(ruby-ts-mode . ("solargraph" "stdio")) nil #'car)
 
-  (setq eglot-server-programs 
+  (setq eglot-server-programs
       (cons '(ruby-ts-mode . ("ruby-lsp"))
             (cl-remove-if (lambda (x) (eq (car-safe x) 'ruby-ts-mode))
                          eglot-server-programs)))

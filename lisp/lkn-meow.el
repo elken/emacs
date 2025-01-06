@@ -18,7 +18,7 @@
 
 ;;; Commentary:
 ;;; Setup for my meow configuration that may or may not be
-;;; in use currently. It gets in the way sometimes, so this may be
+;;; in use currently.  It gets in the way sometimes, so this may be
 ;;; phased out.
 ;;; Code:
 
@@ -28,11 +28,11 @@
   (let* ((bounds (if (use-region-p)
                      (cons (region-beginning) (region-end))
                    (bounds-of-thing-at-point 'word)))
-         (text (when bounds 
+         (text (when bounds
                  (buffer-substring-no-properties (car bounds) (cdr bounds)))))
     (when text
       (delete-region (car bounds) (cdr bounds))
-      (insert (apply #'string 
+      (insert (apply #'string
                      (mapcar (lambda (char)
                                (if (eq (upcase char) char)
                                    (downcase char)
@@ -90,9 +90,9 @@
   "c" #'comment-dwim
   "g" #'beginning-of-buffer)
 
-(defun lkn/goto-matching-paren (&optional arg)
+(defun lkn/goto-matching-paren ()
   "Go to the matching parenthesis if on parenthesis."
-  (interactive "p")
+  (interactive)
   (cond ((looking-at "\\s\(") (forward-sexp 1))
         ((looking-back "\\s\)" 1) (backward-sexp 1))
         ;; Now, try the other direction
@@ -100,6 +100,7 @@
         ((looking-back "\\s\(" 1) (backward-char) (forward-sexp 1))))
 
 (defun meow-setup ()
+  "General setup function for everything meow."
   (require 'meow)
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (setq meow--kbd-delete-char "<deletechar>")

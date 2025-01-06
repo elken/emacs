@@ -17,7 +17,7 @@
 ;; see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;;; We write lisp languages often enough that they deserve their own
+;;; We write Lisp languages often enough that they deserve their own
 ;;; module
 ;;; Code:
 
@@ -48,7 +48,7 @@
 
 Intended as :override advice for `calculate-lisp-indent'.
 
-Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_indentation_of_quoted_lists/'."
+Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_indentation_of_quoted_lists/'.  Optionally take PARSE-START."
   ;; This line because `calculate-lisp-indent-last-sexp` was defined with
   ;; `defvar` with it's value ommited, marking it special and only defining it
   ;; locally. So if you don't have this, you'll get a void variable error.
@@ -253,7 +253,7 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
   "Match defined variables and functions.
 
 Functions are differentiated into special forms, built-in functions and
-library/userland functions"
+library/userland functions.  Go until END."
   (catch 'matcher
     (while (re-search-forward "\\(?:\\sw\\|\\s_\\)+" end t)
       (let ((ppss (save-excursion (syntax-ppss))))

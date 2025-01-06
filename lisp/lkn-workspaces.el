@@ -117,7 +117,7 @@ is created in a known project."
 
   ;; Then we update how we want to handle storing the buffer data. For
   ;; now we just add in all the scrollback, but we may look into
-  ;; truncation.  
+  ;; truncation.
   (defun persp--state-file-data ()
     (cl-loop for buffer in (buffer-list)
              if (persp--state-interesting-buffer-p buffer)

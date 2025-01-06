@@ -29,9 +29,11 @@
       mac-use-title-bar nil)
 
 (defun lkn/paste-from-osx ()
+  "Paste clipboard using pbpaste."
   (shell-command-to-string "pbpaste"))
 
-(defun lkn/copy-to-osx (text &optional push)
+(defun lkn/copy-to-osx (text &optional _)
+  "Used in the terminal to copy TEXT."
   (let ((process-connection-type nil))
     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
       (process-send-string proc text)

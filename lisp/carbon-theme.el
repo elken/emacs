@@ -9,9 +9,9 @@
 ;; A theme based on Carbon Design System colors.
 
 ;;
-;;; Variables
+;;; Code:
 
-(deftheme carbon "A theme based on IBM Carbon's design system")
+(deftheme carbon "A theme based on IBM Carbon's design system.")
 
 (let* ((class '((class color) (min-colors 89)))
        (black "#000000")

@@ -17,7 +17,7 @@
 ;; see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;;; Just a bunch of default settings. Any built-in modes etc.
+;;; Just a bunch of default settings.  Any built-in modes etc.
 ;;; Code:
 
 (defcustom lkn-default-font "MonaspiceNe NFM"
@@ -68,11 +68,12 @@ Usually defaults to Nord or my Carbon theme."
 ;; Doom Emacs.  At the time of writing, it's
 ;; <https://github.com/doomemacs/doomemacs/blob/ea616ebd5bcc98d342ab89bbe02f99dd8c0cd673/lisp/doom-lib.el>
 
-(defmacro comment (&rest args)
+(defmacro comment (&rest body)
+  "Take BODY but do nothing with it."
   nil)
 
 (defmacro cmd! (&rest body)
-  "Returns (lambda () (interactive) ,@body)
+  "Returns (lambda () (interactive) ,@BODY)
 A factory for quickly producing interaction commands, particularly for keybinds
 or aliases."
   (declare (doc-string 1))
@@ -81,9 +82,9 @@ or aliases."
 (defmacro add-hook! (hooks &rest rest)
   "A convenience macro for adding N functions to M hooks.
 
-This macro accepts, in order:
+This macro accepts, in order, the following REST args:
 
-  1. The mode(s) or hook(s) to add to. This is either an unquoted mode, an
+  1. The mode(s) or hook(s) to add to.  This is either an unquoted mode, an
      unquoted list of modes, a quoted hook variable or a quoted list of hook
      variables.
   2. Optional properties :local, :append, and/or :depth [N], which will make the
@@ -137,7 +138,7 @@ This macro accepts, in order:
 (defmacro remove-hook! (hooks &rest rest)
   "A convenience macro for removing N functions from M hooks.
 
-Takes the same arguments as `add-hook!'.
+Takes the same REST arguments as `add-hook!'.
 
 If N and M = 1, there's no benefit to using this macro over `remove-hook'.
 
@@ -148,7 +149,7 @@ If N and M = 1, there's no benefit to using this macro over `remove-hook'.
 (defmacro setq-hook! (hooks &rest var-vals)
   "Sets buffer-local variables on HOOKS.
 
-\(fn HOOKS &rest [SYM VAL]...)"
+\(fn HOOKS &rest VAR-VALS [SYM VAL]...)"
   (declare (indent 1))
   (macroexp-progn
    (cl-loop for (var val hook fn) in (doom--setq-hook-fns hooks var-vals)
@@ -171,7 +172,7 @@ If N and M = 1, there's no benefit to using this macro over `remove-hook'.
 (defmacro defadvice! (symbol arglist &optional docstring &rest body)
   "Define an advice called SYMBOL and add it to PLACES.
 
-ARGLIST is as in `defun'. WHERE is a keyword as passed to `advice-add', and
+ARGLIST is as in `defun'.  WHERE is a keyword as passed to `advice-add', and
 PLACE is the function to which to add the advice, like in `advice-add'.
 DOCSTRING and BODY are as in `defun'.
 
@@ -213,23 +214,27 @@ testing advice (when combined with `rotate-text').
 (defun lkn/swap-face (face &optional frame inherit)
   "Given a FACE, swap the background and foreground.
 Same as `invert-face' but returns the new face rather than setting
-everything."
+everything.
+
+Optionally take the same FRAME and INHERIT arguments that
+`face-attribute' expects."
   (let ((fg (face-foreground face frame inherit))
 	(bg (face-background face frame inherit)))
     `(:foreground ,bg :background ,fg)))
 
 (defun lkn/combine-faces (&rest faces)
- (let ((attrs '(:foreground :background :weight :slant :underline)))
-   `((t ,@(cl-loop for attr in attrs
-                   for val = (cl-some (lambda (face)
-                                      (cond 
-                                       ((facep face) 
-                                        (let ((v (face-attribute face attr)))
-                                          (unless (eq v 'unspecified) v)))
-                                       ((listp face)
-                                        (plist-get face attr))))
-                                    faces)
-                   when val collect attr and collect val)))))
+  "Given a list of FACES, apply them together and return the spec."
+  (let ((attrs '(:foreground :background :weight :slant :underline)))
+    `((t ,@(cl-loop for attr in attrs
+                    for val = (cl-some (lambda (face)
+					 (cond
+					  ((facep face)
+                                           (let ((v (face-attribute face attr)))
+                                             (unless (eq v 'unspecified) v)))
+					  ((listp face)
+                                           (plist-get face attr))))
+                                       faces)
+                    when val collect attr and collect val)))))
 
 ;; Borrowed with love from prot
 (defun lkn/keyboard-quit-dwim ()
@@ -268,6 +273,7 @@ The DWIM behaviour of this command is as follows:
 
 ;; Globally disable hooks
 (defun lkn/disable-hooks-setup ()
+  "Apply the list of modes to not display line numbers for."
   (dolist (mode lkn/global-no-numbers-modes)
     (add-hook mode (lambda () (display-line-numbers-mode 0)))))
 
@@ -296,7 +302,7 @@ The DWIM behaviour of this command is as follows:
 ;; Only show the compilation buffer if there are errors. Otherwise,
 ;; it's useless
 (defun bury-compile-buffer-if-successful (buffer string)
-  "Bury a compilation buffer if succeeded without warnings "
+  "Bury a compilation BUFFER if succeeded without warnings by checking STRING contents."
   (when (and (eq major-mode 'comint-mode)
              (string-match "finished" string)
              (not
@@ -328,7 +334,7 @@ The DWIM behaviour of this command is as follows:
       (user-error "Unable to open %S" file))))
 
 (defun lkn/yank-buffer ()
-  "Yank the contents of the current buffer"
+  "Yank the contents of the current buffer."
   (interactive)
   (clipboard-kill-ring-save (point-min) (point-max)))
 
@@ -356,6 +362,7 @@ The DWIM behaviour of this command is as follows:
     (project-find-file)))
 
 (defun lkn/fill-region (&optional argument)
+  "WIP: ARGUMENT."
   (interactive "P")
   (if argument
       (call-interactively 'fill-paragraph)

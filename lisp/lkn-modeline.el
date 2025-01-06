@@ -120,8 +120,8 @@
     str))
 
 (defmacro lkn-modeline-defsegment (name &rest body)
-  "Define a mode-line segment to be loaded. This macro is preferred
-since it also marks the needed variable as risky."
+  "Define a mode-line segment NAME to be loaded with BODY.
+This macro is preferred since it also marks the needed variable as risky."
   `(progn
      (put ',name 'risky-local-variable t)
      (setq-default ,name
@@ -221,6 +221,7 @@ since it also marks the needed variable as risky."
 	(propertize (car state) 'face (cdr state)))))))
 
 (defun lkn-modeline-flymake--text (ht key)
+  "Helper function to get all KEY diagnostics from HT."
   (when-let ((value (gethash key ht)))
     (concat
      (propertize (nerd-icons-codicon "nf-cod-error")
@@ -257,3 +258,4 @@ since it also marks the needed variable as risky."
       (lkn-modeline-flymake--text hash 'success)))))
 
 (provide 'lkn-modeline)
+;;; lkn-modeline.el ends here

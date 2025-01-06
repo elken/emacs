@@ -18,7 +18,7 @@
 
 ;;; Commentary:
 ;;; Currently my $WORKLANG, this will end up having a fair amount of
-;;; config. A lot of the power will come from LSP, and I lean quite a
+;;; config.  A lot of the power will come from LSP, and I lean quite a
 ;;; bit on that.
 ;;; Code:
 
@@ -40,6 +40,7 @@
 
 (use-package erb-ts-mode
   :ensure nil
+  :disabled t
   :mode "\\.erb$"
   :config
   (defvar erb-translation-capf--properties
@@ -53,7 +54,7 @@
   (defun erb-translate-capf--in-t-call-args-p ()
     "Return cons of start/end positions if point is within t() args, nil otherwise."
     (let* ((parser (cl-find 'ruby (treesit-parser-list) :key #'treesit-parser-language))
-           (matches (treesit-query-capture 
+           (matches (treesit-query-capture
                      parser
                      '((program (call method: ((identifier) @m)
 				      arguments: _ @args
@@ -89,16 +90,16 @@
     (interactive (list t))
     (if interactive
 	(let ((completion-at-point-functions #'erb-translation-capf))
-          (message "Current buffer content at point: %s" 
+          (message "Current buffer content at point: %s"
                    (when-let ((bounds (erb-translate-capf--in-t-call-args-p)))
                      (buffer-substring-no-properties (car bounds) (cdr bounds))))
-          (or (completion-at-point) 
+          (or (completion-at-point)
               (user-error "erb-translation-capf: No completions")))
       (when-let ((bounds (erb-translate-capf--in-t-call-args-p)))
 	`(,(car bounds) ,(cdr bounds)
           ,(completion-table-with-cache
             (lambda (string)
-              (all-completions 
+              (all-completions
                (string-trim string "'" "'")
                '(".page_title" ".heading"))))
           ,@erb-translation-capf--properties)))))
