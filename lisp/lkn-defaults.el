@@ -490,5 +490,9 @@ The DWIM behaviour of this command is as follows:
   (uniquify-after-kill-buffer-p  t)
   (uniquify-ignore-buffers-re  "^\\*" ))
 
+(use-package xref
+  :ensure nil
+  :custom
+  (xref-search-program 'ripgrep))
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
