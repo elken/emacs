@@ -204,11 +204,11 @@
 (use-package meow
   :demand t
   :diminish (meow-normal-mode meow-insert-mode meow-keypad-mode meow-esc-mode meow-motion-mode meow-beacon-mode)
+  :hook (git-commit-mode . meow-insert-mode)
   :custom
   (meow-use-clipboard t)
   :config
   (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
-  (add-to-list 'meow-mode-state-list '(git-commit-mode . insert))
   (meow-setup)
   (meow-global-mode 1))
 
