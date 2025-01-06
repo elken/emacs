@@ -426,7 +426,8 @@ The DWIM behaviour of this command is as follows:
   :init (recentf-mode)
   :after no-littering
   :custom
-  (recentf-max-menu-items 25)
+  (recentf-max-menu-items 200)
+  (recentf-max-saved-items 200)
   :config
   (add-to-list 'recentf-exclude LITTER-DIR))
 
