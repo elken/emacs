@@ -314,5 +314,8 @@ library/userland functions.  Go until END."
 (use-package cider
   :after clojure-mode)
 
+(use-package racket-mode
+  :mode "\\.rkt\\'")
+
 (provide 'lkn-lisp)
 ;;; lkn-lisp.el ends here
