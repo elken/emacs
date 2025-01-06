@@ -26,9 +26,12 @@
   (dockerfile-mode-command (if IS-LINUX "podman" "docker")))
 
 (use-package yaml-mode
-  :mode (".snyk" . yaml-mode))
+  :mode ".snyk")
 
 (use-package k8s-mode)
+
+(use-package web-mode
+  :mode "\\.html.erb\\'")
 
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
