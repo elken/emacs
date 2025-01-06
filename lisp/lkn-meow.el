@@ -205,14 +205,9 @@
   :diminish (meow-normal-mode meow-insert-mode meow-keypad-mode meow-esc-mode meow-motion-mode meow-beacon-mode)
   :custom
   (meow-use-clipboard t)
-  (meow-mode-state-list
-   '((conf-mode . normal)
-     (fundamental-mode . normal)
-     (help-mode . motion)
-     (prog-mode . normal)
-     (text-mode . normal)
-     (vterm-mode . insert)))
   :config
+  (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
+  (add-to-list 'meow-mode-state-list '(git-commit-mode . insert))
   (meow-setup)
   (meow-global-mode 1))
 
