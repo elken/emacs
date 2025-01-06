@@ -95,8 +95,9 @@
 
 (use-package gcmh
   :custom
-  (gc-cons-threshold 100000000)
-  (gc-cons-percentage 0.1)
+  (gcmh-high-cons-threshold (* 16 1024 1024))
+  (gcmh-auto-idle-delay-factor 10)
+  (gcmh-idle-delay 'auto)
   :diminish gcmh-mode
   :hook (emacs-startup . gcmh-mode)
   :hook (focus-out . garbage-collect))
