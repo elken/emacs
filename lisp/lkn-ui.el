@@ -90,10 +90,7 @@ ARGS are style properties that affect the whole tag, with special handling for:
 
   (defun svg-tag-make-with-cache (tag &rest args)
     (with-memoization (gethash `(,(substring-no-properties tag) ,@args) svg-tag-cache)
-      (let* ((face (or (plist-get args :face) 'svg-tag-default-face))
-	     (foreground (svg-tag--face-attribute face :foreground))
-	     (background (svg-tag--face-attribute face :background))
-	     (tag (string-trim tag))
+      (let* ((tag (string-trim tag))
 	     (beg (or (plist-get args :beg) 0))
 	     (end (or (plist-get args :end) nil))
 	     (args (svg-tag--plist-delete args 'font-weight)))
@@ -103,22 +100,28 @@ ARGS are style properties that affect the whole tag, with special handling for:
 
   (defun svg-nerdfont-tag-make-with-cache (icon tag &rest args)
     (with-memoization (gethash `(,(substring-no-properties icon) ,(substring-no-properties tag) ,@args) svg-tag-cache)
-      (let* ((face (or (plist-get args :face) 'svg-tag-default-face))
-	 (foreground (svg-tag--face-attribute face :foreground))
-	 (background (svg-tag--face-attribute face :background))
-	 (tag (string-trim tag))
-	 (beg (or (plist-get args :beg) 0))
-	 (end (or (plist-get args :end) nil))
-	 (args (svg-tag--plist-delete args 'font-weight)))
-    (apply #'svg-lib-nerdfont-tag icon (substring tag beg end)
-	     :font-weight 'regular
-	     args))))
+      (let* ((tag (string-trim tag))
+	     (beg (or (plist-get args :beg) 0))
+	     (end (or (plist-get args :end) nil))
+	     (args (svg-tag--plist-delete args 'font-weight)))
+	(apply #'svg-lib-nerdfont-tag icon (substring tag beg end)
+	       :font-weight 'regular
+	       args))))
   :custom
   ;; TODO: CRM457-2332: Test
+  ;; :nocov:
   (svg-tag-tags
-   '(("TODO:" . ((lambda (tag) (svg-tag-make-with-cache
-				"TODO"
-				:foreground (cdr (assoc "TODO" hl-todo-keyword-faces))))))
+   '(("TODO:" . ((lambda (tag)
+		   (svg-tag-make-with-cache
+		    "TODO"
+		    :foreground (cdr (assoc "TODO" hl-todo-keyword-faces))))))
+     (":nocov:" . ((lambda (tag)
+		     (svg-nerdfont-tag-make-with-cache
+		      (nerd-icons-faicon "nf-fae-ruby") "SimpleCov ignore"
+		      :font-weight 900
+		      :background (doom-color 'bg-alt)
+		      :icon-background "white"
+		      :icon-foreground "#9b111e"))))
      ("CRM457-[0-9]+:" . ((lambda (tag)
 			    (svg-nerdfont-tag-make-with-cache
 			     (nerd-icons-mdicon "nf-md-jira") tag
