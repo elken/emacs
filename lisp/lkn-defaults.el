@@ -384,6 +384,15 @@ The DWIM behaviour of this command is as follows:
   (select-enable-clipboard t)
   (compilation-scroll-output t)
   (confirm-nonexistent-file-or-buffer nil)
+  ;; Backups
+  (backup-directory-alist
+   '(("." . (lkn/cache-dir "backups"))))
+  (backup-by-copying t)
+  (create-lockfiles nil)
+  (version-control t)
+  (delete-old-versions t)
+  (kept-new-versions 3)
+  (kept-old-versions 2)
   :hook
   (text-mode . display-line-numbers-mode)
   (prog-mode . display-line-numbers-mode)
