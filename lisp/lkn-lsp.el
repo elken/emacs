@@ -91,6 +91,14 @@
   :bind
   (("C-," . consult-xref-stack-backward)))
 
+(use-package consult-eglot
+  :after eglot)
+
+(use-package consult-eglot-embark
+  :after (embark consult-eglot)
+  :config
+  (consult-eglot-embark-mode))
+
 (use-package eglot-booster
   :ensure
   (:host github
