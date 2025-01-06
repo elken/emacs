@@ -68,6 +68,9 @@ Usually defaults to Nord or my Carbon theme."
 ;; Doom Emacs.  At the time of writing, it's
 ;; <https://github.com/doomemacs/doomemacs/blob/ea616ebd5bcc98d342ab89bbe02f99dd8c0cd673/lisp/doom-lib.el>
 
+(defmacro comment (&rest args)
+  nil)
+
 (defmacro cmd! (&rest body)
   "Returns (lambda () (interactive) ,@body)
 A factory for quickly producing interaction commands, particularly for keybinds
