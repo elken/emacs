@@ -35,7 +35,15 @@
     (meow-leader-define-key
      '("v" . lkn/vterm-toggle)))
   (define-key vterm-mode-map (kbd "<C-backspace>") (cmd! (vterm-send-key (kbd "C-w"))))
-  (add-hook 'vterm-exit-functions (cmd! (unless (one-window-p) (kill-buffer-and-window))))
+  (add-hook 'vterm-exit-functions
+	    (cmd!
+	     (unless (one-window-p)
+	       (let* ((buf (current-buffer))
+		      (win (get-buffer-window buf t)))
+		 (when (eq (selected-window) win)
+		   (if win
+		       (kill-buffer-and-window)
+		     (kill-buffer)))))))
 
   ;; TODO Tidy these up, `add-to-list' maybe?
   (setf (alist-get "woman" vterm-eval-cmds nil nil #'equal)
