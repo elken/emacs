@@ -307,7 +307,7 @@ We do this by disabling all other themes then loading ours."
   (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
   (doom-modeline-def-modeline 'main
     '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info info-nodes pdf-pages)
-    '(compilation objed-state process minor-modes github mu4e grip gnus check misc-info repl lsp " ")))
+    '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
 
 ;; Load the tab bar after elpaca is setup since we loosely depend on
 ;; some packages
