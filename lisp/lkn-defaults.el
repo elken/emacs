@@ -494,5 +494,16 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :custom
   (xref-search-program 'ripgrep))
+
+(use-package flymake
+  :ensure nil
+  :custom
+  (flymake-show-diagnostics-at-end-of-line 'short)
+  :bind
+  (:map flymake-mode-map
+	([remap next-error] . flymake-goto-next-error)
+	([remap previous-error] . flymake-goto-prev-error))
+  :hook (prog-mode . flymake-mode))
+
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
