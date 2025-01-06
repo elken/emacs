@@ -27,7 +27,7 @@
   :commands
   (lkn/vterm-toggle)
   :custom
-  (vterm-shell "/bin/zsh")
+  (vterm-shell (executable-find "zsh"))
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 5000)
   :config
