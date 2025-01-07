@@ -553,3 +553,6 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
 
 (provide 'lkn-org)
 ;;; lkn-org.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:

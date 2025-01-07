@@ -536,3 +536,6 @@ The DWIM behaviour of this command is as follows:
 
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:

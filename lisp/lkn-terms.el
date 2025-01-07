@@ -92,3 +92,6 @@ Creates or toggles a vterm buffer specific to the current perspective and projec
 
 (provide 'lkn-terms)
 ;;; lkn-terms.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:

@@ -391,3 +391,6 @@ We do this by disabling all other themes then loading ours."
 
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:

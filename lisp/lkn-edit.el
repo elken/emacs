@@ -188,3 +188,6 @@
 
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:

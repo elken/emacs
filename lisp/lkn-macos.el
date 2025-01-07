@@ -46,3 +46,6 @@
 
 (provide 'lkn-macos)
 ;;; lkn-macos.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:

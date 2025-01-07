@@ -58,9 +58,16 @@ emacs-lisp-mode
 (provide "(provide '" (file-name-base (or (buffer-file-name) (buffer-name))) ")" n
          ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
          " ends here" n)
-(package (i header) r n n (i provide))
+(default-locals
+ ";; Local Variables:" n
+ ";; byte-compile-warnings: (not free-vars unresolved)" n
+ ";; no-byte-compile: t" n
+ ";; no-native-compile: t" n
+ ";; no-update-autoloads: t" n
+ ";; End:")
+(package (i header) r n n (i provide) (i default-locals))
 (usep "(use-package " p n> r>
-	 ")")
+      ")")
 
 ;; Local Variables:
 ;; mode: lisp-data
