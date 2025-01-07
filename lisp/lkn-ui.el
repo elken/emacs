@@ -375,6 +375,8 @@ We do this by disabling all other themes then loading ours."
 
 (use-package spacious-padding
   :when (display-graphic-p)
+  :bind
+  ("C-c C-t S" . spacious-padding-mode)
   :custom
   (spacious-padding-subtle-mode-line
    '(:mode-line-active tab-bar
@@ -386,8 +388,7 @@ We do this by disabling all other themes then loading ours."
      :tab-width 4
      :right-divider-width 30
      :scroll-bar-width 8
-     :fringe-width 8))
-  :hook (elpaca-after-init . spacious-padding-mode))
+     :fringe-width 8)))
 
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
