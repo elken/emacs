@@ -441,6 +441,10 @@ The DWIM behaviour of this command is as follows:
   :config
   (savehist-mode))
 
+(use-package saveplace
+  :ensure nil
+  :hook (elpaca-after-init . save-place-mode))
+
 (use-package recentf
   :ensure nil
   :init (recentf-mode)
