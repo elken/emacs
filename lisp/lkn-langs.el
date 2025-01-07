@@ -33,6 +33,11 @@
 (use-package web-mode
   :mode "\\.html.erb\\'")
 
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :custom
+  (markdown-fontify-code-block-natively t))
+
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
 ;; Local Variables:
