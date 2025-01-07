@@ -137,6 +137,7 @@
    '("~" . lkn/toggle-case-dwim)
    '("-" . negative-argument)
    '(";" . meow-reverse)
+   '("&" . meow-query-replace-regexp)
    '("/" . consult-line)
    '("," . meow-inner-of-thing)
    '("." . meow-bounds-of-thing)
