@@ -124,10 +124,11 @@
    ([remap switch-to-buffer] . consult-buffer)
    ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
    ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame))
-  :config
+  :init
   (with-eval-after-load 'meow
     (meow-leader-define-key
      '("/" . consult-ripgrep)))
+  :config
   (consult-customize
    consult-ripgrep consult-grep consult-git-grep consult-recent-file
    :preview-key "C-SPC")
