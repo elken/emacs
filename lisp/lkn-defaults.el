@@ -68,7 +68,7 @@ Usually defaults to Nord or my Carbon theme."
 ;; Doom Emacs.  At the time of writing, it's
 ;; <https://github.com/doomemacs/doomemacs/blob/ea616ebd5bcc98d342ab89bbe02f99dd8c0cd673/lisp/doom-lib.el>
 
-(defmacro comment (&rest body)
+(defmacro comment (&rest _body)
   "Take BODY but do nothing with it."
   nil)
 
@@ -485,10 +485,9 @@ The DWIM behaviour of this command is as follows:
   (auto-revert-avoid-polling t)
   (revert-without-query (list "."))
   :hook
-  (focus-in . lkn/auto-revert-buffers)
   (after-save . lkn/auto-revert-buffers)
   :config
-  (defun lkn/auto-revert-buffer (&optional window)
+  (defun lkn/auto-revert-buffer (&optional _window)
     "Auto revert current buffer, if necessary."
     (unless (or (and (bound-and-true-p auto-revert-mode)
 		     auto-revert-mode)
@@ -506,7 +505,8 @@ The DWIM behaviour of this command is as follows:
         (lkn/auto-revert-buffer))))
 
   (add-hook 'window-selection-change-functions #'lkn/auto-revert-buffer)
-  (add-hook 'window-buffer-change-functions #'lkn/auto-revert-buffer))
+  (add-hook 'window-buffer-change-functions #'lkn/auto-revert-buffer)
+  (add-hook 'after-focus-change-function #'lkn/auto-revert-buffers))
 
 (use-package uniquify
   :ensure nil
