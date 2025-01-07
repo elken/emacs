@@ -448,6 +448,8 @@ The DWIM behaviour of this command is as follows:
 (use-package recentf
   :ensure nil
   :init (recentf-mode)
+  :bind
+  ("C-c f r" . recentf)
   :after no-littering
   :custom
   (recentf-max-menu-items 200)
