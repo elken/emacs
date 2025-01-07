@@ -32,6 +32,7 @@
   (vertico-quick1 ((t (:foreground unspecified :background unspecified :inherit (outline-1 bold)))))
   (vertico-quick2 ((t (:foreground unspecified :background unspecified :inherit (outline-2 bold)))))
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  :hook (vertico-mode . file-name-shadow-mode)
   :hook (vertico-mode . vertico-mouse-mode)
   :init
   (meow-leader-define-key
