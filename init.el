@@ -1,3 +1,25 @@
+;;; init.el -- All roads lead here -*- lexical-binding: t -*-
+;; Sources are available from https://github.com/elken/emacs
+
+;; Copyright (C) 2022-2025 Ellis Kenyő <emacs@lkn.mozmail.com>
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; For a full copy of the GNU General Public License
+;; see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;; Nothing here but us chickens... well, this chicken
+;;; Code:
+
 (setopt user-full-name "Ellis Kenyő"
         user-mail-address "emacs@lkn.mozmail.com")
 
@@ -100,7 +122,8 @@
   (gcmh-idle-delay 'auto)
   :diminish gcmh-mode
   :hook (emacs-startup . gcmh-mode)
-  :hook (focus-out . garbage-collect))
+  :config
+  (add-hook after-focus-change-function #'garbage-collect))
 
 (use-package exec-path-from-shell
   :demand t
@@ -146,3 +169,9 @@
 
 (when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
   (load (expand-file-name "init-local.el" user-emacs-directory)))
+
+(provide 'init)
+;;; init.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:
