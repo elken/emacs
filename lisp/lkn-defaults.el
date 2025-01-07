@@ -384,8 +384,6 @@ The DWIM behaviour of this command is as follows:
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   (vc-follow-symlinks nil)
-  (create-lockfiles nil)
-  (make-backup-files nil)
   (ring-bell-function 'ignore)
   (display-line-numbers-type 'relative)
   (use-short-answers t)
@@ -396,6 +394,7 @@ The DWIM behaviour of this command is as follows:
   ;; Backups
   (backup-directory-alist
    '(("." . (lkn/cache-dir "backups"))))
+  (make-backup-files nil)
   (backup-by-copying t)
   (create-lockfiles nil)
   (version-control t)
