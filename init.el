@@ -105,12 +105,12 @@
   (unless (file-exists-p (expand-file-name "cache" no-littering-var-directory))
     (mkdir (expand-file-name "cache" no-littering-var-directory)))
 
-  ;;;###autoload
+;;;###autoload
   (defun lkn/config-dir (file)
     "Given FILE, return a valid path relative to `no-littering-etc-directory'."
     (expand-file-name file no-littering-etc-directory))
 
-  ;;;###autoload
+;;;###autoload
   (defun lkn/cache-dir (file)
     "Given FILE, return a valid path relative to `no-littering-var-directory/cache'."
     (expand-file-name file (expand-file-name "cache" no-littering-var-directory))))
