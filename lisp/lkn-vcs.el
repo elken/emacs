@@ -31,6 +31,9 @@
         "-c" "gc.auto=0"
         "-c" "core.commitGraph=true"))
   (magit-git-executable (executable-find "git"))
+  :bind
+  (:map magit-status-mode-map
+	("@" . forge-dispatch))
   :hook
   (magit-mode . lkn/keychain-setup)
   :config
