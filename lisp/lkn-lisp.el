@@ -304,6 +304,11 @@ library/userland functions.  Go until END."
 	("C-c C-i" . eros-inspect-last-result))
   :hook (emacs-lisp-mode . eros-mode))
 
+(use-package package-lint-flymake
+  :after flymake
+  :config
+  (add-hook 'flymake-diagnostic-functions #'package-lint-flymake))
+
 ;; (use-package redshank
 ;;   :diminish redshank-mode
 ;;   :hook ((lisp-mode emacs-lisp-mode) . redshank-mode))
