@@ -373,6 +373,7 @@ The DWIM behaviour of this command is as follows:
 (use-package emacs
   :ensure nil
   :custom
+  (source-directory (expand-file-name "~/code/emacs"))
   (scroll-preserve-screen-position t)
   (confirm-kill-emacs #'y-or-n-p)
   (frame-title-format '(:eval
