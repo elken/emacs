@@ -154,6 +154,8 @@
 
 (use-package diff-hl
   :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+  :custom
+  (diff-hl-update-async t)
   :init
   (global-diff-hl-mode))
 
