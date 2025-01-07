@@ -116,9 +116,11 @@
   (consult-async-refresh-delay 0.15)
   (consult-async-input-throttle 0.2)
   (consult-async-input-debounce 0.1)
+  (imenu-max-item-length 'unlimited)
   :bind
   (([remap apropos] . consult-apropos)
    ([remap imenu]   . consult-imenu)
+   ("M-g I" . consult-imenu-multi)
    ([remap load-theme] . consult-theme)
    ([remap man]        . consult-man)
    ([remap recentf-open-files] . consult-recent-file)
