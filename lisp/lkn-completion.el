@@ -175,12 +175,10 @@
 (use-package orderless
   :custom
   (completion-pcm-leading-wildcard t)
-  (completion-styles '(basic substring initials flex orderless partial-completion))
-  (completion-category-overrides '((file (styles . (basic partial-completion orderless)))
-				   (imenu (styles . (basic substring orderless)))
+  (completion-styles '(orderless partial-completion))
+  (completion-category-overrides '((file (styles partial-completion))
 				   (eglot (styles orderless))
 				   (eglot-capf (styles orderless))))
-  (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (orderless-component-separator "[ &]")
   (completion-category-defaults nil))
 
