@@ -374,6 +374,7 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :custom
   (source-directory (expand-file-name "~/code/emacs"))
+  (next-error-recenter '(4))
   (scroll-preserve-screen-position t)
   (confirm-kill-emacs #'y-or-n-p)
   (frame-title-format '(:eval
