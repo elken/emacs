@@ -133,7 +133,7 @@ ARGS are style properties that affect the whole tag, with special handling for:
 			  (lambda (&rest args)
 			    (interactive)
 			    (when-let ((code (substring-no-properties
-					      (thing-at-point 'symbol) 0 -1)))
+					      (thing-at-point 'symbol))))
 			      (when jiralib-url
 				(browse-url-default-browser
 				 (url-recreate-url
