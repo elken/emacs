@@ -38,6 +38,9 @@
   :custom
   (markdown-fontify-code-block-natively t))
 
+(use-package csv-mode
+  :commands (csv-align-mode))
+
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
 ;; Local Variables:
