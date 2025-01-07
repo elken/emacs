@@ -96,7 +96,10 @@
   (("C-," . consult-xref-stack-backward)))
 
 (use-package consult-eglot
-  :after eglot)
+  :after eglot
+  :bind
+  (:map eglot-mode-map
+	([remap xref-find-apropos] . consult-eglot-symbols)))
 
 (use-package consult-eglot-embark
   :after (embark consult-eglot)
