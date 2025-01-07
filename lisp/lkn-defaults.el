@@ -415,6 +415,7 @@ The DWIM behaviour of this command is as follows:
   (after-init . delete-selection-mode)
   (after-init . lkn/keychain-setup)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
+  (elpaca-after-init . minibuffer-electric-default-mode)
   :bind
   (("C-x k" . kill-current-buffer)
    ("C-s" . save-buffer)
