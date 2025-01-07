@@ -528,6 +528,9 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :custom
   (flymake-show-diagnostics-at-end-of-line 'short)
+  (flymake-supress-zero-counters t)
+  (flymake-start-on-flymake-mode t)
+  (flymake-start-on-save-buffer t)
   :bind
   (:map flymake-mode-map
 	([remap next-error] . flymake-goto-next-error)
