@@ -85,11 +85,6 @@
   (forward-char)
   (meow-insert))
 
-(defvar-keymap lkn/meow-g-command-map
-  :doc "Keymap for g-prefixed commands"
-  "c" #'comment-dwim
-  "g" #'beginning-of-buffer)
-
 (defun lkn/goto-matching-paren ()
   "Go to the matching parenthesis if on parenthesis."
   (interactive)
@@ -159,8 +154,17 @@
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
-   (cons "g" lkn/meow-g-command-map)
    '("G" . end-of-buffer)
+
+   '("gc" . comment-dwim)
+   '("gb" . meow-pop-to-mark)
+   '("gf" . meow-unpop-to-mark)
+   '("gB" . pop-global-mark)
+   '("gr" . xref-find-references)
+   '("gR" . xref-find-references-and-replace)
+   '("gd" . xref-find-definitions)
+   '("gD" . xref-find-definitions-other-window)
+
    '("h" . meow-left)
    '("H" . meow-left-expand)
    '("i" . meow-insert)
