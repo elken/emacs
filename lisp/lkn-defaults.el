@@ -537,6 +537,12 @@ The DWIM behaviour of this command is as follows:
 	([remap previous-error] . flymake-goto-prev-error))
   :hook (prog-mode . flymake-mode))
 
+(use-package outline
+  :ensure nil
+  :custom
+  (outline-minor-mode-highlight t)
+  (outline-minor-mode-cycle t))
+
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
 ;; Local Variables:
