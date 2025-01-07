@@ -27,6 +27,7 @@
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-edits nil)
+  (eglot-extend-to-xref t)
   :bind
   (:map eglot-mode-map
 	("C-c c a" . eglot-code-actions)
