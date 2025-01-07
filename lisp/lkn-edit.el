@@ -183,5 +183,8 @@
   (load (expand-file-name "combobulate/tests/combobulate-test-prelude.el" elpaca-repos-directory) t)
   (require 'combobulate-debug))
 
+(use-package expreg
+  :when (treesit-available-p))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
