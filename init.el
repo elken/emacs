@@ -123,7 +123,9 @@
   :diminish gcmh-mode
   :hook (emacs-startup . gcmh-mode)
   :config
-  (add-hook after-focus-change-function #'garbage-collect))
+  (add-function
+   :after after-focus-change-function
+   #'garbage-collect))
 
 (use-package exec-path-from-shell
   :demand t
@@ -156,7 +158,6 @@
 (require 'lkn-lsp)
 (require 'lkn-langs)
 (require 'lkn-ruby)
-(require 'lkn-racket)
 (require 'lkn-lisp)
 (require 'lkn-docs)
 (require 'lkn-completion)

@@ -506,7 +506,9 @@ The DWIM behaviour of this command is as follows:
 
   (add-hook 'window-selection-change-functions #'lkn/auto-revert-buffer)
   (add-hook 'window-buffer-change-functions #'lkn/auto-revert-buffer)
-  (add-hook 'after-focus-change-function #'lkn/auto-revert-buffers))
+  (add-function
+   :after after-focus-change-function
+   #'lkn/auto-revert-buffers))
 
 (use-package uniquify
   :ensure nil
