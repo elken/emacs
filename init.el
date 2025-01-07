@@ -114,6 +114,7 @@
 
 (use-package server
   :ensure nil
+  :after exec-path-from-shell
   :defer 1
   :config
   (unless (server-running-p)
