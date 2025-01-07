@@ -88,7 +88,8 @@
   (setq-default eglot-workspace-configuration
 		'((:solargraph . (:formatting t
 				  :diagnostics t))
-		  (:ruby-lsp . (:formatter (:enable t))))))
+		  (:ruby-lsp . (:linters ["rubocop"]
+				:experimentalFeaturesEnabled t)))))
 
 (use-package consult-xref-stack
   :ensure
