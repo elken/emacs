@@ -154,7 +154,6 @@
    '("e" . meow-next-word)
    '("E" . meow-next-symbol)
    '("f" . meow-find)
-   '("G" . end-of-buffer)
 
    '("gc" . comment-dwim)
    '("gb" . meow-pop-to-mark)
@@ -165,6 +164,7 @@
    '("gd" . xref-find-definitions)
    '("gD" . xref-find-definitions-other-window)
 
+   '("G" . meow-grab)
    '("h" . meow-left)
    '("H" . meow-left-expand)
    '("i" . meow-insert)
