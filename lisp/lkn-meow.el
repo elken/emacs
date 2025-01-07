@@ -144,6 +144,9 @@
    '("]" . meow-end-of-thing)
    '("%" . lkn/goto-matching-paren)
    '("=" . indent-region)
+   '("<" . beginning-of-buffer)
+   '(">" . end-of-buffer)
+
    '("a" . lkn/meow-append-after)
    '("A" . meow-open-below)
    '("b" . meow-back-word)
