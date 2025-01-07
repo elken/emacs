@@ -29,8 +29,8 @@
   (vertico-cycle t)
   (completion-in-region-function #'consult-completion-in-region)
   :custom-face
-  (vertico-quick1 ((t (:foreground unspecified :background unspecified :inverse t :inherit (warning bold)))))
-  (vertico-quick2 ((t (:foreground unspecified :background unspecified :inverse t :inherit (highlight bold)))))
+  (vertico-quick1 ((t (:foreground unspecified :background unspecified :inherit (outline-1 bold)))))
+  (vertico-quick2 ((t (:foreground unspecified :background unspecified :inherit (outline-2 bold)))))
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   :hook (vertico-mode . vertico-mouse-mode)
   :init
