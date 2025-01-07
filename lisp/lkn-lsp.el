@@ -27,6 +27,10 @@
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-edits nil)
+  :bind
+  (:map eglot-mode-map
+	("C-c c a" . eglot-code-actions)
+	("C-c c r" . eglot-rename))
   :hook
   ((ruby-mode ruby-ts-mode) . eglot-ensure)
   ((clojure-mode clojure-ts-mode) . eglot-ensure)
