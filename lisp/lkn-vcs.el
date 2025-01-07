@@ -102,6 +102,8 @@
   (setq forge-database-file (lkn/cache-dir "forge/forge-database.sqlite")
         forge-add-default-bindings nil
         forge-owned-accounts '(("elken")))
+  :config
+  (remove-hook 'forge-post-mode-hook 'turn-on-flyspell)
   :bind
   ((:map forge-topics-mode-map
          ("q" . kill-current-buffer))
