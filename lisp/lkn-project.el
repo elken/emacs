@@ -25,8 +25,10 @@
   :ensure nil
   :demand t
   :custom
+  (project-vc-extra-root-markers '(".project"))
   (project-switch-commands
    '((project-find-file "Find file" ?f)
+     (project-dired "Dired" ?d)
      (lkn/vterm-toggle "Terminal" ?t)
      (magit-project-status "Magit" ?m)
      (consult-ripgrep "Search" ?s)))
