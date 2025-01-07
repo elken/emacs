@@ -373,5 +373,21 @@ We do this by disabling all other themes then loading ours."
   (:map global-map
 	("M-o" . ace-window)))
 
+(use-package spacious-padding
+  :when (display-graphic-p)
+  :custom
+  (spacious-padding-subtle-mode-line
+   '(:mode-line-active tab-bar
+     :mode-line-inactive shadow))
+  (spacious-padding-widths
+   '(:internal-border-width 10
+     :header-line-width 4
+     :mode-line-width 6
+     :tab-width 4
+     :right-divider-width 30
+     :scroll-bar-width 8
+     :fringe-width 8))
+  :hook (elpaca-after-init . spacious-padding-mode))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
