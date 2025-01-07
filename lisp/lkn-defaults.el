@@ -391,6 +391,8 @@ The DWIM behaviour of this command is as follows:
   (select-enable-clipboard t)
   (compilation-scroll-output t)
   (confirm-nonexistent-file-or-buffer nil)
+  (minibuffer-default-prompt-format " [%s]")
+
   ;; Backups
   (backup-directory-alist
    '(("." . (lkn/cache-dir "backups"))))
