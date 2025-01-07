@@ -519,7 +519,10 @@ The DWIM behaviour of this command is as follows:
 (use-package xref
   :ensure nil
   :custom
-  (xref-search-program 'ripgrep))
+  (xref-search-program 'ripgrep)
+  (xref-show-definitions-function #'xref-show-definitions-completing-read)
+  (xref-show-xrefs-function #'xref-show-definitions-buffer)
+  (xref-file-name-display 'project-relative))
 
 (use-package flymake
   :ensure nil
