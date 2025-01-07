@@ -174,10 +174,13 @@
 
 (use-package orderless
   :custom
-  (completion-styles '(orderless partial-completion))
-  (completion-category-overrides '((file (styles partial-completion))
+  (completion-pcm-leading-wildcard t)
+  (completion-styles '(basic substring initials flex orderless partial-completion))
+  (completion-category-overrides '((file (styles . (basic partial-completion orderless)))
+				   (imenu (styles . (basic substring orderless)))
 				   (eglot (styles orderless))
 				   (eglot-capf (styles orderless))))
+  (orderless-matching-styles '(orderless-prefixes orderless-regexp))
   (orderless-component-separator "[ &]")
   (completion-category-defaults nil))
 
@@ -235,3 +238,6 @@
 
 (provide 'lkn-completion)
 ;;; lkn-completion.el ends here
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars unresolved)
+;; End:
