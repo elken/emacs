@@ -94,11 +94,71 @@
         ((looking-at "\\s\)") (forward-char) (backward-sexp 1))
         ((looking-back "\\s\(" 1) (backward-char) (forward-sexp 1))))
 
+(defun lkn/sp-wrap-with-char (&optional char)
+  "Wrap current expression or region with CHAR."
+  (interactive "cEnter wrapping char: ")
+  (sp-wrap-with-pair (string char)))
+
 (defun meow-setup ()
   "General setup function for everything meow."
   (require 'meow)
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (setq meow--kbd-delete-char "<deletechar>")
+
+  ;; Credit to
+  ;; <https://github.com/certainty/madmacs/blob/meow/modules/keys/madmacs-keys-meow.el>
+  ;; for meow-sexp-mode
+
+  (defmacro define-paredit-with-selection (original-cmd new-cmd)
+    "Create a new command NEW-CMD that runs ORIGINAL-CMD, extending the
+selection if not active."
+    `(defun ,new-cmd ()
+       (interactive)
+       (if (region-active-p)
+         (call-interactively #',original-cmd)
+         (set-mark-command nil)
+         (call-interactively #',original-cmd))))
+
+  (define-paredit-with-selection paredit-forward paredit-forward-w-selection)
+  (define-paredit-with-selection paredit-forward-down paredit-forward-down-w-selection)
+  (define-paredit-with-selection paredit-backward paredit-backward-w-selection)
+  (define-paredit-with-selection paredit-backward-up paredit-backward-up-w-selection)
+
+  (defvar-keymap meow-sexp-map
+    :doc "Keymap for meow sexp state")
+
+  (meow-define-state sexp
+    "Meow state for interacting with sexps"
+    :lighter " [λ]"
+    :keymap meow-sexp-map)
+
+  (meow-define-keys 'sexp
+    '("<escape>" . meow-normal-mode)
+    '("/" . paredit-reindent-defun)
+    '("|" . paredit-split-sexp)
+    '(">" . paredit-splice-sexp)
+    '("<" . paredit-convolute-sexp)
+    '(";" . paredit-comment-dwim)
+    '("." . paredit-focus-on-defun)
+    '("l" . paredit-forward-w-selection)
+    '("L" . paredit-forward-down-w-selection)
+    '("h" . paredit-backward-w-selection)
+    '("H" . paredit-backward-up-w-selection)
+    '("j" . meow-next)
+    '("k" . meow-prev)
+    '("N" . paredit-backward-slurp-sexp)
+    '("n" . paredit-forward-slurp-sexp)
+    '("b" . paredit-forward-barf-sexp)
+    '("B" . paredit-backward-barf-sexp)
+    '("s" . paredit-kill-region)
+    '("S" . paredit-kill)
+    '("d" . paredit-delete-char)
+    '("D" . paredit-backward-delete)
+    '("M" . paredit-join-sexps)
+    '("R" . paredit-raise-sexp)
+    '("U" . paredit-unescape-string)
+    '("u" . meow-undo))
+
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev)
@@ -147,6 +207,8 @@
    '("=" . indent-region)
    '("<" . beginning-of-buffer)
    '(">" . end-of-buffer)
+   '("(" . meow-sexp-mode)
+   '(")" . meow-sexp-mode)
 
    '("a" . lkn/meow-append-after)
    '("A" . meow-open-below)
