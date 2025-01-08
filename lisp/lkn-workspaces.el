@@ -42,7 +42,7 @@
       "8" "switch to 8"
       "9" "switch to 9"
       "0" "switch to 10"))
-  
+
   (with-eval-after-load 'meow
     (defvar-keymap lkn/perspective-map
       "n" #'persp-next
@@ -71,7 +71,7 @@
     (meow-leader-define-key
      '("," . persp-switch-to-buffer*)
      (cons "TAB" lkn/perspective-map)))
-  
+
   ;; Inspired by <https://github.com/bbatsov/persp-projectile>
   (defadvice project-switch-project (around project-persp-switch-project (project) activate)
     "Switch to perspective for project."
@@ -80,7 +80,7 @@
            (persp (gethash name (perspectives-hash)))
            (command (if (symbolp project-switch-commands)
                         project-switch-commands
-		      (project--switch-project-command)))
+                      (project--switch-project-command)))
            (project-current-directory-override project))
       (persp-switch name)
       (unless (equal persp (persp-curr))
@@ -92,17 +92,17 @@ is created in a known project."
     (with-selected-frame frame
       (when (project-current)
         (persp-rename (project-name (project-current)))
-	(setq-local default-directory (project-root (project-current))))))
+        (setq-local default-directory (project-root (project-current))))))
 
   ;; Handle vterm buffer scrollback
 
   ;; First we adjust what we count as an interesting buffer
   (defun persp--state-interesting-buffer-p (buffer)
     (and (buffer-name buffer)
-	 (or
-	  (string-match "vterm\\*" (buffer-name buffer))
-	  (not (string-match "^[[:space:]]*\\*" (buffer-name buffer))))
-	 (or (buffer-file-name buffer)
+         (or
+          (string-match "vterm\\*" (buffer-name buffer))
+          (not (string-match "^[[:space:]]*\\*" (buffer-name buffer))))
+         (or (buffer-file-name buffer)
              (with-current-buffer buffer (memq major-mode '(dired-mode vterm-mode))))))
 
 
@@ -122,17 +122,17 @@ is created in a known project."
     (cl-loop for buffer in (buffer-list)
              if (persp--state-interesting-buffer-p buffer)
              collect (or (buffer-file-name buffer)
-			 (with-current-buffer buffer ; dired special case
-			   (cond
-			    ((eq major-mode 'dired-mode) default-directory)
-			    ((eq major-mode 'vterm-mode)
-			     (progn
-			       (require 'vterm)
-			       (goto-char (point-max))
-			       (vterm-previous-prompt 1)
-			       (previous-line persp-vterm-prompt-length)
-			       (end-of-line)
-			       `(,(buffer-name) ,default-directory ,(buffer-substring (point-min) (point))))))))))
+                         (with-current-buffer buffer ; dired special case
+                           (cond
+                            ((eq major-mode 'dired-mode) default-directory)
+                            ((eq major-mode 'vterm-mode)
+                             (progn
+                               (require 'vterm)
+                               (goto-char (point-max))
+                               (vterm-previous-prompt 1)
+                               (previous-line persp-vterm-prompt-length)
+                               (end-of-line)
+                               `(,(buffer-name) ,default-directory ,(buffer-substring (point-min) (point))))))))))
 
   ;; Last we have to update the loader to handle how we want to create
   ;; the new buffer.
@@ -171,17 +171,17 @@ restored."
       ;; open all files in a temporary perspective to avoid polluting "main"
       (persp-switch tmp-persp-name)
       (cl-loop for file in (persp--state-complete-files state-complete) do
-	       (cond
-		((stringp file)
-		 (when (file-exists-p file)
-		   (find-file file)))
-		((listp file)
-		 (cl-destructuring-bind (name dir contents) file
-		   (let ((default-directory dir))
-		     (require 'vterm)
-		     (with-current-buffer (get-buffer-create name)
-		       (insert contents)
-		       (vterm-mode)))))))
+               (cond
+                ((stringp file)
+                 (when (file-exists-p file)
+                   (find-file file)))
+                ((listp file)
+                 (cl-destructuring-bind (name dir contents) file
+                   (let ((default-directory dir))
+                     (require 'vterm)
+                     (with-current-buffer (get-buffer-create name)
+                       (insert contents)
+                       (vterm-mode)))))))
       ;; iterate over the frames
       (cl-loop for frame in (persp--state-complete-frames state-complete) do
                (cl-incf frame-count)
@@ -189,7 +189,7 @@ restored."
                      (frame-persp-table (persp--state-frame-v2-persps frame))
                      (frame-persp-order (reverse (persp--state-frame-v2-order frame)))
                      (frame-persp-merge-list (persp--state-frame-v2-merge-list frame)))
-		 (with-selected-frame emacs-frame
+                 (with-selected-frame emacs-frame
                    ;; restore the merge list
                    (set-frame-parameter emacs-frame 'persp-merge-list frame-persp-merge-list)
                    ;; iterate over the perspectives in the frame in the appropriate order
@@ -204,8 +204,8 @@ restored."
                               ;; windows without it.
                               (split-window-horizontally)
                               (window-state-put (persp--state-single-windows state-single)
-						(frame-root-window emacs-frame)
-						'safe))))))
+                                                (frame-root-window emacs-frame)
+                                                'safe))))))
       ;; cleanup
       (persp-kill tmp-persp-name))
     ;; after hook

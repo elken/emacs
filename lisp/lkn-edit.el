@@ -31,42 +31,42 @@
     (defun meow-avy-goto-char (char &optional arg expand)
       "Goto using avy"
       (interactive (list (read-char "goto: " t)
-			 current-prefix-arg))
+                         current-prefix-arg))
       (let* ((beg (point))
              (end (save-mark-and-excursion
                     (avy-goto-char char arg)
                     (point))))
-	(thread-first
-	  (meow--make-selection '(select . avy)
-				beg end expand)
-	  (meow--select)))
+        (thread-first
+          (meow--make-selection '(select . avy)
+                                beg end expand)
+          (meow--select)))
       (setq meow--last-avy-char char))
 
     (defun meow-avy-goto-char-expand (char &optional arg)
       "Goto using avy expand"
       (interactive (list (read-char "Expand goto: " t)
-			 current-prefix-arg))
+                         current-prefix-arg))
       (meow-avy-goto-char char arg t))
 
     (defun meow--add-beacons-for-avy ()
       "Add beacon for avy movement"
       (let ((ch-str (if (eq meow--last-avy-char 13)
-			"\n"
+                        "\n"
                       (char-to-string meow--last-avy-char))))
-	(save-restriction
-	  (meow--narrow-secondary-selection)
-	  (let ((orig (point))
-		(case-fold-search t))
+        (save-restriction
+          (meow--narrow-secondary-selection)
+          (let ((orig (point))
+                (case-fold-search t))
             (save-mark-and-excursion
               (goto-char (point-max))
               (while (search-backward ch-str nil t)
-		(unless (= (point) orig)
-		  (meow--beacon-add-overlay-at-point (point)))))))
-	(meow--beacon-shrink-selection)))
+                (unless (= (point) orig)
+                  (meow--beacon-add-overlay-at-point (point)))))))
+        (meow--beacon-shrink-selection)))
 
     (defun meow--beacon-update-overlays-custom ()
       (when (meow--beacon-inside-secondary-selection)
-	(let* ((ex (car (meow--selection-type)))
+        (let* ((ex (car (meow--selection-type)))
                (type (cdr (meow--selection-type))))
           (cl-case type
             ((avy) (meow--add-beacons-for-avy))))))
@@ -79,15 +79,15 @@
   :bind
   (("C-c s" . tempel-complete)
    (:map tempel-map
-	 ([tab] . tempel-next)
-	 ([backtab] . tempel-previous)))
+         ([tab] . tempel-next)
+         ([backtab] . tempel-previous)))
   :config
   (defun lkn-snippets-include (elt)
     (when (eq (car-safe elt) 'i)
       (if-let (template (alist-get (cadr elt) (tempel--templates)))
-	  (cons 'l template)
-	(message "Template %s not found" (cadr elt))
-	nil)))
+          (cons 'l template)
+        (message "Template %s not found" (cadr elt))
+        nil)))
 
   (add-to-list 'tempel-user-elements #'lkn-snippets-include))
 
@@ -99,15 +99,15 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					    :lang 'embedded-template
-					    :ts-mode 'erb-ts-mode
-					    :remap 'web-mode
-					    :url "https://github.com/tree-sitter/tree-sitter-embedded-template"
-					    :ext "\\.erb\\"))
+                                            :lang 'embedded-template
+                                            :ts-mode 'erb-ts-mode
+                                            :remap 'web-mode
+                                            :url "https://github.com/tree-sitter/tree-sitter-embedded-template"
+                                            :ext "\\.erb\\"))
   (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-					  :lang 'jsdoc
-					  :ts-mode 'js-ts-mode
-					  :url "https://github.com/tree-sitter/tree-sitter-jsdoc"))
+                                          :lang 'jsdoc
+                                          :ts-mode 'js-ts-mode
+                                          :url "https://github.com/tree-sitter/tree-sitter-jsdoc"))
   (global-treesit-auto-mode))
 
 (use-package elixir-ts-mode
@@ -156,16 +156,16 @@
 
   ;; Replace the built-in rubocop to use our config
   (setf (alist-get 'rubocop apheleia-formatters)
-	'("apheleia-from-project-root"
-	  ".rubocop.yml"
-	  "bundle"
-	  "exec"
-	  "rubocop"
-	  "-a"
-	  "--stderr"
-	  "--stdin" filepath
-	  "--format" "quiet"
-	  "--fail-level" "fatal"))
+        '("apheleia-from-project-root"
+          ".rubocop.yml"
+          "bundle"
+          "exec"
+          "rubocop"
+          "-a"
+          "--stderr"
+          "--stdin" filepath
+          "--format" "quiet"
+          "--fail-level" "fatal"))
 
   ;; Add Ruby file types to use rubocop formatter
   (setf (alist-get 'ruby-mode apheleia-mode-alist)

@@ -54,14 +54,14 @@
                           'lkn-tab-bar-selected-workspace-tab
                         'lkn-tab-bar-workspace-tab)))
             (push
-	     (concat
+             (concat
               (propertize (format " %d" (1+ (cl-position elm persps)))
                           'face
                           `(:inherit ,face
                             :weight bold))
               (propertize (format " %s " elm)
                           'face `,face))
-	     acc)))
+             acc)))
         persps
         `(,(propertize (persp-current-name) 'invisible t)))))))
 

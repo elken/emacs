@@ -75,11 +75,11 @@ Lisp programs can force the template by setting KEYS to a string."
            (or (org-contextualize-keys
                 (org-capture-upgrade-templates org-capture-templates)
                 org-capture-templates-contexts)
-	       '(("t" "Task" entry (file+headline "" "Tasks")
+               '(("t" "Task" entry (file+headline "" "Tasks")
                   "* TODO %?\n  %u\n  %a")))))
       (if keys
           (or (assoc keys org-capture-templates)
-	      (error "No capture template referred to by \"%s\" keys" keys))
+              (error "No capture template referred to by \"%s\" keys" keys))
         (org-mks org-capture-templates
                  "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
                  "Template key: "
@@ -117,28 +117,28 @@ is selected, only the bare key is returned."
             current)
         (unwind-protect
             (catch 'exit
-	      (while t
+              (while t
                 (setq-local evil-normal-state-cursor (list nil))
                 (erase-buffer)
                 (insert title "\n\n")
                 (let ((des-keys nil)
-		      (allowed-keys '("\C-g"))
-		      (tab-alternatives '("\s" "\t" "\r"))
-		      (cursor-type nil))
+                      (allowed-keys '("\C-g"))
+                      (tab-alternatives '("\s" "\t" "\r"))
+                      (cursor-type nil))
                   ;; Populate allowed keys and descriptions keys
                   ;; available with CURRENT selector.
                   (let ((re (format "\\`%s\\(.\\)\\'"
                                     (if current (regexp-quote current) "")))
                         (prefix (if current (concat current " ") "")))
                     (dolist (entry table)
-		      (pcase entry
+                      (pcase entry
                         ;; Description.
                         (`(,(and key (pred (string-match re))) ,desc)
                          (let ((k (match-string 1 key)))
                            (push k des-keys)
                            ;; Keys ending in tab, space or RET are equivalent.
                            (if (member k tab-alternatives)
-			       (push "\t" allowed-keys)
+                               (push "\t" allowed-keys)
                              (push k allowed-keys))
                            (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) (propertize "›" 'face 'font-lock-comment-face) "  " desc "…" "\n")))
                         ;; Usable entry.
@@ -151,17 +151,17 @@ is selected, only the bare key is returned."
                   (when specials
                     (insert "─────────────────────────\n")
                     (pcase-dolist (`(,key ,description) specials)
-		      (insert (format "%s   %s\n" (propertize key 'face '(bold nerd-icons-red)) description))
-		      (push key allowed-keys)))
+                      (insert (format "%s   %s\n" (propertize key 'face '(bold nerd-icons-red)) description))
+                      (push key allowed-keys)))
                   ;; Display UI and let user select an entry or
                   ;; a sub-level prefix.
                   (goto-char (point-min))
                   (unless (pos-visible-in-window-p (point-max))
                     (org-fit-window-to-buffer))
-		  ;; When we call this via our popup script, set the windows up
-		  (when (frame-parameter nil 'popup-frame)
-		    (delete-other-windows)
-		    (hide-mode-line-mode))
+                  ;; When we call this via our popup script, set the windows up
+                  (when (frame-parameter nil 'popup-frame)
+                    (delete-other-windows)
+                    (hide-mode-line-mode))
                   (let ((pressed (org--mks-read-key allowed-keys prompt nil)))
                     (setq current (concat current pressed))
                     (cond
@@ -202,9 +202,9 @@ is selected, only the bare key is returned."
       (setq doct-templates (mapcar (lambda (template)
                                      (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
                                                  (spec (plist-get (plist-get props :doct) :icon)))
-				       (setf (nth 1 template) (concat (doct-icon-declaration-to-icon spec)
-								      "\t"
-								      (nth 1 template))))
+                                       (setf (nth 1 template) (concat (doct-icon-declaration-to-icon spec)
+                                                                      "\t"
+                                                                      (nth 1 template))))
                                      template)
                                    templates))))
 
@@ -238,7 +238,7 @@ is selected, only the bare key is returned."
                  :function (lambda ()
                              (org-journal-new-entry t)
                              (unless (eq org-journal-file-type 'daily)
-			       (org-narrow-to-subtree))
+                               (org-narrow-to-subtree))
                              (goto-char (point-max)))
                  :template "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?"
                  :jump-to-captured t
@@ -279,7 +279,7 @@ is selected, only the bare key is returned."
 
 ;; We basically modify it to include this[1] patch without using org
 ;; master as there’s a bug there I don’t have time/patience to debug.
-;; 
+;;
 ;; [1] https://git.savannah.gnu.org/cgit/emacs/org-mode.git/commit/?id=2ade16bbc
 (use-package org
   :ensure nil
@@ -344,17 +344,17 @@ is selected, only the bare key is returned."
       (let ((first-heading
              (save-excursion
                (re-search-forward org-outline-regexp-bol nil t))))
-	(when (re-search-forward (format "^#\\+%s:" property) nil t)
+        (when (re-search-forward (format "^#\\+%s:" property) nil t)
           (point)))))
 
   (defun lkn/has-time-property-p (property)
     "Gets the position of PROPETY if it exists, nil if not and empty string if it's undefined."
     (when-let ((pos (elken/find-time-property property)))
       (save-excursion
-	(goto-char pos)
-	(if (and (looking-at-p " ")
-		 (progn (forward-char)
-			(org-at-timestamp-p 'lax)))
+        (goto-char pos)
+        (if (and (looking-at-p " ")
+                 (progn (forward-char)
+                        (org-at-timestamp-p 'lax)))
             pos
           ""))))
 
@@ -363,12 +363,12 @@ is selected, only the bare key is returned."
 Can pass the position as POS if already computed."
     (when-let ((pos (or pos (elken/find-time-property property))))
       (save-excursion
-	(goto-char pos)
-	(if (looking-at-p " ")
+        (goto-char pos)
+        (if (looking-at-p " ")
             (forward-char)
           (insert " "))
-	(delete-region (point) (line-end-position))
-	(let* ((now (format-time-string "<%Y-%m-%d %H:%M>")))
+        (delete-region (point) (line-end-position))
+        (let* ((now (format-time-string "<%Y-%m-%d %H:%M>")))
           (insert now)))))
 
   (defun lkn/org-mode-update-properties ()
@@ -391,40 +391,40 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
     (let ((spec (org-fold-core-get-folding-spec-from-alias spec-or-alias)))
       (when spec (org-fold-core--check-spec spec))
       (with-silent-modifications
-	(org-with-wide-buffer
-	 ;; Arrange face property of newlines after all the folds
-	 ;; between FROM and TO to match the first character before the
-	 ;; fold; not the last as per Emacs defaults.  This makes
-	 ;; :extend faces span past the ellipsis.
-	 ;; See bug#65896.
-	 (if flag ; folding
+        (org-with-wide-buffer
+         ;; Arrange face property of newlines after all the folds
+         ;; between FROM and TO to match the first character before the
+         ;; fold; not the last as per Emacs defaults.  This makes
+         ;; :extend faces span past the ellipsis.
+         ;; See bug#65896.
+         (if flag ; folding
              (when (equal ?\n (char-after to))
                (put-text-property to (1+ to) 'face (get-text-property from 'face)))
            ;; unfolding
            (dolist (region (org-fold-core-get-regions :from from :to to :specs spec))
              (when (equal ?\n (char-after (cadr region)))
                (font-lock-flush (cadr region) (1+ (cadr region))))))
-	 (when (eq org-fold-core-style 'overlays)
+         (when (eq org-fold-core-style 'overlays)
            (if org-fold-core--keep-overlays
                (mapc
-		(lambda (ov)
+                (lambda (ov)
                   (when (or (not spec)
                             (eq spec (overlay-get ov 'invisible)))
                     (when (and org-fold-core--isearch-active
                                (overlay-get ov 'invisible)
                                (org-fold-core-get-folding-spec-property
-				(overlay-get ov 'invisible) :isearch-open))
+                                (overlay-get ov 'invisible) :isearch-open))
                       (when (overlay-get ov 'invisible)
-			(overlay-put ov 'org-invisible (overlay-get ov 'invisible)))
+                        (overlay-put ov 'org-invisible (overlay-get ov 'invisible)))
                       (overlay-put ov 'invisible nil)
                       (when org-fold-core--isearch-active
-			(cl-pushnew ov org-fold-core--isearch-overlays)))))
-		(overlays-in from to))
+                        (cl-pushnew ov org-fold-core--isearch-overlays)))))
+                (overlays-in from to))
              (remove-overlays from to 'org-invisible spec)
              (remove-overlays from to 'invisible spec)))
-	 (if flag
-	     (if (not spec)
-		 (error "Calling `org-fold-core-region' with missing SPEC")
+         (if flag
+             (if (not spec)
+                 (error "Calling `org-fold-core-region' with missing SPEC")
                (if (eq org-fold-core-style 'overlays)
                    ;; Use `front-advance' since text right before to the beginning of
                    ;; the overlay belongs to the visible line than to the contents.
@@ -440,10 +440,10 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
                      (overlay-put o 'priority (length (member spec (org-fold-core-folding-spec-list))))
                      (overlay-put o 'isearch-open-invisible #'org-fold-core--isearch-show)
                      (overlay-put o 'isearch-open-invisible-temporary #'org-fold-core--isearch-show-temporary))
-		 (put-text-property from to (org-fold-core--property-symbol-get-create spec) spec)
-		 (put-text-property from to 'isearch-open-invisible #'org-fold-core--isearch-show)
-		 (put-text-property from to 'isearch-open-invisible-temporary #'org-fold-core--isearch-show-temporary)
-		 (when (memql 'grab-invisible org-fold-core--optimise-for-huge-buffers)
+                 (put-text-property from to (org-fold-core--property-symbol-get-create spec) spec)
+                 (put-text-property from to 'isearch-open-invisible #'org-fold-core--isearch-show)
+                 (put-text-property from to 'isearch-open-invisible-temporary #'org-fold-core--isearch-show-temporary)
+                 (when (memql 'grab-invisible org-fold-core--optimise-for-huge-buffers)
                    ;; If the SPEC has highest priority, assign it directly
                    ;; to 'invisible property as well.  This is done to speed
                    ;; up Emacs redisplay on huge (Mbs) folded regions where
@@ -453,17 +453,17 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
            (if (not spec)
                (mapc (lambda (spec) (org-fold-core-region from to nil spec)) (org-fold-core-folding-spec-list))
              (when (and (memql 'grab-invisible org-fold-core--optimise-for-huge-buffers)
-			(eq org-fold-core-style 'text-properties))
+                        (eq org-fold-core-style 'text-properties))
                (when (eq spec (caar org-fold-core--specs))
-		 (let ((pos from))
+                 (let ((pos from))
                    (while (< pos to)
                      (if (eq spec (get-text-property pos 'invisible))
-			 (let ((next (org-fold-core-next-folding-state-change spec pos to)))
+                         (let ((next (org-fold-core-next-folding-state-change spec pos to)))
                            (remove-text-properties pos next '(invisible t))
                            (setq pos next))
                        (setq pos (next-single-char-property-change pos 'invisible nil to)))))))
              (when (eq org-fold-core-style 'text-properties)
-	       (remove-text-properties from to (list (org-fold-core--property-symbol-get-create spec) nil))))))))))
+               (remove-text-properties from to (list (org-fold-core--property-symbol-get-create spec) nil))))))))))
 
 (use-package org-appear
   :after org
@@ -497,31 +497,31 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
     `(defun ,(intern (format "popup-frame-%s" command)) ()
        (interactive)
        (let* ((display-buffer-alist '(("")
-				      (display-buffer-full-frame)))
-	      (bundle-identifier (when IS-MAC
-				   (ns-do-applescript "tell application \"System Events\" to get bundle identifier of first process whose frontmost is true")))
-	      (frame (make-frame
-		      `((title . ,(format "popup-frame-%s" ',command))
-			(window-system . ns)
-			(menu-bar-lines . 1)
-			(transient . t)
-			(height . 25)
-			(width . 70)
-			(popup-frame . t)
-			(bundle-identifier . ,bundle-identifier)))))
-	 (select-frame-set-input-focus frame)
-	 (switch-to-buffer " popup-frame-hidden-buffer")
-	 (condition-case nil
+                                      (display-buffer-full-frame)))
+              (bundle-identifier (when IS-MAC
+                                   (ns-do-applescript "tell application \"System Events\" to get bundle identifier of first process whose frontmost is true")))
+              (frame (make-frame
+                      `((title . ,(format "popup-frame-%s" ',command))
+                        (window-system . ns)
+                        (menu-bar-lines . 1)
+                        (transient . t)
+                        (height . 25)
+                        (width . 70)
+                        (popup-frame . t)
+                        (bundle-identifier . ,bundle-identifier)))))
+         (select-frame-set-input-focus frame)
+         (switch-to-buffer " popup-frame-hidden-buffer")
+         (condition-case nil
              (progn
-	       (call-interactively ',command)
-	       (delete-other-windows)
-	       (hide-mode-line-mode))
-	   ((quit error user-error)
-	    (progn
-	      (when bundle-identifier
-		(ns-do-applescript (format "tell application id \"%s\" to activate" bundle-identifier)))
-	      (delete-frame frame)))))))
-  
+               (call-interactively ',command)
+               (delete-other-windows)
+               (hide-mode-line-mode))
+           ((quit error user-error)
+            (progn
+              (when bundle-identifier
+                (ns-do-applescript (format "tell application id \"%s\" to activate" bundle-identifier)))
+              (delete-frame frame)))))))
+
   (popup-frame-define org-capture)
   (add-hook 'org-capture-after-finalize-hook #'popup-frame-delete))
 
@@ -543,11 +543,11 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
   (defun lkn/toc-org-inhibit-scrolling-a (fn &rest args)
     "Prevent the jarring scrolling that occurs when ToC is regenerated."
     (let ((p (set-marker (make-marker) (point)))
-	  (s (window-start)))
+          (s (window-start)))
       (prog1 (apply fn args)
-	(goto-char p)
-	(set-window-start nil s t)
-	(set-marker p nil))))
+        (goto-char p)
+        (set-window-start nil s t)
+        (set-marker p nil))))
 
   (advice-add 'toc-org-insert-toc :around #'lkn/toc-org-inhibit-scrolling-a))
 

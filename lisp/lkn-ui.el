@@ -32,57 +32,57 @@ ARGS are style properties that affect the whole tag, with special handling for:
   :icon-foreground - foreground color for the icon part
   :icon-background - background color for the icon part"
     (let* ((style (apply #'svg-lib-style (svg-lib-style-default--get) args))
-	   (font-family (plist-get style :font-family))
-	   (base-font-size (plist-get style :font-size))
-	   (icon-font-size (* base-font-size 1.5))
-	   (text-font-size base-font-size)
-	   (font-weight (plist-get style :font-weight))
-	   (text-foreground (or (plist-get args :foreground)
-				(plist-get style :foreground)))
-	   (text-background (or (plist-get args :background)
-				(plist-get style :background)))
-	   (icon-foreground (or (plist-get args :icon-foreground)
-				text-foreground))
-	   (icon-background (or (plist-get args :icon-background)
-				text-background))
-	   (txt-char-width (window-font-width))
-	   (txt-char-height (window-font-height))
-	   (icon-width (* txt-char-width 2))
-	   (text-width (* (+ (length text) 1) txt-char-width))
-	   (total-width (+ icon-width text-width))
-	   (height txt-char-height)
-	   (radius 3)
-	   (svg (svg-create total-width height)))
+           (font-family (plist-get style :font-family))
+           (base-font-size (plist-get style :font-size))
+           (icon-font-size (* base-font-size 1.5))
+           (text-font-size base-font-size)
+           (font-weight (plist-get style :font-weight))
+           (text-foreground (or (plist-get args :foreground)
+                                (plist-get style :foreground)))
+           (text-background (or (plist-get args :background)
+                                (plist-get style :background)))
+           (icon-foreground (or (plist-get args :icon-foreground)
+                                text-foreground))
+           (icon-background (or (plist-get args :icon-background)
+                                text-background))
+           (txt-char-width (window-font-width))
+           (txt-char-height (window-font-height))
+           (icon-width (* txt-char-width 2))
+           (text-width (* (+ (length text) 1) txt-char-width))
+           (total-width (+ icon-width text-width))
+           (height txt-char-height)
+           (radius 3)
+           (svg (svg-create total-width height)))
 
       (let ((clip-path (svg-clip-path svg :id "rounded-corners")))
-	(svg-rectangle clip-path 0 0 total-width height
-		       :rx radius))
+        (svg-rectangle clip-path 0 0 total-width height
+                       :rx radius))
 
       (svg-rectangle svg 0 0 icon-width height
-		     :fill icon-background
-		     :clip-path "url(#rounded-corners)")
+                     :fill icon-background
+                     :clip-path "url(#rounded-corners)")
 
       (svg-rectangle svg icon-width 0 text-width height
-		     :fill text-background
-		     :clip-path "url(#rounded-corners)")
+                     :fill text-background
+                     :clip-path "url(#rounded-corners)")
 
       (svg-text svg icon
-		:font-family font-family
-		:font-weight font-weight
-		:font-size icon-font-size
-		:fill icon-foreground
-		:x (/ icon-width 2)
-		:y (* height 0.82)
-		:text-anchor "middle")
+                :font-family font-family
+                :font-weight font-weight
+                :font-size icon-font-size
+                :fill icon-foreground
+                :x (/ icon-width 2)
+                :y (* height 0.82)
+                :text-anchor "middle")
 
       (svg-text svg text
-		:font-family font-family
-		:font-weight font-weight
-		:font-size text-font-size
-		:fill text-foreground
-		:x (+ icon-width (/ text-width 2))
-		:y (* height 0.82)
-		:text-anchor "middle")
+                :font-family font-family
+                :font-weight font-weight
+                :font-size text-font-size
+                :fill text-foreground
+                :x (+ icon-width (/ text-width 2))
+                :y (* height 0.82)
+                :text-anchor "middle")
 
       (svg-lib--image svg :ascent 'center)))
 
@@ -91,53 +91,53 @@ ARGS are style properties that affect the whole tag, with special handling for:
   (defun svg-tag-make-with-cache (tag &rest args)
     (with-memoization (gethash `(,(substring-no-properties tag) ,@args) svg-tag-cache)
       (let* ((tag (string-trim tag))
-	     (beg (or (plist-get args :beg) 0))
-	     (end (or (plist-get args :end) nil))
-	     (args (svg-tag--plist-delete args 'font-weight)))
-	(apply #'svg-lib-tag (substring tag beg end) nil
-	       :font-weight 'regular
-	       args))))
+             (beg (or (plist-get args :beg) 0))
+             (end (or (plist-get args :end) nil))
+             (args (svg-tag--plist-delete args 'font-weight)))
+        (apply #'svg-lib-tag (substring tag beg end) nil
+               :font-weight 'regular
+               args))))
 
   (defun svg-nerdfont-tag-make-with-cache (icon tag &rest args)
     (with-memoization (gethash `(,(substring-no-properties icon) ,(substring-no-properties tag) ,@args) svg-tag-cache)
       (let* ((tag (string-trim tag))
-	     (beg (or (plist-get args :beg) 0))
-	     (end (or (plist-get args :end) nil))
-	     (args (svg-tag--plist-delete args 'font-weight)))
-	(apply #'svg-lib-nerdfont-tag icon (substring tag beg end)
-	       :font-weight 'regular
-	       args))))
+             (beg (or (plist-get args :beg) 0))
+             (end (or (plist-get args :end) nil))
+             (args (svg-tag--plist-delete args 'font-weight)))
+        (apply #'svg-lib-nerdfont-tag icon (substring tag beg end)
+               :font-weight 'regular
+               args))))
   :custom
   ;; TODO: CRM457-2332: Test
   ;; :nocov:
   (svg-tag-tags
    '(("TODO:" . ((lambda (tag)
-		   (svg-tag-make-with-cache
-		    "TODO"
-		    :foreground (cdr (assoc "TODO" hl-todo-keyword-faces))))))
+                   (svg-tag-make-with-cache
+                    "TODO"
+                    :foreground (cdr (assoc "TODO" hl-todo-keyword-faces))))))
      (":nocov:" . ((lambda (tag)
-		     (svg-nerdfont-tag-make-with-cache
-		      (nerd-icons-faicon "nf-fae-ruby") "SimpleCov ignore"
-		      :font-weight 900
-		      :background (doom-color 'bg-alt)
-		      :icon-background "white"
-		      :icon-foreground "#9b111e"))))
+                     (svg-nerdfont-tag-make-with-cache
+                      (nerd-icons-faicon "nf-fae-ruby") "SimpleCov ignore"
+                      :font-weight 900
+                      :background (doom-color 'bg-alt)
+                      :icon-background "white"
+                      :icon-foreground "#9b111e"))))
      ("CRM457-[0-9]+:" . ((lambda (tag)
-			    (svg-nerdfont-tag-make-with-cache
-			     (nerd-icons-mdicon "nf-md-jira") tag
-			     :font-weight 900
-			     :background (doom-color 'bg-alt)
-			     :icon-background "white"
-			     :icon-foreground "#0052CC"
-			     :end -1))
-			  (lambda (&rest args)
-			    (interactive)
-			    (when-let ((code (substring-no-properties
-					      (thing-at-point 'symbol))))
-			      (when jiralib-url
-				(browse-url-default-browser
-				 (url-recreate-url
-				  (url-generic-parse-url (concat jiralib-url "/browse/" code))))))))))))
+                            (svg-nerdfont-tag-make-with-cache
+                             (nerd-icons-mdicon "nf-md-jira") tag
+                             :font-weight 900
+                             :background (doom-color 'bg-alt)
+                             :icon-background "white"
+                             :icon-foreground "#0052CC"
+                             :end -1))
+                          (lambda (&rest args)
+                            (interactive)
+                            (when-let ((code (substring-no-properties
+                                              (thing-at-point 'symbol))))
+                              (when jiralib-url
+                                (browse-url-default-browser
+                                 (url-recreate-url
+                                  (url-generic-parse-url (concat jiralib-url "/browse/" code))))))))))))
 
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode)
@@ -166,9 +166,9 @@ ARGS are style properties that affect the whole tag, with special handling for:
          ([remap describe-variable] . helpful-variable)
          ([remap describe-key]      . helpful-key)
          ([remap describe-symbol]   . helpful-symbol)
-	 ("C-h '"                   . describe-char)
-	 ("C-h F"                   . describe-face)
-	 ("C-h C-k"                 . describe-keymap))
+         ("C-h '"                   . describe-char)
+         ("C-h F"                   . describe-face)
+         ("C-h C-k"                 . describe-keymap))
   :init
   ;; Needed until https://github.com/Wilfred/helpful/pull/344 is resolved
   (defun helpful--version-info (sym)
@@ -177,21 +177,21 @@ Return nil otherwise."
     (when (symbolp sym)
       (string-join
        (list
-	(when-let* ((package-version
-		     (get sym 'custom-package-version)))
-	  (pcase-let ((`(,package . ,version) (if (listp package-version)
-						  package-version
-						`(,(file-name-base
-						    (symbol-file sym))
-						  .
-						  ,package-version))))
-	    (format
+        (when-let* ((package-version
+                     (get sym 'custom-package-version)))
+          (pcase-let ((`(,package . ,version) (if (listp package-version)
+                                                  package-version
+                                                `(,(file-name-base
+                                                    (symbol-file sym))
+                                                  .
+                                                  ,package-version))))
+            (format
              "This variable was added, or its default value changed, in %s version %s."
              package
              version)))
-	(when-let* ((emacs-version
-		     (get sym 'custom-version)))
-	  (format
+        (when-let* ((emacs-version
+                     (get sym 'custom-version)))
+          (format
            "This variable was added, or its default value changed, in Emacs %s."
            emacs-version)))
        "\n\n"))))
@@ -200,7 +200,7 @@ Return nil otherwise."
   :demand t
   :config
   (setopt doom-themes-enable-bold t
-	  doom-themes-treemacs-theme "doom-colors")
+          doom-themes-treemacs-theme "doom-colors")
   (doom-themes-treemacs-config)
   (doom-themes-org-config)
   :hook (after-load-theme . reset-theme)
@@ -209,7 +209,7 @@ Return nil otherwise."
     "Ensure that we load the theme correctly.
 We do this by disabling all other themes then loading ours."
     (let ((themes custom-enabled-themes)
-	  (after-load-theme-hook nil))
+          (after-load-theme-hook nil))
       (mapc #'disable-theme custom-enabled-themes)
       (load-theme (car themes) t))))
 
@@ -224,16 +224,16 @@ We do this by disabling all other themes then loading ours."
   :diminish which-key-mode
   :config
   (setopt which-key-idle-delay 1.0
-	  which-key-separator " → "
-	  which-key-sort-order #'which-key-key-order-alpha
-	  which-key-sort-uppercase-first nil
-	  which-key-max-description-length 30
-	  which-key-add-column-padding 1
-	  which-key-max-display-columns nil
-	  which-key-min-display-lines 6
-	  which-key-side-window-slot -10
-	  which-key-allow-multiple-replacements t
-	  which-key-ellipsis "…")
+          which-key-separator " → "
+          which-key-sort-order #'which-key-key-order-alpha
+          which-key-sort-uppercase-first nil
+          which-key-max-description-length 30
+          which-key-add-column-padding 1
+          which-key-max-display-columns nil
+          which-key-min-display-lines 6
+          which-key-side-window-slot -10
+          which-key-allow-multiple-replacements t
+          which-key-ellipsis "…")
   (which-key-setup-side-window-bottom))
 
 (use-package nerd-icons-completion
@@ -249,7 +249,7 @@ We do this by disabling all other themes then loading ours."
 (use-package nerd-icons
   :config
   (when (and (not (member "Symbols Nerd Font Mono" (font-family-list)))
-	     (display-graphic-p))
+             (display-graphic-p))
     (nerd-icons-install-fonts t))
   (set-fontset-font t 'unicode (font-spec :family "Symbols Nerd Fonts Mono") nil 'prepend))
 
@@ -278,8 +278,8 @@ We do this by disabling all other themes then loading ours."
   :init (popper-mode)
   :hook (popper-mode . popper-echo-mode)
   :bind (("M-`"   . popper-toggle)
-	 ("C-`"   . popper-cycle)
-	 ("C-M-`" . popper-toggle-type))
+         ("C-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
   :custom
   (popper-mode-line
    '(:eval
@@ -315,12 +315,12 @@ We do this by disabling all other themes then loading ours."
 ;; Load the tab bar after elpaca is setup since we loosely depend on
 ;; some packages
 (add-hook 'elpaca-after-init-hook
-	  (lambda ()
-	    (require 'lkn-tab-bar)
-	    (with-eval-after-load 'lkn-tab-bar
-	      (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
-	      (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
-	      (customize-set-variable 'tab-bar-mode t))))
+          (lambda ()
+            (require 'lkn-tab-bar)
+            (with-eval-after-load 'lkn-tab-bar
+              (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
+              (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
+              (customize-set-variable 'tab-bar-mode t))))
 
 (use-package kubel
   :after vterm
@@ -371,7 +371,7 @@ We do this by disabling all other themes then loading ours."
   (aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
   :bind
   (:map global-map
-	("M-o" . ace-window)))
+        ("M-o" . ace-window)))
 
 (use-package spacious-padding
   :when (display-graphic-p)

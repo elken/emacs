@@ -36,14 +36,14 @@
      '("v" . lkn/vterm-toggle)))
   (define-key vterm-mode-map (kbd "<C-backspace>") (cmd! (vterm-send-key (kbd "C-w"))))
   (add-hook 'vterm-exit-functions
-	    (cmd!
-	     (unless (one-window-p)
-	       (let* ((buf (current-buffer))
-		      (win (get-buffer-window buf t)))
-		 (when (eq (selected-window) win)
-		   (if win
-		       (kill-buffer-and-window)
-		     (kill-buffer)))))))
+            (cmd!
+             (unless (one-window-p)
+               (let* ((buf (current-buffer))
+                      (win (get-buffer-window buf t)))
+                 (when (eq (selected-window) win)
+                   (if win
+                       (kill-buffer-and-window)
+                     (kill-buffer)))))))
 
   ;; TODO Tidy these up, `add-to-list' maybe?
   (setf (alist-get "woman" vterm-eval-cmds nil nil #'equal)
@@ -61,7 +61,7 @@
         '((display-buffer-in-direction)
           (direction . bottom)
           (window-height . 0.2)))
-   
+
   ;; I only ever want 1 per project, if I /really/ need another I can
   ;; manually invoke `vterm'
   ;;;###autoload
@@ -72,7 +72,7 @@ Creates or toggles a vterm buffer specific to the current perspective and projec
   (let* ((project (project-current))
          (buffer-name (if project
                          (project-root-prefixed-buffer-name (format "%s-vterm" (persp-current-name)))
-			(format "*%s-vterm*" (persp-current-name))))
+                        (format "*%s-vterm*" (persp-current-name))))
          (default-directory (if project
                               (project-root project)
                             default-directory))

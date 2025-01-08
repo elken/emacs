@@ -69,7 +69,7 @@
 
 (use-package marginalia
   :bind (:map minibuffer-local-map
-	      ("M-A" . marginalia-cycle))
+              ("M-A" . marginalia-cycle))
   :init (marginalia-mode)
   :config
   (setq marginalia-censor-variables nil)
@@ -77,8 +77,8 @@
   (defun marginalia--annotate-local-file (cand)
     "Improved local file annotations for CAND, coloured based on recency."
     (when-let (attrs (file-attributes (substitute-in-file-name
-				       (marginalia--full-candidate cand))
-				      'integer))
+                                       (marginalia--full-candidate cand))
+                                      'integer))
       (marginalia--fields
        ((marginalia--file-owner attrs)
         :width 12 :face 'marginalia-file-owner)
@@ -103,7 +103,7 @@
     "Improved local file annotations, coloured based on SIZE."
     (let* ((size-index (/ (log (+ 1 size)) 7.0))
            (color (if (< size-index 10000000) ; 10m
-		      (doom-blend 'orange 'green size-index)
+                      (doom-blend 'orange 'green size-index)
                     (doom-blend 'red 'orange (- size-index 1)))))
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 
@@ -146,19 +146,19 @@
   :config
   (meow-leader-define-key
    '("-" . consult-dir--source-tramp-local))
-  
+
   (defun lkn/consult-dir-podman-hosts ()
     "Get a list of hosts from podman."
     (cl-loop
      for line in (cdr
-		  (ignore-errors
-		    (apply #'process-lines "podman"
-			   (list "ps"))))
+                  (ignore-errors
+                    (apply #'process-lines "podman"
+                           (list "ps"))))
      for cand = (split-string line "[[:space:]]+" t)
      collect (let ((user (unless (string-empty-p (car cand))
-			   (concat (car cand) "@")))
-		   (hostname (car (last cand))))
-	       (format "/podman:%s:/" hostname))))
+                           (concat (car cand) "@")))
+                   (hostname (car (last cand))))
+               (format "/podman:%s:/" hostname))))
 
   (defvar lkn/consult-dir-podman-source
     `(:name    "Podman"
@@ -177,8 +177,8 @@
   (completion-pcm-leading-wildcard t)
   (completion-styles '(orderless partial-completion))
   (completion-category-overrides '((file (styles partial-completion))
-				   (eglot (styles orderless))
-				   (eglot-capf (styles orderless))))
+                                   (eglot (styles orderless))
+                                   (eglot-capf (styles orderless))))
   (orderless-component-separator "[ &]")
   (completion-category-defaults nil))
 
@@ -208,10 +208,10 @@
   :demand t
   :bind
   (:map corfu-map
-	("C-SPC" . corfu-insert-separator)
-	("C-n"   . corfu-next)
-	("C-p"   . corfu-previous)
-	("C-q"   . corfu-quick-insert))
+        ("C-SPC" . corfu-insert-separator)
+        ("C-n"   . corfu-next)
+        ("C-p"   . corfu-previous)
+        ("C-q"   . corfu-quick-insert))
   :hook
   (corfu-mode . corfu-history-mode)
   (corfu-mode . corfu-echo-mode)

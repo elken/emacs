@@ -33,7 +33,7 @@
   (magit-git-executable (executable-find "git"))
   :bind
   (:map magit-status-mode-map
-	("@" . forge-dispatch))
+        ("@" . forge-dispatch))
   :hook
   (magit-mode . lkn/keychain-setup)
   :config
@@ -48,19 +48,19 @@
     (with-current-buffer buffer
       (kill-local-variable 'magit-stale-p)
       (when (and buffer-file-name (file-exists-p buffer-file-name))
-	(if (buffer-modified-p (current-buffer))
-	    (when (bound-and-true-p vc-mode)
-	      (vc-refresh-state)
-	      (force-mode-line-update))
-	  (revert-buffer t t t)))))
-  
+        (if (buffer-modified-p (current-buffer))
+            (when (bound-and-true-p vc-mode)
+              (vc-refresh-state)
+              (force-mode-line-update))
+          (revert-buffer t t t)))))
+
   (defun magit-mark-stale-buffers-a (&rest _)
     (dolist (buffer (buffer-list))
       (when (buffer-live-p buffer)
-	(if (get-buffer-window buffer)
-	    (magit-revert-buffer buffer)
-	  (with-current-buffer buffer
-	    (setq-local magit-stale-p t))))))
+        (if (get-buffer-window buffer)
+            (magit-revert-buffer buffer)
+          (with-current-buffer buffer
+            (setq-local magit-stale-p t))))))
 
   (defun magit-revert-buffer-maybe-h ()
     "Revert the buffer if out of date."
@@ -82,7 +82,7 @@
            (cached-val (gethash key magit-git--cache 'not-found)))
       (if (eq cached-val 'not-found)
           (puthash key (apply fn args) magit-git--cache)
-	cached-val)))
+        cached-val)))
 
   (dolist (fn '(magit-rev-parse-safe magit-get magit-get-boolean))
     (advice-add fn :around #'magit-git--memoize)))
@@ -123,8 +123,8 @@
         code-review-download-dir (lkn/cache-dir "code-review/"))
   :bind
   (:map code-review-mode-map
-	("r" . code-review-transient-api)
-	("RET" . code-review-comment-add-or-edit)))
+        ("r" . code-review-transient-api)
+        ("RET" . code-review-comment-add-or-edit)))
 
 (use-package magit-delta
   :after magit
@@ -132,11 +132,11 @@
   :hook (magit-mode . magit-delta-mode)
   :config
   (setq magit-delta-delta-args
-	'("--true-color" "always"
-	  "--features" "magit-delta"
-	  "--syntax-theme" "Nord"
-	  "--dark"
-	  "--color-only")))
+        '("--true-color" "always"
+          "--features" "magit-delta"
+          "--syntax-theme" "Nord"
+          "--dark"
+          "--color-only")))
 
 (use-package transient
   :bind
@@ -144,10 +144,10 @@
         ([escape] . transient-quit-one))
   :init
   (setq transient-default-level 5
-	magit-diff-refine-hunk t
-	magit-save-repository-buffers nil
-	magit-revision-insert-related-refs nil
-	transient-levels-file  (expand-file-name "transient/levels" no-littering-var-directory)
+        magit-diff-refine-hunk t
+        magit-save-repository-buffers nil
+        magit-revision-insert-related-refs nil
+        transient-levels-file  (expand-file-name "transient/levels" no-littering-var-directory)
         transient-values-file  (expand-file-name "transient/values" no-littering-var-directory)
         transient-history-file (expand-file-name "transient/history" no-littering-var-directory)
         transient-default-level 5))
@@ -164,7 +164,7 @@
   (browse-at-remote-add-line-number-if-no-region-selected nil)
   :bind
   (:map global-map
-	("C-c g y" . browse-at-remote-kill)))
+        ("C-c g y" . browse-at-remote-kill)))
 
 (provide 'lkn-vcs)
 ;;; lkn-vcs.el ends here

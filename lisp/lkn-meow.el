@@ -36,7 +36,7 @@
                      (mapcar (lambda (char)
                                (if (eq (upcase char) char)
                                    (downcase char)
-				 (upcase char)))
+                                 (upcase char)))
                              (string-to-list text)))))))
 
 (defun lkn/meow-kill-dwim ()
@@ -80,8 +80,8 @@
   (interactive)
   (if (region-active-p)
       (progn
-	(goto-char (region-end))
-	(meow-cancel-selection)))
+        (goto-char (region-end))
+        (meow-cancel-selection)))
   (forward-char)
   (meow-insert))
 

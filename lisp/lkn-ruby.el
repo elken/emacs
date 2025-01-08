@@ -45,58 +45,58 @@
   :config
   (defvar erb-translation-capf--properties
     (list :annotation-function (lambda (snippet)
-				 (message "%S" snippet)
-				 snippet)
+                                 (message "%S" snippet)
+                                 snippet)
           :company-kind (lambda (_) 'string)
           :exclusive 'no)
     "Completion extra properties for `erb-translation-capf'.")
-  
+
   (defun erb-translate-capf--in-t-call-args-p ()
     "Return cons of start/end positions if point is within t() args, nil otherwise."
     (let* ((parser (cl-find 'ruby (treesit-parser-list) :key #'treesit-parser-language))
            (matches (treesit-query-capture
                      parser
                      '((program (call method: ((identifier) @m)
-				      arguments: _ @args
-				      (:match "^t$" @m)))
+                                      arguments: _ @args
+                                      (:match "^t$" @m)))
                        (call method: ((identifier) @m)
                              arguments: _ @args
                              (:match "^t$" @m)))
                      (point-min) (point-max))))
       (seq-some (lambda (match)
-		  (when (eq 'args (car match))
+                  (when (eq 'args (car match))
                     (let* ((args-node (cdr match))
                            ;; Adjust bounds to skip the parentheses
                            (start (+ 2 (treesit-node-start args-node)))
                            (end (- (treesit-node-end args-node) 2)))
                       (when (and (>= (point) start)
-				 (<= (point) end))
-			(cons start end)))))
-		matches)))
+                                 (<= (point) end))
+                        (cons start end)))))
+                matches)))
 
   (defun erb-translation-capf--filter (str)
     "Use STR to compute and filter a new completion table."
     (cons ))
-  
+
   (defun erb-translation-capf--completion-table ()
     "Return a suitable function to create a completion table."
     (lambda (str pred action)
       (let ((results (erb-translation-capf--filter str)))
-	(if (eq action 'metadata)
-	    '(metadata (category . erb-translation-capf))
-	  (complete-with-action action results str pred)))))
-  
+        (if (eq action 'metadata)
+            '(metadata (category . erb-translation-capf))
+          (complete-with-action action results str pred)))))
+
   (defun erb-translation-capf (&optional interactive)
     (interactive (list t))
     (if interactive
-	(let ((completion-at-point-functions #'erb-translation-capf))
+        (let ((completion-at-point-functions #'erb-translation-capf))
           (message "Current buffer content at point: %s"
                    (when-let ((bounds (erb-translate-capf--in-t-call-args-p)))
                      (buffer-substring-no-properties (car bounds) (cdr bounds))))
           (or (completion-at-point)
               (user-error "erb-translation-capf: No completions")))
       (when-let ((bounds (erb-translate-capf--in-t-call-args-p)))
-	`(,(car bounds) ,(cdr bounds)
+        `(,(car bounds) ,(cdr bounds)
           ,(completion-table-with-cache
             (lambda (string)
               (all-completions

@@ -25,7 +25,7 @@
 (defun lkn-elisp-setup ()
   "Setup function to be called before all Emacs Lisp buffers."
   (setq-local lkn/elisp-imenu-expressions
-	      `(("Section" "^[ \t]*;;;*\\**[ \t]+\\([^\n]+\\)" 1)
+              `(("Section" "^[ \t]*;;;*\\**[ \t]+\\([^\n]+\\)" 1)
                 ("Evil commands" "^\\s-*(evil-define-\\(?:command\\|operator\\|motion\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
                 ("Unit tests" "^\\s-*(\\(?:ert-deftest\\|describe\\) +\"\\([^\")]+\\)\"" 1)
                 ("Packages" "^\\s-*\\(?:;;;###package\\|(use-package?\\) +\\(\\_<[^ ()\n]+\\_>\\)" 1)
@@ -85,7 +85,7 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
             ;; Yes, but is there a containing sexp after that?
             (let ((peek (parse-partial-sexp calculate-lisp-indent-last-sexp
                                             indent-point 0)))
-	      (if (setq retry (car (cdr peek))) (setq state peek)))))
+              (if (setq retry (car (cdr peek))) (setq state peek)))))
       (if retry
           nil
         ;; Innermost containing sexp found
@@ -104,37 +104,37 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                  ;; This is the first line to start within the containing sexp.
                  ;; It's almost certainly a function call.
                  (if (or
-		      ;; Containing sexp has nothing before this line except the
-		      ;; first element. Indent under that element.
-		      (= (point) calculate-lisp-indent-last-sexp)
+                      ;; Containing sexp has nothing before this line except the
+                      ;; first element. Indent under that element.
+                      (= (point) calculate-lisp-indent-last-sexp)
 
-		      (or
-		       ;; Align keywords in plists if each newline begins with
-		       ;; a keyword. This is useful for "unquoted plist
-		       ;; function" macros, like `map!' and `defhydra'.
-		       (when-let ((first (elt state 1))
+                      (or
+                       ;; Align keywords in plists if each newline begins with
+                       ;; a keyword. This is useful for "unquoted plist
+                       ;; function" macros, like `map!' and `defhydra'.
+                       (when-let ((first (elt state 1))
                                   (char (char-after (1+ first))))
                          (and (eq char ?:)
-			      (ignore-errors
+                              (ignore-errors
                                 (or (save-excursion
-				      (goto-char first)
-				      ;; FIXME Can we avoid `syntax-ppss'?
-				      (when-let* ((parse-sexp-ignore-comments t)
+                                      (goto-char first)
+                                      ;; FIXME Can we avoid `syntax-ppss'?
+                                      (when-let* ((parse-sexp-ignore-comments t)
                                                   (end (scan-lists (point) 1 0))
                                                   (depth (ppss-depth (syntax-ppss))))
                                         (and (re-search-forward "^\\s-*:" end t)
                                              (= (ppss-depth (syntax-ppss))
                                                 (1+ depth)))))
                                     (save-excursion
-				      (cl-loop for pos in (reverse (elt state 9))
-					       unless (memq (char-after (1+ pos)) '(?: ?\())
-					       do (goto-char (1+ pos))
-					       for fn = (read (current-buffer))
-					       if (symbolp fn)
-					       return (function-get fn 'indent-plists-as-data)))))))
+                                      (cl-loop for pos in (reverse (elt state 9))
+                                               unless (memq (char-after (1+ pos)) '(?: ?\())
+                                               do (goto-char (1+ pos))
+                                               for fn = (read (current-buffer))
+                                               if (symbolp fn)
+                                               return (function-get fn 'indent-plists-as-data)))))))
 
-		       ;; Check for quotes or backquotes around.
-		       (let ((positions (elt state 9))
+                       ;; Check for quotes or backquotes around.
+                       (let ((positions (elt state 9))
                              (quotep 0))
                          (while positions
                            (let ((point (pop positions)))
@@ -147,11 +147,11 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                                            (skip-chars-forward "( ")
                                            (when-let (fn (ignore-errors (read (current-buffer))))
                                              (if (and (symbolp fn)
-						      (fboundp fn)
-						      ;; Only special forms and
-						      ;; macros have special
-						      ;; indent needs.
-						      (not (functionp fn)))
+                                                      (fboundp fn)
+                                                      ;; Only special forms and
+                                                      ;; macros have special
+                                                      ;; indent needs.
+                                                      (not (functionp fn)))
                                                  (setq quotep 0))))
                                          (cl-incf quotep)))
                                     ((memq char '(?, ?@))
@@ -171,8 +171,8 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                    ;; argument of the function call) and indent under.
                    (progn (forward-sexp 1)
                           (parse-partial-sexp (point)
-					      calculate-lisp-indent-last-sexp
-					      0 t)))
+                                              calculate-lisp-indent-last-sexp
+                                              0 t)))
                  (backward-prefix-chars))
                 (t
                  ;; Indent beneath first sexp on same line as
@@ -188,15 +188,15 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
       ;; if the desired indentation has already been computed.
       (let ((normal-indent (current-column)))
         (cond ((elt state 3)
-	       ;; Inside a string, don't change indentation.
-	       nil)
-	      ((and (integerp lisp-indent-offset) containing-sexp)
-	       ;; Indent by constant offset
-	       (goto-char containing-sexp)
-	       (+ (current-column) lisp-indent-offset))
-	      ;; in this case calculate-lisp-indent-last-sexp is not nil
-	      (calculate-lisp-indent-last-sexp
-	       (or
+               ;; Inside a string, don't change indentation.
+               nil)
+              ((and (integerp lisp-indent-offset) containing-sexp)
+               ;; Indent by constant offset
+               (goto-char containing-sexp)
+               (+ (current-column) lisp-indent-offset))
+              ;; in this case calculate-lisp-indent-last-sexp is not nil
+              (calculate-lisp-indent-last-sexp
+               (or
                 ;; try to align the parameters of a known function
                 (and lisp-indent-function
                      (not retry)
@@ -206,23 +206,23 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                 ;; last preceding constant symbol, if there is such one of the
                 ;; last 2 preceding symbols, in the previous uncommented line.
                 (and (save-excursion
-		       (goto-char indent-point)
-		       (skip-chars-forward " \t")
-		       (looking-at ":"))
+                       (goto-char indent-point)
+                       (skip-chars-forward " \t")
+                       (looking-at ":"))
                      ;; The last sexp may not be at the indentation where it
                      ;; begins, so find that one, instead.
                      (save-excursion
-		       (goto-char calculate-lisp-indent-last-sexp)
-		       ;; Handle prefix characters and whitespace following an
-		       ;; open paren. (Bug#1012)
-		       (backward-prefix-chars)
-		       (while (not (or (looking-back "^[ \t]*\\|([ \t]+"
+                       (goto-char calculate-lisp-indent-last-sexp)
+                       ;; Handle prefix characters and whitespace following an
+                       ;; open paren. (Bug#1012)
+                       (backward-prefix-chars)
+                       (while (not (or (looking-back "^[ \t]*\\|([ \t]+"
                                                      (line-beginning-position))
-				       (and containing-sexp
+                                       (and containing-sexp
                                             (>= (1+ containing-sexp) (point)))))
                          (forward-sexp -1)
                          (backward-prefix-chars))
-		       (setq calculate-lisp-indent-last-sexp (point)))
+                       (setq calculate-lisp-indent-last-sexp (point)))
                      (> calculate-lisp-indent-last-sexp
                         (save-excursion
                           (goto-char (1+ containing-sexp))
@@ -230,20 +230,20 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                           (point)))
                      (let ((parse-sexp-ignore-comments t)
                            indent)
-		       (goto-char calculate-lisp-indent-last-sexp)
-		       (or (and (looking-at ":")
+                       (goto-char calculate-lisp-indent-last-sexp)
+                       (or (and (looking-at ":")
                                 (setq indent (current-column)))
                            (and (< (line-beginning-position)
                                    (prog2 (backward-sexp) (point)))
                                 (looking-at ":")
                                 (setq indent (current-column))))
-		       indent))
+                       indent))
                 ;; another symbols or constants not preceded by a constant as
                 ;; defined above.
                 normal-indent))
-	      ;; in this case calculate-lisp-indent-last-sexp is nil
-	      (desired-indent)
-	      (normal-indent))))))
+              ;; in this case calculate-lisp-indent-last-sexp is nil
+              (desired-indent)
+              (normal-indent))))))
 
 (advice-add #'calculate-lisp-indent :override #'lkn-elisp--calculate-lisp-indent)
 
@@ -258,10 +258,10 @@ library/userland functions.  Go until END."
     (while (re-search-forward "\\(?:\\sw\\|\\s_\\)+" end t)
       (let ((ppss (save-excursion (syntax-ppss))))
         (cond ((nth 3 ppss)  ; strings
-	       (search-forward "\"" end t))
-	      ((nth 4 ppss)  ; comments
-	       (forward-line +1))
-	      ((let ((symbol (intern-soft (match-string-no-properties 0))))
+               (search-forward "\"" end t))
+              ((nth 4 ppss)  ; comments
+               (forward-line +1))
+              ((let ((symbol (intern-soft (match-string-no-properties 0))))
                  (and (cond ((null symbol) nil)
                             ((eq symbol t) nil)
                             ((keywordp symbol) nil)
@@ -272,17 +272,17 @@ library/userland functions.  Go until END."
                                   (not (memq (char-before (1- (match-beginning 0)))
                                              (list ?\' ?\`))))
                              (let ((unaliased (indirect-function symbol)))
-			       (unless (or (macrop unaliased)
+                               (unless (or (macrop unaliased)
                                            (special-form-p unaliased))
                                  (let (unadvised)
                                    (while (not (eq (setq unadvised (ad-get-orig-definition unaliased))
                                                    (setq unaliased (indirect-function unadvised)))))
                                    unaliased)
                                  (setq lkn-elisp--face
-				       (if (subrp unaliased)
+                                       (if (subrp unaliased)
                                            'font-lock-constant-face
                                          'font-lock-function-name-face))))))
-		      (throw 'matcher t)))))))
+                      (throw 'matcher t)))))))
     nil))
 
 (font-lock-add-keywords
@@ -301,7 +301,7 @@ library/userland functions.  Go until END."
 (use-package eros
   :bind
   (:map emacs-lisp-mode-map
-	("C-c C-i" . eros-inspect-last-result))
+        ("C-c C-i" . eros-inspect-last-result))
   :hook (emacs-lisp-mode . eros-mode))
 
 (use-package package-lint-flymake

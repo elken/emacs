@@ -27,9 +27,9 @@ support for nerd icons."
   :type 'string
   :initialize 'custom-initialize-set
   :set (lambda (var val)
-	 (set-default var val)
-	 (set-face-attribute 'default nil :font val)
-	 (set-face-attribute 'fixed-pitch nil :font val))
+         (set-default var val)
+         (set-face-attribute 'default nil :font val)
+         (set-face-attribute 'fixed-pitch nil :font val))
   :group 'lkn)
 
 (defcustom lkn-default-font-height 150
@@ -37,9 +37,9 @@ support for nerd icons."
   :type 'number
   :initialize 'custom-initialize-set
   :set (lambda (var val)
-	 (set-default var val)
-	 (set-face-attribute 'default nil :height val)
-	 (set-face-attribute 'fixed-pitch nil :height val))
+         (set-default var val)
+         (set-face-attribute 'default nil :height val)
+         (set-face-attribute 'fixed-pitch nil :height val))
   :group 'lkn)
 
 (defcustom lkn-variable-pitch-font "Merriweather"
@@ -48,8 +48,8 @@ This should just be a nice, readable font to represent prose well."
   :type 'string
   :initialize 'custom-initialize-set
   :set (lambda (var val)
-	 (set-default var val)
-	 (set-face-attribute 'variable-pitch nil :font val))
+         (set-default var val)
+         (set-face-attribute 'variable-pitch nil :font val))
   :group 'lkn)
 
 (defcustom lkn-theme 'doom-nord
@@ -57,10 +57,10 @@ This should just be a nice, readable font to represent prose well."
 Usually defaults to Nord or my Carbon theme."
   :type 'symbol
   :set (lambda (var val)
-	 (set-default var val)
-	 (with-eval-after-load 'doom-themes
-	   (require `,(intern (format "%s-theme" val)))
-	   (load-theme val t)))
+         (set-default var val)
+         (with-eval-after-load 'doom-themes
+           (require `,(intern (format "%s-theme" val)))
+           (load-theme val t)))
   :group 'lkn)
 
 ;;; Macros
@@ -219,7 +219,7 @@ everything.
 Optionally take the same FRAME and INHERIT arguments that
 `face-attribute' expects."
   (let ((fg (face-foreground face frame inherit))
-	(bg (face-background face frame inherit)))
+        (bg (face-background face frame inherit)))
     `(:foreground ,bg :background ,fg)))
 
 (defun lkn/combine-faces (&rest faces)
@@ -227,11 +227,11 @@ Optionally take the same FRAME and INHERIT arguments that
   (let ((attrs '(:foreground :background :weight :slant :underline)))
     `((t ,@(cl-loop for attr in attrs
                     for val = (cl-some (lambda (face)
-					 (cond
-					  ((facep face)
+                                         (cond
+                                          ((facep face)
                                            (let ((v (face-attribute face attr)))
                                              (unless (eq v 'unspecified) v)))
-					  ((listp face)
+                                          ((listp face)
                                            (plist-get face attr))))
                                        faces)
                     when val collect attr and collect val)))))
@@ -296,7 +296,7 @@ The DWIM behaviour of this command is as follows:
              (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO"))
                (when (string-match (format "%s[=\s]\\([^\s;\n]*\\)" var) output)
                  (setenv var (match-string 1 output))))))
-	 (when (buffer-live-p (get-buffer "*keychain-output*"))
+         (when (buffer-live-p (get-buffer "*keychain-output*"))
            (kill-buffer "*keychain-output*")))))))
 
 ;; Only show the compilation buffer if there are errors. Otherwise,
@@ -306,11 +306,11 @@ The DWIM behaviour of this command is as follows:
   (when (and (eq major-mode 'comint-mode)
              (string-match "finished" string)
              (not
-	      (with-current-buffer buffer
+              (with-current-buffer buffer
                 (search-forward "warning" nil t))))
     (run-with-timer 1 nil
                     (lambda (buf)
-		      (let ((window (get-buffer-window buf)))
+                      (let ((window (get-buffer-window buf)))
                         (when (and (window-live-p window)
                                    (eq buf (window-buffer window)))
                           (delete-window window))))
@@ -325,12 +325,12 @@ The DWIM behaviour of this command is as follows:
         (let ((origin (current-buffer)))
           (copy-to-buffer buffer (point-min) (point-max))
           (unwind-protect
-	      (with-current-buffer buffer
+              (with-current-buffer buffer
                 (save-buffer))
             (unless (eq origin buffer)
-	      (kill-buffer buffer))
+              (kill-buffer buffer))
             (with-current-buffer origin
-	      (revert-buffer t t))))
+              (revert-buffer t t))))
       (user-error "Unable to open %S" file))))
 
 (defun lkn/yank-buffer ()
@@ -378,7 +378,7 @@ The DWIM behaviour of this command is as follows:
   (scroll-preserve-screen-position t)
   (confirm-kill-emacs #'y-or-n-p)
   (frame-title-format '(:eval
-			(format "[%%b%s] - %s"
+                        (format "[%%b%s] - %s"
                                 (if (buffer-modified-p) " •" "")
                                 system-name)))
   (enable-recursive-minibuffers t)
@@ -490,17 +490,17 @@ The DWIM behaviour of this command is as follows:
   (defun lkn/auto-revert-buffer (&optional _window)
     "Auto revert current buffer, if necessary."
     (unless (or (and (bound-and-true-p auto-revert-mode)
-		     auto-revert-mode)
-		(active-minibuffer-window))
+                     auto-revert-mode)
+                (active-minibuffer-window))
       (let ((auto-revert-mode t))
         (auto-revert-handler))))
 
   (defun lkn/auto-revert-buffers ()
     "Auto revert stale buffers in visible windows, if necessary."
     (dolist (buf (delete-dups
-		  (cl-loop for frame in (visible-frame-list)
-			   if (window-list frame)
-			   nconc (mapcar #'window-buffer it))))
+                  (cl-loop for frame in (visible-frame-list)
+                           if (window-list frame)
+                           nconc (mapcar #'window-buffer it))))
       (with-current-buffer buf
         (lkn/auto-revert-buffer))))
 
@@ -535,8 +535,8 @@ The DWIM behaviour of this command is as follows:
   (flymake-start-on-save-buffer t)
   :bind
   (:map flymake-mode-map
-	([remap next-error] . flymake-goto-next-error)
-	([remap previous-error] . flymake-goto-prev-error))
+        ([remap next-error] . flymake-goto-next-error)
+        ([remap previous-error] . flymake-goto-prev-error))
   :hook (prog-mode . flymake-mode))
 
 (use-package outline

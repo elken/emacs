@@ -30,8 +30,8 @@
   (eglot-extend-to-xref t)
   :bind
   (:map eglot-mode-map
-	("C-c c a" . eglot-code-actions)
-	("C-c c r" . eglot-rename))
+        ("C-c c a" . eglot-code-actions)
+        ("C-c c r" . eglot-rename))
   :hook
   ((ruby-mode ruby-ts-mode) . eglot-ensure)
   ((clojure-mode clojure-ts-mode) . eglot-ensure)
@@ -42,10 +42,10 @@
     "Allow universal argument to disable formatting."
     (interactive "P")
     (when (and (null arg)
-	       (eglot-current-server)
-	       (null apheleia-mode))
+               (eglot-current-server)
+               (null apheleia-mode))
       (eglot-format-buffer)))
-  
+
   ;; Solargraph is a big liar and claims it doesn't support formatting when it does
   ;; Force the capabilities to report dynamicRegistration for
   ;; formatting and formatting itself
@@ -53,7 +53,7 @@
     (let ((caps (cl-call-next-method)))
       (when (cl-find "solargraph" (process-command (jsonrpc--process server))
                      :test #'string-match)
-	(setf (cl-getf (cl-getf (cl-getf caps :textDocument) :formatting)
+        (setf (cl-getf (cl-getf (cl-getf caps :textDocument) :formatting)
                        :dynamicRegistration) t))
       caps))
 
@@ -63,7 +63,7 @@
     (if (and (string= method "textDocument/formatting")
              (cl-find "solargraph" (process-command (jsonrpc--process server))
                       :test #'string-match))
-	t
+        t
       (apply #'cl-call-next-method server method id params)))
 
   ;; And finally tell the capabilities that the server does actually
@@ -72,7 +72,7 @@
     (let ((caps (cl-call-next-method)))
       (when (cl-find "solargraph" (process-command (jsonrpc--process server))
                      :test #'string-match)
-	(setf (cl-getf caps :documentFormattingProvider) t))
+        (setf (cl-getf caps :documentFormattingProvider) t))
       caps))
 
   ;; Have to specifically use stdio because for jsonrpc processes that
@@ -86,10 +86,10 @@
 
   ;; Enable formatters, just in case
   (setq-default eglot-workspace-configuration
-		'((:solargraph . (:formatting t
-				  :diagnostics t))
-		  (:ruby-lsp . (:linters ["rubocop"]
-				:experimentalFeaturesEnabled t)))))
+                '((:solargraph . (:formatting t
+                                  :diagnostics t))
+                  (:ruby-lsp . (:linters ["rubocop"]
+                                :experimentalFeaturesEnabled t)))))
 
 (use-package consult-xref-stack
   :ensure
@@ -101,7 +101,7 @@
   :after eglot
   :bind
   (:map eglot-mode-map
-	([remap xref-find-apropos] . consult-eglot-symbols)))
+        ([remap xref-find-apropos] . consult-eglot-symbols)))
 
 (use-package consult-eglot-embark
   :after (embark consult-eglot)
