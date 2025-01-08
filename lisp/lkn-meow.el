@@ -162,8 +162,11 @@ selection if not active."
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev)
+   '("h" . meow-left)
+   '("l" . meow-right)
+   '("C-c n" . meow-normal-mode)
    '("<escape>" . ignore))
-  
+
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
    '("j" . "H-j")
@@ -179,9 +182,8 @@ selection if not active."
    '("8" . meow-digit-argument)
    '("9" . meow-digit-argument)
    '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet)
-  
+   '("?" . meow-cheatsheet))
+
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
