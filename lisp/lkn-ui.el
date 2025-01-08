@@ -219,9 +219,32 @@ We do this by disabling all other themes then loading ours."
 
 (use-package which-key
   :ensure nil
-  :init (which-key-mode)
+  :init
+  (which-key-mode)
+  ;; Credit to
+  ;; <https://karthinks.com/software/it-bears-repeating/#adding-a-hydra-like-prompt-to-repeat-mode>
+  ;; Custom repeat-echo-function using which-key
+  (defun repeat-echo-which-key (keymap)
+    "Show repeat bindings using which-key for KEYMAP."
+    (if keymap
+        (let ((which-key-allow-multiple-replacements t)
+              (which-key-replacement-alist
+               (let (replacements)
+                 (map-keymap
+                  (lambda (_key cmd)
+                    (when-let ((hint (and (symbolp cmd)
+                                          (get cmd 'repeat-hint))))
+                      (push `((nil . ,(regexp-quote (symbol-name cmd))) . (nil . ,hint))
+                            replacements)))
+                  keymap)
+                 (append which-key-replacement-alist replacements))))
+          (which-key--hide-popup)
+          (which-key--update)
+          (which-key--create-buffer-and-show nil keymap))
+      (which-key--hide-popup)))
   :diminish which-key-mode
   :custom
+  (repeat-echo-function #'repeat-echo-which-key)
   (which-key-idle-delay 1.0)
   (which-key-separator " → ")
   (which-key-sort-order #'which-key-key-order-alpha)
@@ -234,25 +257,7 @@ We do this by disabling all other themes then loading ours."
   (which-key-allow-multiple-replacements t)
   (which-key-ellipsis "…")
   :config
-  (which-key-setup-side-window-bottom)
-
-  ;; Credit to
-  ;; <https://karthinks.com/software/it-bears-repeating/#adding-a-hydra-like-prompt-to-repeat-mode>
-  ;; Disable the built-in repeat-mode hinting
-  (setopt repeat-echo-function #'ignore)
-
-  ;; Spawn or hide a which-key popup
-  (advice-add 'repeat-post-hook :after
-              (defun repeat-help--which-key-popup ()
-                (if-let ((cmd (or this-command real-this-command))
-                         (keymap (or repeat-map
-                                     (repeat--command-property 'repeat-map))))
-                    (run-at-time
-                     0 nil
-                     (lambda ()
-                       (which-key--create-buffer-and-show
-                        nil (symbol-value keymap))))
-                  (which-key--hide-popup)))))
+  (which-key-setup-side-window-bottom))
 
 (use-package nerd-icons-completion
   :after marginalia
