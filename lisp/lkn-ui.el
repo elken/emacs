@@ -222,18 +222,19 @@ We do this by disabling all other themes then loading ours."
   :ensure nil
   :init (which-key-mode)
   :diminish which-key-mode
+  :custom
+  (which-key-idle-delay 1.0)
+  (which-key-separator " → ")
+  (which-key-sort-order #'which-key-key-order-alpha)
+  (which-key-sort-uppercase-first nil)
+  (which-key-max-description-length 30)
+  (which-key-add-column-padding 1)
+  (which-key-max-display-columns nil)
+  (which-key-min-display-lines 6)
+  (which-key-side-window-slot -10)
+  (which-key-allow-multiple-replacements t)
+  (which-key-ellipsis "…")
   :config
-  (setopt which-key-idle-delay 1.0
-          which-key-separator " → "
-          which-key-sort-order #'which-key-key-order-alpha
-          which-key-sort-uppercase-first nil
-          which-key-max-description-length 30
-          which-key-add-column-padding 1
-          which-key-max-display-columns nil
-          which-key-min-display-lines 6
-          which-key-side-window-slot -10
-          which-key-allow-multiple-replacements t
-          which-key-ellipsis "…")
   (which-key-setup-side-window-bottom))
 
 (use-package nerd-icons-completion
