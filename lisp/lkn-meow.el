@@ -248,8 +248,12 @@ selection if not active."
    '("p" . meow-yank)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
-   '("s" . meow-avy-goto-char)
-   '("S" . meow-avy-goto-char-expand)
+
+   '("sa" . lkn/sp-wrap-with-char)
+   '("sc" . sp-rewrap-sexp)
+   '("sd" . sp-splice-sexp)
+
+   '("S" . meow-avy-goto-char)
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . undo-redo)
