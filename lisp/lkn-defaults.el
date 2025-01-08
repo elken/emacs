@@ -407,6 +407,7 @@ The DWIM behaviour of this command is as follows:
   (text-mode . display-line-numbers-mode)
   (prog-mode . display-line-numbers-mode)
   (before-save . executable-make-buffer-file-executable-if-script-p)
+  (before-save . whitespace-cleanup)
   (after-init . lkn/disable-hooks-setup)
   (after-init . pixel-scroll-precision-mode)
   (after-init . global-so-long-mode)
