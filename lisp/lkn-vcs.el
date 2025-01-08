@@ -36,6 +36,9 @@
         ("@" . forge-dispatch))
   :hook
   (magit-mode . lkn/keychain-setup)
+  (magit-post-refresh . magit-run-post-commit-hook)
+  (magit-post-refresh . magit-run-post-stage-hook)
+  (magit-post-refresh . magit-run-post-unstage-hook)
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)
         magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
