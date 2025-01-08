@@ -217,7 +217,6 @@ We do this by disabling all other themes then loading ours."
   :after doom-themes
   :init (solaire-global-mode))
 
-;; Disabled for now as I debate if it's needed
 (use-package which-key
   :ensure nil
   :init (which-key-mode)
@@ -231,11 +230,29 @@ We do this by disabling all other themes then loading ours."
   (which-key-add-column-padding 1)
   (which-key-max-display-columns nil)
   (which-key-min-display-lines 6)
-  (which-key-side-window-slot -10)
+  (which-key-side-window-slot 1)
   (which-key-allow-multiple-replacements t)
   (which-key-ellipsis "…")
   :config
-  (which-key-setup-side-window-bottom))
+  (which-key-setup-side-window-bottom)
+
+  ;; Credit to
+  ;; <https://karthinks.com/software/it-bears-repeating/#adding-a-hydra-like-prompt-to-repeat-mode>
+  ;; Disable the built-in repeat-mode hinting
+  (setopt repeat-echo-function #'ignore)
+
+  ;; Spawn or hide a which-key popup
+  (advice-add 'repeat-post-hook :after
+              (defun repeat-help--which-key-popup ()
+                (if-let ((cmd (or this-command real-this-command))
+                         (keymap (or repeat-map
+                                     (repeat--command-property 'repeat-map))))
+                    (run-at-time
+                     0 nil
+                     (lambda ()
+                       (which-key--create-buffer-and-show
+                        nil (symbol-value keymap))))
+                  (which-key--hide-popup)))))
 
 (use-package nerd-icons-completion
   :after marginalia

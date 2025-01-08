@@ -119,18 +119,34 @@ selection if not active."
          (set-mark-command nil)
          (call-interactively #',original-cmd))))
 
+  (defun lkn/show-keymap-popup (state)
+    (let ((mode (alist-get state meow-state-mode-alist))
+          (map (alist-get state meow-keymap-alist)))
+      (if (symbol-value mode)
+          (progn
+            (setopt which-key-persistent-popup t)
+            (run-at-time
+             0 nil
+             (lambda ()
+               (which-key--create-buffer-and-show
+                nil map))))
+        (setopt which-key-persistent-popup nil)
+        (which-key--hide-popup))))
+
   (define-paredit-with-selection paredit-forward paredit-forward-w-selection)
   (define-paredit-with-selection paredit-forward-down paredit-forward-down-w-selection)
   (define-paredit-with-selection paredit-backward paredit-backward-w-selection)
   (define-paredit-with-selection paredit-backward-up paredit-backward-up-w-selection)
 
   (defvar-keymap meow-sexp-map
-    :doc "Keymap for meow sexp state")
+    :doc "Keymap for meow sexp state"
+    :repeat t)
 
   (meow-define-state sexp
     "Meow state for interacting with sexps"
     :lighter " [λ]"
-    :keymap meow-sexp-map)
+    :keymap meow-sexp-map
+    (lkn/show-keymap-popup 'sexp))
 
   (meow-define-keys 'sexp
     '("<escape>" . meow-normal-mode)
