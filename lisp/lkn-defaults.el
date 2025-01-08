@@ -430,7 +430,10 @@ The DWIM behaviour of this command is as follows:
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
-  (set-language-environment   'utf-8))
+  (set-language-environment   'utf-8)
+
+  ;; Force this to be nil by default
+  (setq-default indent-tabs-mode nil))
 
 (use-package savehist
   :ensure nil
