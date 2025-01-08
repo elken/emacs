@@ -1,7 +1,7 @@
 ;;; lkn-tab-bar.el -- Tabs are overrated really -*- lexical-binding: t -*-
 ;; Sources are available from https://github.com/elken/emacs
 
-;; Copyright ©️ 2022-2024 Ellis Kenyő
+;; Copyright ©️ 2022-2025 Ellis Kenyő
 
 ;; This file is NOT part of GNU Emacs.
 

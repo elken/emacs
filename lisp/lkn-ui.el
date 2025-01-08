@@ -1,7 +1,7 @@
 ;;; lkn-ui.el -- Without doubt the most important module -*- lexical-binding: t; svg-tag-action-at-point: edit -*-
 ;; Sources are available from https://github.com/elken/emacs
 
-;; Copyright (C) 2022-2024 Ellis Kenyő
+;; Copyright (C) 2022-2025 Ellis Kenyő
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

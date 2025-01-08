@@ -1,7 +1,7 @@
 ;;; erb-ts-mode.el -- A tree-sitter mode for erb/ejs -*- lexical-binding: t -*-
 ;; Sources are available from https://github.com/elken/emacs
 
-;; Copyright (C) 2022-2024 Ellis Kenyő
+;; Copyright (C) 2022-2025 Ellis Kenyő
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@
     ((attribute
       (attribute_name) @font-lock-variable-name-face)
      (quoted_attribute_value) @font-lock-string-face)
-    
+
     :language html
     :feature comment
     ((comment) @font-lock-comment-face)))
@@ -89,14 +89,14 @@
    :embed 'html
    :host 'embedded-template
    '((content) @capture)
-   
+
    ;; :embed 'javascript
    ;; :host 'html
    ;; :offset '(1 . -1)
    ;; '((script_element
    ;;    (start_tag)
    ;;    (raw_text) @capture))
-   
+
    ;; :embed 'css
    ;; :host 'html
    ;; :offset '(1 . -1)
@@ -145,16 +145,16 @@
                 (?\[ . ?\])
                 (?\' . ?\')
                 (?\" . ?\")))
-  
+
   ;; Comments and text content
   (setq-local treesit-text-type-regexp
               (regexp-opt '("comment" "text")))
-  
+
   (setq-local treesit-font-lock-settings
-	      (append (ruby-ts--font-lock-settings 'ruby)
-		      html-ts-mode--font-lock-settings
-		      (apply #'treesit-font-lock-rules erb-ts-mode-font-lock-rules)))
-  
+              (append (ruby-ts--font-lock-settings 'ruby)
+                      html-ts-mode--font-lock-settings
+                      (apply #'treesit-font-lock-rules erb-ts-mode-font-lock-rules)))
+
   ;; Enhanced feature list
   (setq-local treesit-font-lock-feature-list
               '((comment builtin-variable builtin-constant keyword)
@@ -164,7 +164,7 @@
 
   (setq-local treesit-language-at-point-function #'erb-ts-mode--treesit-language-at-point)
   (setq-local treesit-range-settings erb-ts-mode--range-settings)
-  
+
   (treesit-major-mode-setup))
 
 ;;;###autoload
@@ -186,7 +186,7 @@
 
   (unless (treesit-ready-p 'embedded-template)
     (error "Tree-sitter grammar for ERB isn't available"))
-  
+
   (when (treesit-ready-p 'embedded-template)
     (setq-local treesit-primary-parser (treesit-parser-create 'embedded-template))
     (treesit-parser-create 'embedded-template)
@@ -221,7 +221,7 @@
          (ruby-parser (treesit-parser-create 'ruby))
          (erb-node (treesit-node-at point erb-parser))
          (ruby-node (treesit-node-at point ruby-parser)))
-    
+
     ;; Print ERB node ancestry
     (let ((node erb-node))
       (message "ERB Node ancestry:")
@@ -230,7 +230,7 @@
                 (treesit-node-type node)
                 (treesit-node-text node t))
         (setq node (treesit-node-parent node))))
-    
+
     ;; Print Ruby node ancestry if exists
     (when ruby-node
       (let ((node ruby-node))

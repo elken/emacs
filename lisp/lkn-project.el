@@ -1,7 +1,7 @@
 ;;; lkn-project.el -- Project.el tweaks -*- lexical-binding: t -*-
 ;; Sources are available from https://github.com/elken/emacs
 
-;; Copyright (C) 2022-2024 Ellis Kenyő
+;; Copyright (C) 2022-2025 Ellis Kenyő
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
