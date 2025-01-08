@@ -181,7 +181,6 @@ selection if not active."
    '("0" . meow-digit-argument)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet)
-   '("u" . universal-argument))
   
   (meow-normal-define-key
    '("0" . meow-expand-0)
@@ -263,8 +262,6 @@ selection if not active."
    '("Y" . meow-sync-grab)
    '("z" . meow-pop-selection)
    '("'" . repeat)
-   '("C-u" . meow-page-up)
-   '("C-d" . meow-page-down)
    '("<escape>" . meow-cancel-selection)))
 
 (use-package meow-vterm
