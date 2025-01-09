@@ -186,6 +186,22 @@
 (use-package expreg
   :when (treesit-available-p))
 
+(use-package undo-fu
+  :bind
+  (("C-/" . undo-fu-only-undo)
+   ([remap undo-redo] . undo-fu-only-redo))
+  :custom
+  (undo-limit 67108864)
+  (undo-strong-limit 100663296)
+  (undo-outer-limit 1006632960))
+
+(use-package undo-fu-session
+  :after undo-fu
+  :custom
+  (undo-fu-session-compression 'zst)
+  :init
+  (undo-fu-session-global-mode))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
