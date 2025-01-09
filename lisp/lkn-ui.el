@@ -413,6 +413,10 @@ We do this by disabling all other themes then loading ours."
      :scroll-bar-width 8
      :fringe-width 8)))
 
+(use-package ultra-scroll
+  :ensure (:host github :repo "jdtsmith/ultra-scroll")
+  :when (not IS-MAC))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
 ;; Local Variables:

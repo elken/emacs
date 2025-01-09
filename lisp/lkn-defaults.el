@@ -432,6 +432,7 @@ The DWIM behaviour of this command is as follows:
   (compilation-scroll-output t)
   (confirm-nonexistent-file-or-buffer nil)
   (minibuffer-default-prompt-format " [%s]")
+  (scroll-conservatively 101)
 
   ;; Backups
   (backup-directory-alist
