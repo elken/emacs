@@ -160,7 +160,9 @@
   :custom
   (diff-hl-update-async t)
   :init
-  (global-diff-hl-mode))
+  (global-diff-hl-mode)
+  :config
+  (advice-add 'lkn/auto-revert-buffer :after #'diff-hl-update))
 
 (use-package browse-at-remote
   :custom
