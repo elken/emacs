@@ -84,6 +84,9 @@
             (cl-remove-if (lambda (x) (eq (car-safe x) 'ruby-ts-mode))
                          eglot-server-programs)))
 
+  ;; Until we figure out why ruby-lsp and solargraph don't send diagnostics
+  (setq eglot-stay-out-of '(flymake))
+
   ;; Enable formatters, just in case
   (setq-default eglot-workspace-configuration
                 '((:solargraph . (:formatting t
