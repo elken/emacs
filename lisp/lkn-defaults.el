@@ -405,8 +405,8 @@ The DWIM behaviour of this command is as follows:
   "WIP: ARGUMENT."
   (interactive "P")
   (if argument
-      (call-interactively 'fill-paragraph)
-    (prog-fill-reindent-defun)))
+      (prog-fill-reindent-defun)
+    (fill-paragraph)))
 
 ;;; Packages
 
