@@ -311,7 +311,8 @@ We do this by disabling all other themes then loading ours."
   (popper-reference-buffers
    '("\\*Messages\\*"
      "Output\\*$"
-     "*rails*"
+     "\\*rails\\*"
+     "\\*Claude\\*"
      "\\*Async Shell Command\\*"
      help-mode
      helpful-mode

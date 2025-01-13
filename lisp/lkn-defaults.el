@@ -308,7 +308,8 @@ The DWIM behaviour of this command is as follows:
     shell-mode-hook
     treemacs-mode-hook
     pdf-view-mode
-    eshell-mode-hook)
+    eshell-mode-hook
+    gptel-mode-hook)
   "List of modes to not display line numbers on.")
 
 ;; Globally disable hooks
