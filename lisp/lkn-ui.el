@@ -418,6 +418,12 @@ We do this by disabling all other themes then loading ours."
   :ensure (:host github :repo "jdtsmith/ultra-scroll")
   :when (not IS-MAC))
 
+(use-package fancy-compilation
+  :custom
+  (fancy-compilation-term "xterm-256color")
+  :commands (fancy-compilation-mode)
+  :after compile)
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
 ;; Local Variables:
