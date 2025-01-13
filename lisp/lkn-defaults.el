@@ -452,7 +452,6 @@ The DWIM behaviour of this command is as follows:
   (after-init . lkn/disable-hooks-setup)
   (after-init . pixel-scroll-precision-mode)
   (after-init . global-so-long-mode)
-  (after-init . electric-pair-mode)
   (after-init . global-subword-mode)
   (after-init . delete-selection-mode)
   (after-init . lkn/keychain-setup)
@@ -589,6 +588,29 @@ The DWIM behaviour of this command is as follows:
   :custom
   (outline-minor-mode-highlight t)
   (outline-minor-mode-cycle t))
+
+(use-package elec-pair
+  :ensure nil
+  :hook (after-init . electric-pair-mode)
+  :custom
+  (electric-pair-inhibit-predicate #'lkn/electric-pair-inhibit)
+  :init
+  (defun lkn/electric-pair-inhibit (char)
+    "Adjust how we pair up CHAR depending on context."
+    (or
+     ;; I find it more often preferable not to pair when the
+     ;; same char is next.
+     (eq char (char-after))
+     ;; Don't pair up when we insert the second of "" or of ((.
+     (and (eq char (char-before))
+          (eq char (char-before (1- (point)))))
+     ;; I also find it often preferable not to pair next to a word.
+     (eq (char-syntax (following-char)) ?w)
+     ;; Don't pair at the end of a word, unless parens.
+     (and
+      (eq (char-syntax (char-before (1- (point)))) ?w)
+      (eq (preceding-char) char)
+      (not (eq (char-syntax (preceding-char)) ?\())))))
 
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
