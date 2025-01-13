@@ -38,6 +38,9 @@
 
   (ad-activate 'rspec-compile))
 
+(use-package robe
+  :hook (ruby-ts-mode . robe-mode))
+
 (use-package erb-ts-mode
   :ensure nil
   :disabled t
