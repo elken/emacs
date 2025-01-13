@@ -408,6 +408,11 @@ The DWIM behaviour of this command is as follows:
       (prog-fill-reindent-defun)
     (fill-paragraph)))
 
+(defun lkn/insert-zero-width-space ()
+  "Insert a zero-width space character."
+  (interactive)
+  (insert "​"))
+
 ;;; Packages
 
 (use-package emacs
