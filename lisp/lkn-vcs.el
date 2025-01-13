@@ -129,18 +129,6 @@
         ("r" . code-review-transient-api)
         ("RET" . code-review-comment-add-or-edit)))
 
-(use-package magit-delta
-  :after magit
-  :disabled t
-  :hook (magit-mode . magit-delta-mode)
-  :config
-  (setq magit-delta-delta-args
-        '("--true-color" "always"
-          "--features" "magit-delta"
-          "--syntax-theme" "Nord"
-          "--dark"
-          "--color-only")))
-
 (use-package transient
   :bind
   (:map transient-map
