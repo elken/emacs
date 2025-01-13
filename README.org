@@ -1,4 +1,4 @@
-#+title: Config
+#+title: Emacs Configuration
 #+subtitle: Let go your earthly tether. Enter the void. Empty; and become wind.
 #+author: Ellis Kenyő
 #+email: emacs@lkn.mozmail.com
@@ -8,23 +8,12 @@
 #+options: ':t toc:nil author:t email:t num:t
 #+startup: content indent
 
-* Table of Contents :TOC:
-- [[#intro][Intro]]
-- [[#structure][Structure]]
-  - [[#early-initel][=early-init.el=]]
-  - [[#initel][=init.el=]]
-  - [[#lisp][=lisp=]]
-  - [[#writing-rules][Writing rules]]
-    - [[#co-locate-as-much-as-possible][Co-locate as much as possible]]
-    - [[#use-use-package-for-everything-reasonable][Use =use-package= for everything reasonable]]
-    - [[#if-i-cant-properly-describe-it-it-probably-doesnt-need-to-be-here][If I can't properly describe it, it probably doesn't need to be here]]
-    - [[#if-i-havent-used-something-after-an-arbitrary-period-it-probably-doesnt-need-to-be-here][If I haven't /used/ something after an arbitrary period, it probably doesn't need to be here]]
-    - [[#reach-for-packages-only-when-something-else-doesnt-exist][Reach for packages only when something else /doesn't/ exist]]
+#+attr_html: :width 100px
+#+attr_latex: :width 100px
+[[https://raw.githubusercontent.com/jaidetree/doom-icon/refs/heads/master/cute-doom/src/doom.iconset/icon_128x128%402x.png]]
 
-* Intro
-:PROPERTIES:
-:ID:       2C285438-98A0-46DF-8C69-84E4C0F5FCC3
-:END:
+(icon courtesy of https://github.com/jaidetree/doom-icon)
+
 What follows is a higgledy mess of Emacs Lisp (no but really). If for
 whatever reason you find something useful here, it would be nice if
 you mentioned me when doing so. It’s just good manners :)
@@ -40,6 +29,19 @@ knowledge on my end; but if there is anything here that can be made
 (constructively) clearer then I’m all ears.
 
 Knowledge is like muffins; best shared around.
+
+* Table of Contents :TOC:
+- [[#structure][Structure]]
+  - [[#early-initel][​early-init.el]]
+  - [[#initel][init.el]]
+  - [[#lisp][lisp]]
+- [[#writing-rules][Writing rules]]
+  - [[#co-locate-as-much-as-possible][Co-locate as much as possible]]
+  - [[#use-use-package-for-everything-reasonable][Use =use-package= for everything reasonable]]
+  - [[#if-i-cant-properly-describe-it-it-probably-doesnt-need-to-be-here][If I can't properly describe it, it probably doesn't need to be here]]
+  - [[#if-i-havent-used-something-after-an-arbitrary-period-it-probably-doesnt-need-to-be-here][If I haven't /used/ something after an arbitrary period, it probably doesn't need to be here]]
+  - [[#reach-for-packages-only-when-something-else-doesnt-exist][Reach for packages only when something else /doesn't/ exist]]
+
 * Structure
 :PROPERTIES:
 :ID:       9a36598e-e2c9-420e-8af1-8e82631d95b4
@@ -48,8 +50,10 @@ The rough structure of what I have is available below, all modules should have
 some amount of commentary so if you need anything more specific then please look
 deeper.
 
+I aim to comment more in-depth using =outline-minor-mode=, but for now it'll do.
+
 The list changes so it would be futile for me to refer to them all here.
-** =early-init.el=
+** ​early-init.el
 :PROPERTIES:
 :ID:       175e2184-0132-466c-a763-383d6bf6e9aa
 :END:
@@ -59,12 +63,16 @@ also a couple of performance enhancements for /speeed/ and it's also where we se
 aEsThEtIcS.
 
 We also set as much of =no-littering= bits as we can to pre-empt it loading later.
-** =init.el=
+** init.el
 :PROPERTIES:
 :ID:       edacc7ef-232c-42ba-8225-78adbc3f93d2
 :END:
-Setup elpaca and a couple  of "need-to-run-early" packages, as well as loading all our modules.
-** =lisp=
+Setup elpaca and a couple of "need-to-run-early" packages, as well as
+loading all our modules.
+
+This is also where we call our potential =init-local.el= file which
+contains machine-specific config I can't commit yet.
+** lisp
 :PROPERTIES:
 :ID:       6b17a3b6-2e7a-47f8-a27e-1df7175757da
 :END:
@@ -77,13 +85,13 @@ To make my life easier, there's not  a rigid structure here. If I feel
 like I'm adding a bunch of packages relating to a specific thing, I'll
 move it to a module. I may look at granularity down the line, akin to
 what Doom Emacs offers, but for my needs now this will do.
-** Writing rules
+* Writing rules
 :PROPERTIES:
 :ID:       5080d65d-e0bc-493a-b786-5887eb464dba
 :END:
 Below are a couple of rules I've given myself to make writing and
 maintaining this config a bit simpler.
-*** Co-locate as much as possible
+** Co-locate as much as possible
 :PROPERTIES:
 :ID:       debe0ea8-2045-4c71-bc35-12804ef2ff48
 :END:
@@ -94,7 +102,7 @@ and hard to find. Whereas for me; it becomes quite simple.
 
 Coupled with some extra additions to imenu to make =use-package= calls show up, it
 becomes very fast for me to identify where something is set.
-*** Use =use-package= for everything reasonable
+** Use =use-package= for everything reasonable
 :PROPERTIES:
 :ID:       e5ac6d5b-8566-491d-8f32-6ad78cb5a097
 :END:
@@ -126,7 +134,11 @@ Where the "reasonable" constraint extends  to is dumping lots of =defun=
 calls into =:init= or =:config=. Doing so  makes it much harder to look at
 the source, as it pulls the source of the entire form rather than just
 the function.
-*** If I can't properly describe it, it probably doesn't need to be here
+
+An example of me breaking this rule is the massive =(use-package emacs=
+block, but this is being split out over time as use more of built-in
+bits.
+** If I can't properly describe it, it probably doesn't need to be here
 :PROPERTIES:
 :ID:       ba56f986-6b04-4769-bd35-3038b251d05c
 :END:
@@ -139,7 +151,12 @@ This is fine for quickly testing things, it would be quite
 unproductive of me to have to add a blurb every time I wanted to try
 out a new package; but at commit-time there should definitely be
 something.
-*** If I haven't /used/ something after an arbitrary period, it probably doesn't need to be here
+
+I'm also breaking this rule a lot, but it's actually a test for
+myself. I plan on adding =outline-minor-mode= soon, and by having
+liberal amounts of comments I'm anticipating that when I add this I
+will indeed be able to describe everything.
+** If I haven't /used/ something after an arbitrary period, it probably doesn't need to be here
 :PROPERTIES:
 :ID:       8064E767-C876-4A76-A613-6FB878D0D34E
 :END:
@@ -162,7 +179,11 @@ This rule, due the the specification of it being "arbitrary", is less
 strict than the others; but if I ever find myself going "oh yeah, I
 remember that plugin being great but I never actually used it"; it can
 go. Less plugins is less maintenance.
-*** Reach for packages only when something else /doesn't/ exist
+
+Going with the previous explanation of adding =outline-minor-mode= also,
+when documenting if I hit "oh, I've not used this" then I can safely
+remove it.
+** Reach for packages only when something else /doesn't/ exist
 :PROPERTIES:
 :ID:       CEA37D3F-223D-47A8-B7FA-B1B4C433D774
 :END:
