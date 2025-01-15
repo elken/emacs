@@ -415,6 +415,22 @@ The DWIM behaviour of this command is as follows:
   (interactive)
   (insert "​"))
 
+(defun lkn/split-window-below (&optional size window-to-split)
+  "Call the original split-window but also focus after."
+  (interactive `(,(when current-prefix-arg
+                    (prefix-numeric-value current-prefix-arg))
+                 ,(selected-window)))
+  (split-window-below size window-to-split)
+  (other-window 1))
+
+(defun lkn/split-window-right (&optional size window-to-split)
+  "Call the original split-window but also focus after."
+  (interactive `(,(when current-prefix-arg
+                    (prefix-numeric-value current-prefix-arg))
+                 ,(selected-window)))
+  (split-window-right size window-to-split)
+  (other-window 1))
+
 ;;; Packages
 
 (use-package emacs
@@ -470,7 +486,9 @@ The DWIM behaviour of this command is as follows:
    ("C-g" . lkn/keyboard-quit-dwim)
    ("M-q" . lkn/fill-region)
    ("C-c f p" . lkn/find-file-emacs)
-   ("C-x p y" . lkn/yank-buffer-project-path))
+   ("C-x p y" . lkn/yank-buffer-project-path)
+   ([remap split-window-below] . lkn/split-window-below)
+   ([remap split-window-right] . lkn/split-window-right))
   :init
   ;; Ensure the buffers are correctly encoded
   (prefer-coding-system       'utf-8)
