@@ -259,6 +259,13 @@ We do this by disabling all other themes then loading ours."
   :config
   (which-key-setup-side-window-bottom))
 
+(use-package which-key-posframe
+  :after which-key
+  :custom
+  (which-key-posframe-poshandler 'posframe-poshandler-window-bottom-left-corner)
+  :config
+  (which-key-posframe-mode))
+
 (use-package nerd-icons-completion
   :after marginalia
   :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
