@@ -180,7 +180,9 @@
                                    (eglot (styles orderless))
                                    (eglot-capf (styles orderless))))
   (orderless-component-separator "[ &]")
-  (completion-category-defaults nil))
+  (completion-category-defaults nil)
+  :config
+  (add-to-list 'orderless-style-dispatchers #'orderless-kwd-dispatch))
 
 (use-package cape
   :after corfu
