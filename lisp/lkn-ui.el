@@ -321,6 +321,7 @@ We do this by disabling all other themes then loading ours."
      "\\*rails\\*"
      "\\*Claude\\*"
      "\\*Async Shell Command\\*"
+     "-gptel\\*"
      help-mode
      helpful-mode
      Info-mode

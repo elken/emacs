@@ -24,11 +24,15 @@
 (use-package project
   :ensure nil
   :demand t
+  :bind
+  (:map project-prefix-map
+        ("G" . project-gptel))
   :custom
   (project-vc-extra-root-markers '(".project"))
   (project-switch-commands
    '((project-find-file "Find file" ?f)
      (project-dired "Dired" ?d)
+     (project-gptel "gptel" ?g)
      (lkn/vterm-toggle "Terminal" ?t)
      (magit-project-status "Magit" ?m)
      (consult-ripgrep "Search" ?s)))
@@ -40,6 +44,11 @@
             "-"
             (downcase mode)
             "*"))
+  (defun project-gptel ()
+    "Open a gptel buffer for the current project."
+    (interactive)
+    (with-current-buffer (gptel (project-root-prefixed-buffer-name "gptel"))
+      (display-buffer (current-buffer) gptel-display-buffer-action)))
   :config
   (add-to-list 'project-kill-buffer-conditions  '(major-mode . vterm-mode)))
 
