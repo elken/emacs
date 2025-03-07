@@ -117,6 +117,9 @@
    (:map magit-branch-section-map
          ([remap magit-browse-thing] . forge-browse-branch))))
 
+(use-package pr-review
+  :after (magit forge))
+
 (use-package code-review
   :ensure (:host github :repo "doomelpa/code-review")
   :after (magit forge)

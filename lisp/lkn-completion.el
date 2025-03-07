@@ -65,7 +65,9 @@
 
 (use-package embark-vc
   :after (embark magit forge)
-  :ensure (:host github :repo "elken/embark-vc"))
+  :ensure (:host github :repo "elken/embark-vc")
+  :custom
+  (embark-vc-review-provider 'pr-review))
 
 (use-package marginalia
   :bind (:map minibuffer-local-map
