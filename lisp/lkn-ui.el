@@ -313,7 +313,7 @@ We do this by disabling all other themes then loading ours."
   :custom
   (popper-mode-line
    '(:eval
-     (propertize " 󰍡 " 'face 'mode-line-emphasis)))
+     (propertize "  " 'face 'mode-line-emphasis)))
   (popper-group-function #'popper-group-by-perspective)
   (popper-reference-buffers
    '("\\*Messages\\*"
