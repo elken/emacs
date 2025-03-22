@@ -23,6 +23,13 @@
 ;;; infrequently it's not a major issue
 ;;; Code:
 
+(use-package ob-restclient
+  :after org
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((restclient . t))))
+
 (use-package org-modern
   :after org
   :custom
