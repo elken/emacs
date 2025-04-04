@@ -31,6 +31,7 @@
         "-c" "gc.auto=0"
         "-c" "core.commitGraph=true"))
   (magit-git-executable (executable-find "git"))
+  (magit-format-file-function #'magit-format-file-nerd-icons)
   :bind
   (:map magit-status-mode-map
         ("@" . forge-dispatch))
@@ -93,11 +94,6 @@
 (use-package magit-todos
   :after magit
   :config (magit-todos-mode 1))
-
-(use-package magit-file-icons
-  :after magit
-  :init
-  (magit-file-icons-mode 1))
 
 (use-package forge
   :after magit
