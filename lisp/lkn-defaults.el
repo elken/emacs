@@ -324,22 +324,23 @@ The DWIM behaviour of this command is as follows:
 (defun lkn/keychain-setup ()
   "Load keychain env after Emacs."
   (interactive)
-  (let ((kill-buffer-query-functions nil))
-    (when (executable-find "keychain")
-      (make-process
-       :name "keychain-setup"
-       :command '("keychain" "-q" "--noask" "--agents" "ssh,gpg" "--eval")
-       :buffer "*keychain-output*"
-       :sentinel
-       (lambda (process _event)
-         (when (eq 'exit (process-status process))
-           (with-current-buffer (process-buffer process)
-             (let ((output (buffer-string)))
-               (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO"))
-                 (when (string-match (format "%s[=\s]\\([^\s;\n]*\\)" var) output)
-                   (setenv var (match-string 1 output))))))
-           (when (buffer-live-p (get-buffer "*keychain-output*"))
-             (kill-buffer "*keychain-output*"))))))))
+  (unless (getenv "SSH_AUTH_SOCK")
+    (let ((kill-buffer-query-functions nil))
+      (when (executable-find "keychain")
+        (make-process
+         :name "keychain-setup"
+         :command '("keychain" "-q" "--noask" "--agents" "ssh,gpg" "--eval")
+         :buffer "*keychain-output*"
+         :sentinel
+         (lambda (process _event)
+           (when (eq 'exit (process-status process))
+             (with-current-buffer (process-buffer process)
+               (let ((output (buffer-string)))
+                 (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO"))
+                   (when (string-match (format "%s[=\s]\\([^\s;\n]*\\)" var) output)
+                     (setenv var (match-string 1 output))))))
+             (when (buffer-live-p (get-buffer "*keychain-output*"))
+               (kill-buffer "*keychain-output*")))))))))
 
 ;; Only show the compilation buffer if there are errors. Otherwise,
 ;; it's useless
