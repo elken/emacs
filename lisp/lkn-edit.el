@@ -202,6 +202,12 @@
   :init
   (undo-fu-session-global-mode))
 
+(use-package dumb-jump
+  :custom
+  (xref-show-definitions-function #'xref-show-definitions-completing-read)
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
