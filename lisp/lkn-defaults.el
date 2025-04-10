@@ -324,7 +324,7 @@ The DWIM behaviour of this command is as follows:
 (defun lkn/keychain-setup ()
   "Load keychain env after Emacs."
   (interactive)
-  (unless (getenv "SSH_AUTH_SOCK")
+  (unless (bound-and-true-p lkn/keychain-initialized-p)
     (let ((kill-buffer-query-functions nil))
       (when (executable-find "keychain")
         (make-process
@@ -340,7 +340,8 @@ The DWIM behaviour of this command is as follows:
                    (when (string-match (format "%s[=\s]\\([^\s;\n]*\\)" var) output)
                      (setenv var (match-string 1 output))))))
              (when (buffer-live-p (get-buffer "*keychain-output*"))
-               (kill-buffer "*keychain-output*")))))))))
+               (kill-buffer "*keychain-output*"))
+             (setq lkn/keychain-initialized-p t))))))))
 
 ;; Only show the compilation buffer if there are errors. Otherwise,
 ;; it's useless
