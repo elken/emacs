@@ -433,6 +433,36 @@ The DWIM behaviour of this command is as follows:
   (split-window-right size window-to-split)
   (other-window 1))
 
+(defun lkn/sudo-kill-current-buffer ()
+  "Like `kill-current-buffer' but also delete the file."
+  (interactive)
+  (let ((file (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and file (file-exists-p file)))
+        (kill-current-buffer)
+      (when (yes-or-no-p (concat "Are you sure you want to remove " file "? "))
+        (delete-file file)
+        (kill-buffer buffer)
+        (message "File '%s' removed" file)))))
+
+(defun lkn/rename-current-buffer-file ()
+  "Rename the current buffer and visited file."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
 ;;; Packages
 
 (use-package emacs
@@ -458,6 +488,7 @@ The DWIM behaviour of this command is as follows:
   (confirm-nonexistent-file-or-buffer nil)
   (minibuffer-default-prompt-format " [%s]")
   (scroll-conservatively 101)
+  (apropos-do-all t)
 
   ;; Backups
   (backup-directory-alist
@@ -484,7 +515,12 @@ The DWIM behaviour of this command is as follows:
   (elpaca-after-init . minibuffer-electric-default-mode)
   :bind
   (("C-x k" . kill-current-buffer)
-   ("C-s" . save-buffer)
+   ("C-x C-k" . lkn/sudo-kill-current-buffer)
+   ("C-x C-r" . lkn/rename-current-buffer-file)
+   ("C-s" . isearch-forward-regexp)
+   ("C-r" . isearch-backward-regexp)
+   ("M-/" . hippie-expand)
+   ("M-z" . zap-up-to-char)
    ("C-g" . lkn/keyboard-quit-dwim)
    ("M-q" . lkn/fill-region)
    ("C-c f p" . lkn/find-file-emacs)
