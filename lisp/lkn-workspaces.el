@@ -24,8 +24,10 @@
 (use-package perspective
   :init (persp-mode)
   :hook (kill-emacs . persp-state-save)
+  :bind
+  (("C-x C-b" . persp-switch-to-buffer*))
   :custom
-  (persp-suppress-no-prefix-key-warning t)
+  (persp-mode-prefix-key (kbd "C-c TAB"))
   (persp-show-modestring nil)
   (persp-state-default-file (lkn/cache-dir "perspectives"))
   :config
@@ -42,35 +44,6 @@
       "8" "switch to 8"
       "9" "switch to 9"
       "0" "switch to 10"))
-
-  (with-eval-after-load 'meow
-    (defvar-keymap lkn/perspective-map
-      "n" #'persp-next
-      "p" #'persp-prev
-      "s" #'persp-switch
-      "S" #'persp-state-save
-      "L" #'persp-state-load
-      "a" #'persp-add-buffer
-      "r" #'persp-rename
-      "d" #'persp-kill
-      "b" #'persp-switch-to-buffer
-      "B" #'persp-switch-to-scratch-buffer
-      "`" #'persp-switch-last
-      "k" #'persp-remove-buffer
-      "1" (cmd! (persp-switch-by-number 1))
-      "2" (cmd! (persp-switch-by-number 2))
-      "3" (cmd! (persp-switch-by-number 3))
-      "4" (cmd! (persp-switch-by-number 4))
-      "5" (cmd! (persp-switch-by-number 5))
-      "6" (cmd! (persp-switch-by-number 6))
-      "7" (cmd! (persp-switch-by-number 7))
-      "8" (cmd! (persp-switch-by-number 8))
-      "9" (cmd! (persp-switch-by-number 9))
-      "0" (cmd! (persp-switch-by-number 10)))
-
-    (meow-leader-define-key
-     '("," . persp-switch-to-buffer*)
-     (cons "TAB" lkn/perspective-map)))
 
   ;; Inspired by <https://github.com/bbatsov/persp-projectile>
   (defadvice project-switch-project (around project-persp-switch-project (project) activate)
