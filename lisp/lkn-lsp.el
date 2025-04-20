@@ -88,8 +88,12 @@
         (cons '(elixir-ts-mode . ("elixir-ls"))
               (cl-remove-if (lambda (x) (eq (car-safe x) 'elixir-ts-mode))
                             eglot-server-programs)))
+
   ;; Until we figure out why ruby-lsp and solargraph don't send diagnostics
   (setq eglot-stay-out-of '(flymake))
+
+  ;; Smartparens doesn't get on with onTypeFormatting
+  (setq eglot-ignored-server-capabilities '(:documentOnTypeFormattingProvider))
 
   ;; Enable formatters, just in case
   (setq-default eglot-workspace-configuration
