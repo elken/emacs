@@ -31,6 +31,8 @@
 (use-package k8s-mode)
 
 (use-package web-mode
+  :custom
+  (web-mode-auto-close-style 2)
   :mode "\\.html.erb\\'")
 
 (use-package markdown-mode
