@@ -287,11 +287,12 @@ selection if not active."
    '("<escape>" . meow-cancel-selection)))
 
 (use-package meow-vterm
+  :after meow
   :ensure (:host github :repo "accelbread/meow-vterm")
   :init (meow-vterm-enable))
 
 (use-package meow
-  :demand t
+  :disabled t
   :diminish (meow-normal-mode meow-insert-mode meow-keypad-mode meow-esc-mode meow-motion-mode meow-beacon-mode)
   :hook (git-commit-mode . meow-insert-mode)
   :custom
