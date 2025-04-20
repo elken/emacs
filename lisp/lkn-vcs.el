@@ -25,11 +25,11 @@
   :custom
   (magit-refresh-status-buffer nil)
   (magit-git-global-arguments
-      '("--no-pager"
-        "--literal-pathspecs"
-        "-c" "core.preloadindex=true"
-        "-c" "gc.auto=0"
-        "-c" "core.commitGraph=true"))
+   '("--no-pager"
+     "--literal-pathspecs"
+     "-c" "core.preloadindex=true"
+     "-c" "gc.auto=0"
+     "-c" "core.commitGraph=true"))
   (magit-git-executable (executable-find "git"))
   (magit-format-file-function #'magit-format-file-nerd-icons)
   :bind
@@ -41,48 +41,83 @@
   (magit-post-refresh . magit-run-post-stage-hook)
   (magit-post-refresh . magit-run-post-unstage-hook)
   :config
+  ;; Prevent magit-auto-revert-mode from running
+  (advice-add 'magit-auto-revert-mode :override #'ignore)
+
+  ;; Or disable the underlying functionality
+  (advice-add 'magit-auto-revert-buffers :override #'ignore)
   (setq transient-display-buffer-action '(display-buffer-below-selected)
         magit-display-buffer-function #'lkn/magit-fullscreen-same-windows
         magit-bury-buffer-function #'magit-restore-window-configuration)
 
   (defun lkn/magit-fullscreen-same-windows (buffer)
-  "Display BUFFER, filling entire frame if BUFFER is a status buffer.
+    "Display BUFFER, filling entire frame if BUFFER is a status buffer.
 Otherwise, behave like `magit-display-buffer-traditional'."
-  (if (eq (with-current-buffer buffer major-mode)
-          'magit-status-mode)
-      (display-buffer buffer '(magit--display-buffer-fullframe))
-    (magit-display-buffer-same-window-except-diff-v1 buffer)))
+    (if (eq (with-current-buffer buffer major-mode)
+            'magit-status-mode)
+        (display-buffer buffer '(magit--display-buffer-fullframe))
+      (magit-display-buffer-same-window-except-diff-v1 buffer)))
 
-  (defvar magit-stale-p nil)
+  (defvar-local magit-stale-p nil)
+  (defvar-local magit-refreshed-buffer nil)
+
+  (defun magit-revertable-buffer-p (buffer)
+    "Return non-nil if BUFFER should be auto-reverted."
+    (and (buffer-live-p buffer)
+         (or (buffer-file-name buffer)
+             (buffer-local-value 'default-directory buffer))))
 
   (defun magit-revert-buffer (buffer)
     "Revert the current buffer and update the modeline."
     (with-current-buffer buffer
       (kill-local-variable 'magit-stale-p)
-      (when (and buffer-file-name (file-exists-p buffer-file-name))
-        (if (buffer-modified-p (current-buffer))
-            (when (bound-and-true-p vc-mode)
-              (vc-refresh-state)
-              (force-mode-line-update))
-          (revert-buffer t t t)))))
+      (when (and buffer-file-name
+                 (file-exists-p buffer-file-name)
+                 (magit-auto-revert-repository-buffer-p buffer)
+                 (not (buffer-modified-p buffer)))
+        (revert-buffer t t t))
+      (force-mode-line-update)))
 
   (defun magit-mark-stale-buffers-a (&rest _)
-    (dolist (buffer (buffer-list))
-      (when (buffer-live-p buffer)
-        (if (get-buffer-window buffer)
-            (magit-revert-buffer buffer)
-          (with-current-buffer buffer
-            (setq-local magit-stale-p t))))))
+    "Revert all visible buffers and marked buried ones as stale."
+    (let* ((visible-windows (window-list))
+           (visible-buffers (mapcar #'window-buffer visible-windows)))
+      (dolist (buffer (buffer-list))
+        (when (magit-revertable-buffer-p buffer)
+          (if (memq buffer visible-buffers)
+              (progn
+                (magit-revert-buffer buffer)
+                (setq visible-buffers (delq buffer visible-buffers)))
+            (with-current-buffer buffer
+              (setq-local magit-stale-p t)))))))
 
-  (defun magit-revert-buffer-maybe-h ()
+  (defun magit-revert-buffer-maybe-h (&rest _window)
     "Revert the buffer if out of date."
     (when magit-stale-p
       (magit-revert-buffer (current-buffer))))
 
-  (add-hook 'buffer-list-update-hook #'magit-revert-buffer-maybe-h)
-  (advice-add 'magit-checkout :after #'magit-mark-stale-buffers-a)
-  (advice-add 'magit-branch-and-checkout :after #'magit-mark-stale-buffers-a)
+  (defun magit-set-window-state-h ()
+    "Store the current buffer, point and window start before reverting."
+    (setq-local magit-refreshed-buffer
+                (list (current-buffer) (point) (window-start))))
 
+  (defun magit-restore-window-state-h ()
+    "Restore window state after reverting."
+    (pcase-let ((`(,buf ,pt ,beg) magit-refreshed-buffer))
+      (when (and buf (eq (current-buffer) buf))
+        (goto-char pt)
+        (set-window-start nil beg t)
+        (kill-local-variable 'magit-refreshed-buffer))))
+
+  (remove-hook 'post-command-hook #'magit-auto-revert-buffers)
+
+  (add-hook 'buffer-list-update-hook #'magit-revert-buffer-maybe-h)
+  (add-hook 'magit-post-refresh-hook #'magit-mark-stale-buffers-a)
+  (add-hook 'window-buffer-change-functions #'magit-revert-buffer-maybe-h)
+  (add-hook 'window-selection-change-functions #'magit-revert-buffer-maybe-h)
+
+  (add-hook 'magit-pre-refresh-hook #'magit-set-window-state-h)
+  (add-hook 'magit-post-refresh-hook #'magit-restore-window-state-h)
   ;; Taken from https://emacs.stackexchange.com/questions/19440/magit-extremely-slow-in-windows-how-do-i-optimize
   (defvar-local magit-git--cache
       (make-hash-table :test 'equal)
