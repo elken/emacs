@@ -500,6 +500,12 @@ The DWIM behaviour of this command is as follows:
   (delete-old-versions t)
   (kept-new-versions 3)
   (kept-old-versions 2)
+
+  ;; Display
+  (display-buffer-base-action
+   '((display-buffer-reuse-window display-buffer-same-window)
+     (reusable-frames . t)))
+  (even-window-sizes nil)
   :hook
   (text-mode . display-line-numbers-mode)
   (prog-mode . display-line-numbers-mode)
