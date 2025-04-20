@@ -192,7 +192,8 @@ Otherwise, behave like `magit-display-buffer-traditional'."
   :init
   (global-diff-hl-mode)
   :config
-  (advice-add 'lkn/auto-revert-buffer :after #'diff-hl-update))
+  (add-hook 'window-selection-change-functions (lambda (&rest _) (diff-hl-update)))
+  (add-hook 'window-buffer-change-functions (lambda (&rest _) (diff-hl-update))))
 
 (use-package browse-at-remote
   :custom
