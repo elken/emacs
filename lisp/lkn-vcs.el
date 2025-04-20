@@ -42,8 +42,16 @@
   (magit-post-refresh . magit-run-post-unstage-hook)
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)
-        magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
+        magit-display-buffer-function #'lkn/magit-fullscreen-same-windows
         magit-bury-buffer-function #'magit-restore-window-configuration)
+
+  (defun lkn/magit-fullscreen-same-windows (buffer)
+  "Display BUFFER, filling entire frame if BUFFER is a status buffer.
+Otherwise, behave like `magit-display-buffer-traditional'."
+  (if (eq (with-current-buffer buffer major-mode)
+          'magit-status-mode)
+      (display-buffer buffer '(magit--display-buffer-fullframe))
+    (magit-display-buffer-same-window-except-diff-v1 buffer)))
 
   (defvar magit-stale-p nil)
 
