@@ -301,23 +301,6 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-;; Setup modes to disable line numbers
-(defvar lkn/global-no-numbers-modes
-  '(org-mode-hook
-    term-mode-hook
-    shell-mode-hook
-    treemacs-mode-hook
-    pdf-view-mode
-    eshell-mode-hook
-    gptel-mode-hook)
-  "List of modes to not display line numbers on.")
-
-;; Globally disable hooks
-(defun lkn/disable-hooks-setup ()
-  "Apply the list of modes to not display line numbers for."
-  (dolist (mode lkn/global-no-numbers-modes)
-    (add-hook mode (lambda () (display-line-numbers-mode 0)))))
-
 ;; Ensure that keychain's environment is setup in Emacs
 ;; Needed so magit can access GPG and SSH keys
 ;;;###autoload
@@ -463,6 +446,15 @@ The DWIM behaviour of this command is as follows:
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
+(defun lkn/goto-line-feedback ()
+  "Show the line numbers before executing `goto-line'."
+  (interactive)
+  (unwind-protect
+      (progn
+        (display-line-numbers-mode 1)
+        (goto-line (read-number "Jump to line: ")))
+    (display-line-numbers-mode -1)))
+
 ;;; Packages
 
 (use-package emacs
@@ -480,7 +472,6 @@ The DWIM behaviour of this command is as follows:
   (read-extended-command-predicate #'command-completion-default-include-p)
   (vc-follow-symlinks nil)
   (ring-bell-function 'ignore)
-  (display-line-numbers-type 'relative)
   (use-short-answers t)
   (native-comp-async-report-warnings-errors 'silent)
   (select-enable-clipboard t)
@@ -507,30 +498,28 @@ The DWIM behaviour of this command is as follows:
      (reusable-frames . t)))
   (even-window-sizes nil)
   :hook
-  (text-mode . display-line-numbers-mode)
-  (prog-mode . display-line-numbers-mode)
-  (before-save . executable-make-buffer-file-executable-if-script-p)
-  (before-save . whitespace-cleanup)
-  (after-init . lkn/disable-hooks-setup)
-  (after-init . pixel-scroll-precision-mode)
-  (after-init . global-so-long-mode)
-  (after-init . global-subword-mode)
-  (after-init . delete-selection-mode)
-  (after-init . lkn/keychain-setup)
+  (before-save                  . executable-make-buffer-file-executable-if-script-p)
+  (before-save                  . whitespace-cleanup)
+  (after-init                   . pixel-scroll-precision-mode)
+  (after-init                   . global-so-long-mode)
+  (after-init                   . global-subword-mode)
+  (after-init                   . delete-selection-mode)
+  (after-init                   . lkn/keychain-setup)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
-  (elpaca-after-init . minibuffer-electric-default-mode)
+  (elpaca-after-init            . minibuffer-electric-default-mode)
   :bind
-  (("C-x k" . kill-current-buffer)
-   ("C-x C-k" . lkn/sudo-kill-current-buffer)
-   ("C-x C-r" . lkn/rename-current-buffer-file)
-   ("C-s" . isearch-forward-regexp)
-   ("C-r" . isearch-backward-regexp)
-   ("M-/" . hippie-expand)
-   ("M-z" . zap-up-to-char)
-   ("C-g" . lkn/keyboard-quit-dwim)
-   ("M-q" . lkn/fill-region)
-   ("C-c f p" . lkn/find-file-emacs)
-   ("C-x p y" . lkn/yank-buffer-project-path)
+  (("C-x k"                    . kill-current-buffer)
+   ("C-x C-k"                  . lkn/sudo-kill-current-buffer)
+   ("C-x C-r"                  . lkn/rename-current-buffer-file)
+   ("C-s"                      . isearch-forward-regexp)
+   ("C-r"                      . isearch-backward-regexp)
+   ("M-/"                      . hippie-expand)
+   ("M-z"                      . zap-up-to-char)
+   ("C-g"                      . lkn/keyboard-quit-dwim)
+   ("M-q"                      . lkn/fill-region)
+   ("C-c f p"                  . lkn/find-file-emacs)
+   ("C-x p y"                  . lkn/yank-buffer-project-path)
+   ([remap goto-line]          . lkn/goto-line-feedback)
    ([remap split-window-below] . lkn/split-window-below)
    ([remap split-window-right] . lkn/split-window-right))
   :init

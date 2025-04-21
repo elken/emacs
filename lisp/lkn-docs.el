@@ -27,7 +27,6 @@
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
-  :hook (pdf-view-mode . (lambda () (display-line-numbers-mode -1)))
   :custom
   (pdf-view-display-size 'fit-page)
   (pdf-view-use-scaling t)
