@@ -164,6 +164,7 @@
 (when IS-MAC
   (require 'lkn-macos))
 (require 'lkn-llm)
+(require 'lkn-feeds)
 
 (use-package request)
 (use-package jira-workflow
