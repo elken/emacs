@@ -24,6 +24,8 @@
 ;;; Code:
 
 (use-package avy
+  :bind
+  ("C-'" . avy-goto-char)
   :config
   (with-eval-after-load 'meow
     (defvar meow--last-avy-char)
