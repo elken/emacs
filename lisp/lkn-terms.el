@@ -30,10 +30,9 @@
   (vterm-shell (executable-find "zsh"))
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 5000)
+  :bind
+  ("C-c v" . lkn/vterm-toggle)
   :config
-  (with-eval-after-load 'meow
-    (meow-leader-define-key
-     '("v" . lkn/vterm-toggle)))
   (define-key vterm-mode-map (kbd "<C-backspace>") (cmd! (vterm-send-key (kbd "C-w"))))
   (add-hook 'vterm-exit-functions
             (cmd!

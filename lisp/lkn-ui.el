@@ -22,6 +22,9 @@
 ;;; That's quite a loose definition, so what's here tends to be pretty vague.
 ;;; Code:
 
+(use-package svg-lib
+  :ensure (:host github :repo "rougier/svg-lib"))
+
 (use-package svg-tag-mode
   :hook (prog-mode . svg-tag-mode)
   :hook (text-mode . svg-tag-mode)

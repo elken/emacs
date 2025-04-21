@@ -22,7 +22,6 @@
 
 
 (use-package vertico
-  :after meow
   :custom
   (vertico-resize nil)
   (vertico-count 17)
@@ -34,9 +33,9 @@
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   :hook (vertico-mode . file-name-shadow-mode)
   :hook (vertico-mode . vertico-mouse-mode)
+  :bind
+  ("C-c '" . vertico-repeat)
   :init
-  (meow-leader-define-key
-   '("'" . vertico-repeat))
   (vertico-mode)
   :bind
   (:map vertico-map
@@ -120,19 +119,16 @@
   (consult-async-input-debounce 0.1)
   (imenu-max-item-length 'unlimited)
   :bind
-  (([remap apropos] . consult-apropos)
-   ([remap imenu]   . consult-imenu)
-   ("M-g I" . consult-imenu-multi)
-   ([remap load-theme] . consult-theme)
-   ([remap man]        . consult-man)
-   ([remap recentf-open-files] . consult-recent-file)
-   ([remap switch-to-buffer] . consult-buffer)
+  (([remap apropos]                       . consult-apropos)
+   ([remap imenu]                         . consult-imenu)
+   ("M-g I"                               . consult-imenu-multi)
+   ([remap load-theme]                    . consult-theme)
+   ([remap man]                           . consult-man)
+   ([remap recentf-open-files]            . consult-recent-file)
+   ([remap switch-to-buffer]              . consult-buffer)
    ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
-   ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame))
-  :init
-  (with-eval-after-load 'meow
-    (meow-leader-define-key
-     '("/" . consult-ripgrep)))
+   ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame)
+   ("C-c /"                               . consult-ripgrep))
   :config
   (consult-customize
    consult-ripgrep consult-grep consult-git-grep consult-recent-file
@@ -146,9 +142,6 @@
    :map vertico-map
    ("C-x C-j" . consult-dir-jump-file))
   :config
-  (meow-leader-define-key
-   '("-" . consult-dir--source-tramp-local))
-
   (defun lkn/consult-dir-podman-hosts ()
     "Get a list of hosts from podman."
     (cl-loop

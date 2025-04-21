@@ -55,11 +55,7 @@
   :hook (org-journal-after-entry-create-hook . (cmd! (kill-buffer-and-window)))
   :custom
   (org-journal-find-file #'find-file-other-window)
-  (org-journal-dir "~/Nextcloud/org/journal")
-  :config
-  (with-eval-after-load 'meow
-    (meow-leader-define-key
-     '("j" . org-journal-new-entry))))
+  (org-journal-dir "~/Nextcloud/org/journal"))
 
 (use-package visual-fill-column
   :custom
