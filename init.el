@@ -86,6 +86,8 @@
 
 (setopt dired-listing-switches "-ahl -v --group-directories-first --color=auto")
 
+(use-package free-keys)
+
 (use-package benchmark-init
   :demand t
   :config
