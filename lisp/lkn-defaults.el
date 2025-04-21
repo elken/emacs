@@ -656,7 +656,21 @@ The DWIM behaviour of this command is as follows:
   :ensure nil
   :custom
   (outline-minor-mode-highlight t)
-  (outline-minor-mode-cycle t))
+  (outline-minor-mode-cycle t)
+  :init
+  (defcustom outline-minor-mode-characters " ▼ "
+    "Characters to use in-place of the default ellipsis for outline-minor-mode."
+    :type 'string)
+
+  (defun lkn/outline-mode-ellipsis ()
+    "Apply the ellipsis to outline mode locally to a buffer."
+    (let* ((display-table (or buffer-display-table (make-display-table)))
+           (face-offset (* (face-id 'shadow) (ash 1 22)))
+           (value (vconcat (mapcar (lambda (c) (+ face-offset c)) outline-minor-mode-characters))))
+      (set-display-table-slot display-table 'selective-display value)
+      (setq buffer-display-table display-table)))
+
+  (add-hook 'outline-minor-mode-hook #'lkn/outline-mode-ellipsis))
 
 (use-package elec-pair
   :ensure nil
