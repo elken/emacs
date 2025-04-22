@@ -210,6 +210,9 @@
   :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
