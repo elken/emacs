@@ -210,10 +210,6 @@
   :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-(use-package smartscan
-  :init
-  (global-smartscan-mode))
-
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
