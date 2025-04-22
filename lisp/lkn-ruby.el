@@ -107,6 +107,14 @@
                '(".page_title" ".heading"))))
           ,@erb-translation-capf--properties)))))
 
+(use-package rake
+  :custom
+  (rake-cache-file (lkn/cache-dir "rake.cache"))
+  (rake-completion-system 'default)
+  :bind
+  (:map ruby-ts-mode-map
+        ("C-!" . rake)))
+
 (provide 'lkn-ruby)
 ;;; lkn-ruby.el ends here
 ;; Local Variables:
