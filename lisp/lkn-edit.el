@@ -213,6 +213,22 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
+(use-package xref-union
+  :init
+  ;; TODO: https://codeberg.org/pkal/xref-union.el/issues/1
+  (cl-defmethod xref-backend-definitions ((backends (head union)) idents)
+    "Collect the results of multiple Xref BACKENDS.
+IDENTS is specified in `xref-backend-definitions'."
+    (seq-uniq
+     (cl-loop for backend in (cdr backends)
+              append (xref-backend-definitions backend (alist-get backend idents)))
+     #'xref-union-same-p))
+
+  (cl-defmethod xref-backend-identifier-at-point ((backends (head union)))
+    "Collect the results of multiple Xref BACKENDS."
+    (cl-loop for backend in (cdr backends)
+             collect (cons backend (xref-backend-identifier-at-point backend)))))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
