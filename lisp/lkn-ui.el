@@ -331,6 +331,7 @@ We do this by disabling all other themes then loading ours."
      vterm-mode
      org-journal-mode
      "\\*Org Select\\*"
+     rspec-compilation-mode
      compilation-mode)))
 
 (use-package doom-modeline
