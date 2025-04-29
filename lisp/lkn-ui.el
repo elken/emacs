@@ -394,14 +394,22 @@ We do this by disabling all other themes then loading ours."
   :custom-face
   (eldoc-box-body ((t (:font ,lkn-variable-pitch-font)))))
 
-;; (use-package dape
-;;   :hook
-;;   (kill-emacs . dape-breakpoint-save)
-;;   (after-init . dape-breakpoint-load)
-;;   (after-init . dape-breakpoint-global-mode)
-;;   (dape-compile . kill-buffer)
-;;   :custom
-;;   (dape-inlay-hints t))
+(use-package dape
+  :hook
+  (kill-emacs . dape-breakpoint-save)
+  (after-init . dape-breakpoint-load)
+  (after-init . dape-breakpoint-global-mode)
+  (dape-compile . kill-buffer)
+  :custom
+  (dape-inlay-hints t)
+  :config
+  (add-to-list 'dape-configs
+               `(rdbg-rails
+                 modes (ruby-mode ruby-ts-mode web-mode)
+                 :type "ruby"
+                 :request "attach"
+                 port 12345
+                 :localfs t)))
 
 (use-package ace-window
   :custom

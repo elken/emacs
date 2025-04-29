@@ -30,7 +30,15 @@
   :hook (ruby-mode . rspec-mode)
   :custom
   (rspec-use-spring-when-possible nil)
+  :init
+  (defun lkn/rspec-debug ()
+    (interactive)
+    (let* ((cmd (format "RAILS_ENV=test bundle exec rspec %s:%d"
+                        (expand-file-name (buffer-file-name))
+                        (line-number-at-pos))))
+      (dape (dape--config-eval 'rdbg `(-c ,cmd)))))
   :config
+  (define-key rspec-mode-keymap (kbd "d") 'lkn/rspec-debug)
   (defadvice rspec-compile (around rspec-compile-around)
     "Use BASH shell for running the specs because of ZSH issues."
     (let ((shell-file-name "/bin/bash"))
