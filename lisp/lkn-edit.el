@@ -214,7 +214,7 @@
   :bind ("C-=" . er/expand-region))
 
 (use-package xref-union
-  :init
+  :config
   ;; TODO: https://codeberg.org/pkal/xref-union.el/issues/1
   (cl-defmethod xref-backend-definitions ((backends (head union)) idents)
     "Collect the results of multiple Xref BACKENDS.
