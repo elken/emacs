@@ -403,13 +403,18 @@ We do this by disabling all other themes then loading ours."
   :custom
   (dape-inlay-hints t)
   :config
-  (add-to-list 'dape-configs
-               `(rdbg-rails
-                 modes (ruby-mode ruby-ts-mode web-mode)
-                 :type "ruby"
-                 :request "attach"
-                 port 12345
-                 :localfs t)))
+  (setq dape-configs
+        (cons
+         `(rdbg-rails
+           modes (ruby-mode ruby-ts-mode web-mode)
+           :type "ruby"
+           :request "attach"
+           port (if (file-exists-p (expand-file-name ".env.development.local" (project-root (project-current))))
+                    (string-to-number (dotenv-get "WEB_DEBUG_PORT" (expand-file-name ".env.development.local" (project-root (project-current)))))
+                  :autoport)
+           :localfs t)
+         (cl-remove-if (lambda (cfg) (eq (car-safe cfg) 'rdbg-rails))
+                       dape-configs))))
 
 (use-package ace-window
   :custom
