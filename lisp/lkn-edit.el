@@ -156,6 +156,41 @@
       (funcall orig-fn)))
   (advice-add 'save-buffer :around #'save-buffer-maybe-format)
 
+  ;; Custom function to format INI/Config files
+  (cl-defun lkn/ini-indent (&key buffer scratch callback &allow-other-keys)
+    "Format an ini BUFFER.
+Use SCRATCH as a temporary buffer and CALLBACK to apply the transformation.
+
+For more detail, see `apheleia--run-formatter-function'."
+    (interactive)
+    (with-current-buffer scratch
+      (funcall (with-current-buffer buffer major-mode))
+
+      (when (fboundp 'editorconfig-apply)
+        (editorconfig-apply))
+
+      (goto-char (point-min))
+      (let ((indent-amount (if (boundp 'tab-width) tab-width 4))
+            (inhibit-message t)
+            (message-log-max nil))
+        (while (not (eobp))
+          (beginning-of-line)
+          (cond
+           ((looking-at "[ \t]*\\[")
+            (delete-horizontal-space))
+           ((or (looking-at "[ \t]*$")
+                (looking-at "[ \t]*[#;]"))
+            nil)
+           (t
+            (delete-horizontal-space)
+            (indent-to indent-amount)))
+          (forward-line 1)))
+      (funcall callback)))
+
+  (setf (alist-get 'ini-cfg apheleia-formatters) #'lkn/ini-indent)
+  (setf (alist-get 'conf-mode apheleia-mode-alist) '(ini-cfg))
+  (setf (alist-get 'conf-unix-mode apheleia-mode-alist) '(ini-cfg))
+
   ;; Replace the built-in rubocop to use our config
   (setf (alist-get 'rubocop apheleia-formatters)
         '("apheleia-from-project-root"
