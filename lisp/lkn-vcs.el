@@ -20,6 +20,8 @@
 ;;; Git is the only VCS I use, but to save me ever having to rename this I'll make it generic
 ;;; Code:
 
+(use-package with-editor
+  :hook (after-init . shell-command-with-editor-mode))
 
 (use-package magit
   :custom
