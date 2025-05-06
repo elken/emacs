@@ -139,6 +139,9 @@
   (message-send-mail-function 'async-smtpmail-send-it)
   :hook (dired-mode . dired-async-mode))
 
+(use-package dotenv
+  :ensure (:host github :repo "pkulev/dotenv.el"))
+
 (use-package server
   :ensure nil
   :after exec-path-from-shell
