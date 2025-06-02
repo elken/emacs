@@ -134,7 +134,56 @@ Otherwise, behave like `magit-display-buffer-traditional'."
         cached-val)))
 
   (dolist (fn '(magit-rev-parse-safe magit-get magit-get-boolean))
-    (advice-add fn :around #'magit-git--memoize)))
+    (advice-add fn :around #'magit-git--memoize))
+
+  ;; Custom helper functions to end up in jira-workflow one day
+
+  (defun lkn/new-branch-pullreq ()
+    "Create a new PR from the current branch, pushing if needed."
+    (interactive)
+    (let ((current-branch (magit-get-current-branch)))
+      (magit-fetch-all nil)
+
+      (unless (magit-get-upstream-branch current-branch)
+        (message "Setting upstream and pushing branch...")
+        (magit-push-current-to-upstream nil))
+
+      (message "Creating PR for branch %s onto %s" current-branch (magit-main-branch))
+      (forge-create-pullreq (concat "origin/" current-branch) (concat "origin/" (magit-main-branch)))))
+
+  (defun lkn/modify-pr-template (buf)
+    "Adjust the PR buffer BUF to pre-fill some of the data"
+    (interactive)
+    (with-current-buffer buf
+      (when (and (search-forward "CRM457" nil t) (eq major-mode 'forge-post-mode))
+        (let* ((default-directory (magit-toplevel))
+               (branch (magit-get-current-branch))
+               (ticket-number (when (string-match "\\(CRM457-[0-9]+\\)" branch)
+                                (match-string 1 branch)))
+               (commits (magit-git-lines "rev-list" (concat (magit-main-branch) "..HEAD")))
+               (commit-message (when (= (length commits) 1)
+                                 (magit-git-string "log" "-1" "--format=%B" (car commits)))))
+
+          (save-excursion
+            (goto-char (point-min))
+            (when (re-search-forward "^---" nil t)
+              (beginning-of-line)
+              (kill-line 2)))
+
+          (when (and ticket-number (search-forward "-XXX" nil t))
+            (replace-match (substring ticket-number 6))
+            (end-of-line)
+            (delete-region (point) (point-max))
+
+            (when (re-search-backward "^## Description of change" nil t)
+              (forward-line 1)
+              (when commit-message
+                (insert "\n" (string-trim commit-message) "\n")
+                (forward-line -1))
+              (end-of-line))))))
+    buf)
+
+  (advice-add #'forge--prepare-post-buffer :filter-return #'lkn/modify-pr-template))
 
 (use-package magit-todos
   :after magit
