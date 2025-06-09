@@ -27,7 +27,7 @@
   :bind
   (("C-x C-b" . persp-switch-to-buffer*))
   :custom
-  (persp-mode-prefix-key (kbd "C-c TAB"))
+  (persp-mode-prefix-key (kbd "C-<tab>"))
   (persp-show-modestring nil)
   (persp-state-default-file (lkn/cache-dir "perspectives"))
   :config
