@@ -264,6 +264,61 @@ IDENTS is specified in `xref-backend-definitions'."
     (cl-loop for backend in (cdr backends)
              collect (cons backend (xref-backend-identifier-at-point backend)))))
 
+(use-package multiple-cursors
+  :bind-keymap
+  (("C-c m" . mc-repeat-map))
+  :init
+  (defvar-keymap mc-repeat-map
+    :repeat t
+    ;; Mark next/previous
+    ">" #'mc/mark-next-like-this
+    "<" #'mc/mark-previous-like-this
+    "." #'mc/mark-next-like-this
+    "," #'mc/mark-previous-like-this
+
+    ;; Skip cursors
+    "s" #'mc/skip-to-next-like-this
+    "S" #'mc/skip-to-previous-like-this
+
+    ;; Unmark cursors
+    "u" #'mc/unmark-next-like-this
+    "U" #'mc/unmark-previous-like-this
+
+    ;; Word/symbol variants
+    "w" #'mc/mark-next-like-this-word
+    "W" #'mc/mark-previous-like-this-word
+    "y" #'mc/mark-next-like-this-symbol
+    "Y" #'mc/mark-previous-like-this-symbol
+
+    ;; Mark all variants
+    "a" #'mc/mark-all-like-this
+    "A" #'mc/mark-all-words-like-this
+    "z" #'mc/mark-all-symbols-like-this
+    "d" #'mc/mark-all-dwim
+
+    ;; Line operations
+    "l" #'mc/edit-lines
+    "b" #'mc/edit-beginnings-of-lines
+    "e" #'mc/edit-ends-of-lines
+
+    ;; Region operations
+    "r" #'mc/mark-all-in-region
+    "R" #'set-rectangular-region-anchor
+
+    ;; Utility commands
+    "n" #'mc/insert-numbers
+    "i" #'mc/insert-letters
+    "o" #'mc/sort-regions
+    "v" #'mc/reverse-regions
+    "=" #'mc/vertical-align
+    "+" #'mc/vertical-align-with-space
+
+    ;; HTML/SGML
+    "t" #'mc/mark-sgml-tag-pair
+
+    ;; Extended mode
+    "x" #'mc/mark-more-like-this-extended))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
