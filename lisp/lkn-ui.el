@@ -328,7 +328,7 @@ We do this by disabling all other themes then loading ours."
      help-mode
      helpful-mode
      Info-mode
-     vterm-mode
+     "\\*\\(vterm\\|vterminal\\).*\\*"
      org-journal-mode
      "\\*Org Select\\*"
      rspec-compilation-mode
