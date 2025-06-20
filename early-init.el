@@ -40,7 +40,7 @@
 (setq-default package-user-dir (expand-file-name "packages/" LITTER-DIR)
               package-gnupghome-dir (expand-file-name "gnupg" package-user-dir)
               use-package-always-ensure t
-	      use-package-compute-statistics t)
+              use-package-compute-statistics t)
 
 ;; Need to set this so we can definitely find libgccjit
 (when IS-MAC
@@ -57,7 +57,7 @@
  `((foreground-color . "#ECEFF4")
    (background-color . "#2E3440")
    (bottom-divider-width . 1)	      ; Thin horizontal window divider
-   (fullscreen . ,(unless IS-MAC 'maximized)) ; Maximize the window by default
+   (fullscreen . 'maximized) ; Maximize the window by default
    (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
    (left-fringe . 8)                 ; Thin left fringe
    (right-fringe . 8)                ; Thin right fringe
@@ -101,12 +101,16 @@
 ;; Inspired by <https://github.com/daviwil/emacs-from-scratch/blob/d23348b4a52dde97f4f7cbcd66a519b5fd0a143c/init.el#L14-L19>
 ;; Compute and print the startup time for Emacs after loading
 (defun display-startup-time ()
+  "Print startup time after loading."
   (message "Emacs loaded %d packages in %s with %d garbage collections."
-	   (length (mapcar #'car (elpaca--queued)))
+           (length (mapcar #'car (elpaca--queued)))
            (format "%.2f seconds"
                    (float-time
-                     (time-subtract after-init-time before-init-time)))
+                    (time-subtract after-init-time before-init-time)))
            gcs-done))
 
 
 (add-hook 'elpaca-after-init-hook #'display-startup-time)
+
+(provide 'early-init)
+;;; early-init.el ends here
