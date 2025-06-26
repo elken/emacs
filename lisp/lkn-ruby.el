@@ -29,11 +29,12 @@
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
   :custom
+  (rspec-spec-command "flatware rspec")
   (rspec-use-spring-when-possible nil)
   :init
   (defun lkn/rspec-debug ()
     (interactive)
-    (let* ((cmd (format "RAILS_ENV=test bundle exec rspec %s:%d"
+    (let* ((cmd (format "RAILS_ENV=test bundle exec flatware rspec %s:%d"
                         (expand-file-name (buffer-file-name))
                         (line-number-at-pos))))
       (dape (dape--config-eval 'rdbg `(-c ,cmd)))))
