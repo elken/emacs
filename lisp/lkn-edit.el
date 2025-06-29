@@ -213,9 +213,11 @@ For more detail, see `apheleia--run-formatter-function'."
         '(rubocop)))
 
 (use-package combobulate
-  :ensure (:host github :repo "mickeynp/combobulate" :branch "development" :files (:defaults "tests/*.el"))
+  :ensure (:host github :repo "elken/combobulate" :branch "feature/add-ruby" :files (:defaults "tests/*.el"))
   :when (treesit-available-p)
-  :hook ((ruby-mode . combobulate-mode))
+  :hook ((ruby-ts-mode . combobulate-mode)
+         (python-ts-mode . combobulate-mode)
+         (html-ts-mode . combobulate-mode))
   :config
   (load (expand-file-name "combobulate/tests/combobulate-test-prelude.el" elpaca-repos-directory) t)
   (require 'combobulate-debug))
