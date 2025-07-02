@@ -141,6 +141,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
   (defun lkn/new-branch-pullreq ()
     "Create a new PR from the current branch, pushing if needed."
     (interactive)
+    (require 'forge)
     (let ((current-branch (magit-get-current-branch)))
       (magit-fetch-all nil)
 
@@ -160,7 +161,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
                (branch (magit-get-current-branch))
                (ticket-number (when (string-match "\\(CRM457-[0-9]+\\)" branch)
                                 (match-string 1 branch)))
-               (commits (magit-git-lines "rev-list" (concat (magit-main-branch) "..HEAD")))
+               (commits (magit-git-lines "rev-list" (concat (magit-get-current-branch) "..HEAD")))
                (commit-message (when (= (length commits) 1)
                                  (magit-git-string "log" "-1" "--format=%B" (car commits)))))
 
