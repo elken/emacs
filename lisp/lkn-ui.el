@@ -347,7 +347,14 @@ We do this by disabling all other themes then loading ours."
   (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
   (doom-modeline-def-modeline 'main
     '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
-    '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
+    '(now-playing check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
+
+(use-package doom-modeline-now-playing
+  :after doom-modeline
+  :custom
+  (doom-modeline-now-playing-interval 2)
+  :config
+  (doom-modeline-now-playing-timer))
 
 ;; Load the tab bar after elpaca is setup since we loosely depend on
 ;; some packages
