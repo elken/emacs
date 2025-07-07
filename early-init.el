@@ -56,8 +56,8 @@
  default-frame-alist
  `((foreground-color . "#ECEFF4")
    (background-color . "#2E3440")
-   (bottom-divider-width . 1)	      ; Thin horizontal window divider
-   (fullscreen . 'maximized) ; Maximize the window by default
+   (bottom-divider-width . 1)	     ; Thin horizontal window divider
+   (fullscreen . ,'maximized)        ; Maximize the window by default
    (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
    (left-fringe . 8)                 ; Thin left fringe
    (right-fringe . 8)                ; Thin right fringe
