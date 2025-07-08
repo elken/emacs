@@ -134,6 +134,11 @@
   :custom
   (exec-path-from-shell-arguments '("-l")))
 
+(use-package kkp
+  :unless (display-graphic-p)
+  :config
+  (global-kkp-mode))
+
 (use-package async
   :custom
   (message-send-mail-function 'async-smtpmail-send-it)
