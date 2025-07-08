@@ -345,9 +345,10 @@ We do this by disabling all other themes then loading ours."
   (doom-modeline-vcs-max-length 60)
   :config
   (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
-  (doom-modeline-def-modeline 'main
-    '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
-    '(now-playing check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
+  (with-eval-after-load 'doom-modeline-now-playing
+    (doom-modeline-def-modeline 'main
+      '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
+      '(now-playing check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes))))
 
 (use-package doom-modeline-now-playing
   :after doom-modeline
