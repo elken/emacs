@@ -147,7 +147,9 @@
   :after exec-path-from-shell
   :defer 1
   :config
-  (unless (server-running-p)
+  (unless
+      (and (not (display-graphic-p))
+           (server-running-p))
     (exec-path-from-shell-initialize)
     (server-start)))
 
