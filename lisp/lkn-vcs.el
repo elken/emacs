@@ -187,6 +187,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
   (advice-add #'forge--prepare-post-buffer :filter-return #'lkn/modify-pr-template))
 
 (use-package magit-todos
+  :disabled t
   :after magit
   :config (magit-todos-mode 1))
 
@@ -238,6 +239,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
         transient-default-level 5))
 
 (use-package diff-hl
+  :disabled t
   :hook (magit-post-refresh . diff-hl-magit-post-refresh)
   :custom
   (diff-hl-update-async t)
