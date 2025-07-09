@@ -50,12 +50,12 @@
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
 ;; awkward flashing. Also get rid of the dumb startup message
-(set-face-attribute 'fringe nil :background "#2E3440" :foreground "#ECEFF4")
+(set-face-attribute 'fringe nil :background "#000000" :foreground "#ECEFF4")
 
 (setq-default
  default-frame-alist
  `((foreground-color . "#ECEFF4")
-   (background-color . "#2E3440")
+   (background-color . "#000000")
    (bottom-divider-width . 1)	     ; Thin horizontal window divider
    (fullscreen . ,'maximized)        ; Maximize the window by default
    (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
@@ -78,7 +78,8 @@
  auto-save-default nil
  backup-by-copying t
  inhibit-compacting-font-caches t
- bidi-inhibit-bpa t)
+ bidi-inhibit-bpa t
+ custom-theme-directory (expand-file-name "themes" user-emacs-directory))
 
 ;; More free real estate tweaks
 (setq frame-inhibit-implied-resize t

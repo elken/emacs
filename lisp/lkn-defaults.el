@@ -52,14 +52,14 @@ This should just be a nice, readable font to represent prose well."
          (set-face-attribute 'variable-pitch nil :font val))
   :group 'lkn)
 
-(defcustom lkn-theme 'doom-nord
+(defcustom lkn-theme 'doom-carbon
   "The default flavour-of-the-month theme.
 Usually defaults to Nord or my Carbon theme."
   :type 'symbol
   :set (lambda (var val)
          (set-default var val)
          (with-eval-after-load 'doom-themes
-           (require `,(intern (format "%s-theme" val)))
+           (require `,(intern (format "%s-theme" val)) nil t)
            (load-theme val t)))
   :group 'lkn)
 
