@@ -239,15 +239,17 @@ Otherwise, behave like `magit-display-buffer-traditional'."
         transient-default-level 5))
 
 (use-package diff-hl
-  :disabled t
-  :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+  :config
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (add-hook 'diff-hl-mode-hook 'diff-hl-show-hunk-mouse-mode)
   :custom
   (diff-hl-update-async t)
   :init
-  (global-diff-hl-mode)
-  :config
-  (add-hook 'window-selection-change-functions (lambda (&rest _) (diff-hl-update)))
-  (add-hook 'window-buffer-change-functions (lambda (&rest _) (diff-hl-update))))
+  (global-diff-hl-mode 1)
+  :hook (diff-hl-mode . (lambda ()
+                          (unless (display-graphic-p)
+                            (diff-hl-margin-local-mode)))))
 
 (use-package browse-at-remote
   :custom
