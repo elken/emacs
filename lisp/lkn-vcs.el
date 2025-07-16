@@ -239,6 +239,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
         transient-default-level 5))
 
 (use-package diff-hl
+  :disabled t
   :config
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)

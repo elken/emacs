@@ -94,6 +94,7 @@
   (add-to-list 'tempel-user-elements #'lkn-snippets-include))
 
 (use-package treesit-auto
+  :disabled t
   :when (treesit-available-p)
   :demand t
   :custom
@@ -213,6 +214,7 @@ For more detail, see `apheleia--run-formatter-function'."
         '(rubocop)))
 
 (use-package combobulate
+  :disabled t
   :ensure (:host github :repo "elken/combobulate" :branch "feature/add-ruby" :files (:defaults "tests/*.el"))
   :when (treesit-available-p)
   :hook ((ruby-ts-mode . combobulate-mode)

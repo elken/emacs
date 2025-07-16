@@ -578,7 +578,13 @@ The DWIM behaviour of this command is as follows:
 (use-package treesit
   :ensure nil
   :custom
-  (treesit-font-lock-level 5))
+  (treesit-font-lock-level 5)
+  :config
+  ;; Ruby setup
+  (add-to-list 'auto-mode-alist '("\\.rb\\'" . ruby-ts-mode))
+  (add-to-list 'auto-mode-alist '("Rakefile\\'" . ruby-ts-mode))
+  (add-to-list 'auto-mode-alist '("Gemfile\\'" . ruby-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(ruby-mode . ruby-ts-mode)))
 
 (use-package autorevert
   :ensure nil
