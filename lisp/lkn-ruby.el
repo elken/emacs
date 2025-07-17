@@ -50,8 +50,7 @@
 (use-package robe
   :hook (ruby-ts-mode . robe-mode))
 
-(use-package erb-ts-mode
-  :ensure nil
+(use-feature erb-ts-mode
   :disabled t
   :mode "\\.erb$"
   :config

@@ -63,8 +63,7 @@
   (visual-fill-column-center-text t)
   :hook (org-mode . visual-fill-column-mode))
 
-(use-package org-capture
-  :ensure nil
+(use-feature org-capture
   :commands org-capture
   :hook (org-capture-mode . hide-mode-line-mode))
 
@@ -284,8 +283,7 @@ is selected, only the bare key is returned."
 ;; master as there’s a bug there I don’t have time/patience to debug.
 ;;
 ;; [1] https://git.savannah.gnu.org/cgit/emacs/org-mode.git/commit/?id=2ade16bbc
-(use-package org
-  :ensure nil
+(use-feature org
   :custom
   (org-return-follows-link t)
   (org-startup-indented t)
@@ -476,17 +474,7 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
   (org-appear-autolinks t)
   (org-appear-autosubmarkers t))
 
-;; (use-package org-roam
-;;   :custom
-;;   (org-roam-directory (expand-file-name "roam" org-directory))
-;;   (org-roam-capture-templates
-;;    `(("d" "default" plain
-;;       (file ,(expand-file-name "templates/roam-default.org" user-emacs-directory))
-;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "")
-;;       :unnarrowed t))))
-
-(use-package org-protocol
-  :ensure nil
+(use-feature org-protocol
   :config
   (defun popup-frame-delete (&rest _)
     "Kill selected frame if it has parameter `popup-frame'."
@@ -528,8 +516,7 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
   (popup-frame-define org-capture)
   (add-hook 'org-capture-after-finalize-hook #'popup-frame-delete))
 
-(use-package org-tempo
-  :ensure nil
+(use-feature org-tempo
   :after org
   :init
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))

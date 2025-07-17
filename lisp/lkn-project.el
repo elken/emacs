@@ -21,8 +21,7 @@
 ;;; Over time it has improved to the point of making projectile redundant now!
 ;;; Code:
 
-(use-package project
-  :ensure nil
+(use-feature project
   :demand t
   :bind
   (:map project-prefix-map

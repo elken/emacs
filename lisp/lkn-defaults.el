@@ -466,8 +466,7 @@ The DWIM behaviour of this command is as follows:
 
 ;;; Packages
 
-(use-package emacs
-  :ensure nil
+(use-feature emacs
   :custom
   (source-directory (expand-file-name "~/code/emacs"))
   (next-error-recenter '(4))
@@ -562,12 +561,10 @@ The DWIM behaviour of this command is as follows:
   :config
   (savehist-mode))
 
-(use-package saveplace
-  :ensure nil
+(use-feature saveplace
   :hook (elpaca-after-init . save-place-mode))
 
-(use-package recentf
-  :ensure nil
+(use-feature recentf
   :init (recentf-mode)
   :bind
   ("C-c f r" . recentf)
@@ -578,8 +575,7 @@ The DWIM behaviour of this command is as follows:
   :config
   (add-to-list 'recentf-exclude LITTER-DIR))
 
-(use-package dired
-  :ensure nil
+(use-feature dired
   :commands (dired)
   :custom
   (dired-recursive-copies 'always)
@@ -590,12 +586,10 @@ The DWIM behaviour of this command is as follows:
   ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode)))
 
-(use-package repeat
-  :ensure nil
+(use-feature repeat
   :hook (after-init . repeat-mode))
 
-(use-package treesit
-  :ensure nil
+(use-feature treesit
   :custom
   (treesit-font-lock-level 5)
   :config
@@ -605,8 +599,7 @@ The DWIM behaviour of this command is as follows:
   (add-to-list 'auto-mode-alist '("Gemfile\\'" . ruby-ts-mode))
   (add-to-list 'major-mode-remap-alist '(ruby-mode . ruby-ts-mode)))
 
-(use-package autorevert
-  :ensure nil
+(use-feature autorevert
   :custom
   (auto-revert-stop-on-user-input nil)
   (auto-revert-avoid-polling t)
@@ -637,24 +630,21 @@ The DWIM behaviour of this command is as follows:
    :after after-focus-change-function
    #'lkn/auto-revert-buffers))
 
-(use-package uniquify
-  :ensure nil
+(use-feature uniquify
   :custom
   (uniquify-buffer-name-style 'reverse)
   (uniquify-separator  " • ")
   (uniquify-after-kill-buffer-p  t)
   (uniquify-ignore-buffers-re  "^\\*" ))
 
-(use-package xref
-  :ensure nil
+(use-feature xref
   :custom
   (xref-search-program 'ripgrep)
   (xref-show-definitions-function #'xref-show-definitions-completing-read)
   (xref-show-xrefs-function #'xref-show-definitions-buffer)
   (xref-file-name-display 'project-relative))
 
-(use-package flymake
-  :ensure nil
+(use-feature flymake
   :custom
   (flymake-show-diagnostics-at-end-of-line 'short)
   (flymake-supress-zero-counters t)
@@ -666,8 +656,7 @@ The DWIM behaviour of this command is as follows:
         ([remap previous-error] . flymake-goto-prev-error))
   :hook (prog-mode . flymake-mode))
 
-(use-package outline
-  :ensure nil
+(use-feature outline
   :custom
   (outline-minor-mode-highlight t)
   (outline-minor-mode-cycle t)
@@ -686,8 +675,7 @@ The DWIM behaviour of this command is as follows:
 
   (add-hook 'outline-minor-mode-hook #'lkn/outline-mode-ellipsis))
 
-(use-package elec-pair
-  :ensure nil
+(use-feature elec-pair
   :hook (after-init . electric-pair-mode)
   :custom
   (electric-pair-inhibit-predicate #'lkn/electric-pair-inhibit)

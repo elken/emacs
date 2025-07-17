@@ -21,8 +21,7 @@
 ;;; flavour of the month.
 ;;; Code:
 
-(use-package eglot
-  :ensure nil
+(use-feature eglot
   :defer t
   :custom
   (eglot-autoshutdown t)

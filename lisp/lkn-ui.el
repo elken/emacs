@@ -220,8 +220,7 @@ We do this by disabling all other themes then loading ours."
   :after doom-themes
   :init (solaire-global-mode))
 
-(use-package which-key
-  :ensure nil
+(use-feature which-key
   :init
   (which-key-mode)
   ;; Credit to
