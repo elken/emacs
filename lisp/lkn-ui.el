@@ -409,8 +409,11 @@ We do this by disabling all other themes then loading ours."
      :fringe-width 8)))
 
 (use-package ultra-scroll
-  :ensure (:host github :repo "jdtsmith/ultra-scroll")
-  :when (not IS-MAC))
+  :custom
+  (scroll-conservatively 3)
+  (scroll-margin 0)
+  :config
+  (ultra-scroll-mode 1))
 
 (use-package fancy-compilation
   :custom
