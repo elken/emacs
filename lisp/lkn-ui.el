@@ -340,12 +340,6 @@ We do this by disabling all other themes then loading ours."
               (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
               (customize-set-variable 'tab-bar-mode t))))
 
-(use-package kubel
-  :after vterm
-  :when (executable-find "kubectl")
-  :config
-  (kubel-vterm-setup))
-
 (use-package dired-subtree
   :after dired
   :custom
@@ -367,15 +361,8 @@ We do this by disabling all other themes then loading ours."
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
-(use-package eldoc-box
-  :after eldoc
-  :diminish (eldoc-box-hover-mode eldoc-box-hover-at-point-mode)
-  :custom
-  (eldoc-box-only-multi-line t)
-  :custom-face
-  (eldoc-box-body ((t (:font ,lkn-variable-pitch-font)))))
-
 (use-package dape
+  :demand t
   :hook
   (kill-emacs . dape-breakpoint-save)
   (after-init . dape-breakpoint-load)
