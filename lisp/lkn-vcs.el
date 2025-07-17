@@ -186,11 +186,6 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 
   (advice-add #'forge--prepare-post-buffer :filter-return #'lkn/modify-pr-template))
 
-(use-package magit-todos
-  :disabled t
-  :after magit
-  :config (magit-todos-mode 1))
-
 (use-package forge
   :after magit
   :preface
@@ -212,18 +207,6 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 (use-package pr-review
   :after (magit forge))
 
-(use-package code-review
-  :ensure (:host github :repo "doomelpa/code-review")
-  :after (magit forge)
-  :preface
-  (setq code-review-db-database-file (lkn/cache-dir "code-review/code-review-db-file.sqlite")
-        code-review-log-file (lkn/cache-dir "code-review/code-review-error.log")
-        code-review-download-dir (lkn/cache-dir "code-review/"))
-  :bind
-  (:map code-review-mode-map
-        ("r" . code-review-transient-api)
-        ("RET" . code-review-comment-add-or-edit)))
-
 (use-package transient
   :bind
   (:map transient-map
@@ -238,6 +221,8 @@ Otherwise, behave like `magit-display-buffer-traditional'."
         transient-history-file (expand-file-name "transient/history" no-littering-var-directory)
         transient-default-level 5))
 
+;; Disabled until we can find a performant way to use it
+;; I really want it, so I'm not removing it just yet
 (use-package diff-hl
   :disabled t
   :config
