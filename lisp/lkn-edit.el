@@ -25,55 +25,7 @@
 
 (use-package avy
   :bind
-  ("C-'" . avy-goto-char)
-  :config
-  (with-eval-after-load 'meow
-    (defvar meow--last-avy-char)
-
-    (defun meow-avy-goto-char (char &optional arg expand)
-      "Goto using avy"
-      (interactive (list (read-char "goto: " t)
-                         current-prefix-arg))
-      (let* ((beg (point))
-             (end (save-mark-and-excursion
-                    (avy-goto-char char arg)
-                    (point))))
-        (thread-first
-          (meow--make-selection '(select . avy)
-                                beg end expand)
-          (meow--select)))
-      (setq meow--last-avy-char char))
-
-    (defun meow-avy-goto-char-expand (char &optional arg)
-      "Goto using avy expand"
-      (interactive (list (read-char "Expand goto: " t)
-                         current-prefix-arg))
-      (meow-avy-goto-char char arg t))
-
-    (defun meow--add-beacons-for-avy ()
-      "Add beacon for avy movement"
-      (let ((ch-str (if (eq meow--last-avy-char 13)
-                        "\n"
-                      (char-to-string meow--last-avy-char))))
-        (save-restriction
-          (meow--narrow-secondary-selection)
-          (let ((orig (point))
-                (case-fold-search t))
-            (save-mark-and-excursion
-              (goto-char (point-max))
-              (while (search-backward ch-str nil t)
-                (unless (= (point) orig)
-                  (meow--beacon-add-overlay-at-point (point)))))))
-        (meow--beacon-shrink-selection)))
-
-    (defun meow--beacon-update-overlays-custom ()
-      (when (meow--beacon-inside-secondary-selection)
-        (let* ((ex (car (meow--selection-type)))
-               (type (cdr (meow--selection-type))))
-          (cl-case type
-            ((avy) (meow--add-beacons-for-avy))))))
-
-    (advice-add 'meow--beacon-update-overlays :after #'meow--beacon-update-overlays-custom)))
+  ("C-'" . avy-goto-char))
 
 (use-package tempel
   :custom
@@ -213,24 +165,9 @@ For more detail, see `apheleia--run-formatter-function'."
   (setf (alist-get 'enh-ruby-mode apheleia-mode-alist)
         '(rubocop)))
 
-(use-package combobulate
-  :disabled t
-  :ensure (:host github :repo "elken/combobulate" :branch "feature/add-ruby" :files (:defaults "tests/*.el"))
-  :when (treesit-available-p)
-  :hook ((ruby-ts-mode . combobulate-mode)
-         (python-ts-mode . combobulate-mode)
-         (html-ts-mode . combobulate-mode))
-  :config
-  (load (expand-file-name "combobulate/tests/combobulate-test-prelude.el" elpaca-repos-directory) t)
-  (require 'combobulate-debug))
-
-(use-package expreg
-  :when (treesit-available-p))
-
 (use-package undo-fu
-  :bind
-  (("C-/" . undo-fu-only-undo)
-   ([remap undo-redo] . undo-fu-only-redo))
+  :bind (("C-z" . undo-fu-only-undo)
+         ("C-S-z" . undo-fu-only-redo))
   :custom
   (undo-limit 67108864)
   (undo-strong-limit 100663296)
