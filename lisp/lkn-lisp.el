@@ -309,10 +309,6 @@ library/userland functions.  Go until END."
   :config
   (add-hook 'flymake-diagnostic-functions #'package-lint-flymake))
 
-;; (use-package redshank
-;;   :diminish redshank-mode
-;;   :hook ((lisp-mode emacs-lisp-mode) . redshank-mode))
-
 (use-package clojure-mode
   :mode "\\.clj\\'")
 
