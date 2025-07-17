@@ -515,6 +515,7 @@ The DWIM behaviour of this command is as follows:
   (after-init                   . lkn/keychain-setup)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   (elpaca-after-init            . minibuffer-electric-default-mode)
+  (elpaca-after-init            . global-completion-preview-mode)
   :bind
   (("C-x k"                    . kill-current-buffer)
    ("C-x C-k"                  . lkn/sudo-kill-current-buffer)
