@@ -214,7 +214,6 @@
   (corfu-mode . corfu-echo-mode)
   (corfu-mode . corfu-popupinfo-mode)
   :custom
-  (corfu-auto t)
   (corfu-on-exact-match nil)
   (corfu-cycle t)
   (corfu-auto-prefix 2)
