@@ -151,7 +151,6 @@
 (require 'lkn-workspaces)
 (require 'lkn-ui)
 (require 'lkn-edit)
-(require 'lkn-meow)
 (require 'lkn-vcs)
 (require 'lkn-org)
 (require 'lkn-project)
