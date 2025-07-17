@@ -147,17 +147,6 @@
 (use-package dotenv
   :ensure (:host github :repo "pkulev/dotenv.el"))
 
-(use-package server
-  :ensure nil
-  :after exec-path-from-shell
-  :defer 1
-  :config
-  (unless
-      (and (not (display-graphic-p))
-           (server-running-p))
-    (exec-path-from-shell-initialize)
-    (server-start)))
-
 (require 'lkn-defaults)
 (require 'lkn-workspaces)
 (require 'lkn-ui)

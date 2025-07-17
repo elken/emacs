@@ -64,6 +64,15 @@ Usually defaults to Nord or my Carbon theme."
   :group 'lkn)
 
 ;;; Macros
+;; Borrowed with love from progfolio
+(defmacro use-feature (name &rest args)
+  "Like `use-package' but accounting for asynchronous installation.
+NAME and ARGS are in `use-package'."
+  (declare (indent defun))
+  `(use-package ,name
+     :ensure nil
+     ,@args))
+
 ;; Any macros that have `!' after them can be considerd taken from
 ;; Doom Emacs.  At the time of writing, it's
 ;; <https://github.com/doomemacs/doomemacs/blob/ea616ebd5bcc98d342ab89bbe02f99dd8c0cd673/lisp/doom-lib.el>
@@ -533,8 +542,18 @@ The DWIM behaviour of this command is as follows:
   ;; Force this to be nil by default
   (setq-default indent-tabs-mode nil))
 
-(use-package savehist
-  :ensure nil
+(use-feature server
+  :after exec-path-from-shell
+  :defer 1
+  :config
+  (unless
+      (and (not (display-graphic-p))
+           (server-running-p))
+    (exec-path-from-shell-initialize)
+    (elfeed-update)
+    (server-start)))
+
+(use-feature savehist
   :after no-littering
   :custom
   (savehist-additional-variables '(kill-ring search-ring))
