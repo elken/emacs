@@ -28,6 +28,9 @@
       mac-option-modifier 'meta
       mac-use-title-bar nil)
 
+(with-eval-after-load 'magit
+  (setopt magit-git-executable "/opt/homebrew/bin/git"))
+
 (defun lkn/paste-from-osx ()
   "Paste clipboard using pbpaste."
   (shell-command-to-string "pbpaste"))
