@@ -550,7 +550,6 @@ The DWIM behaviour of this command is as follows:
       (and (not (display-graphic-p))
            (server-running-p))
     (exec-path-from-shell-initialize)
-    (elfeed-update)
     (server-start)))
 
 (use-feature savehist
