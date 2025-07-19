@@ -43,6 +43,12 @@
 (use-package csv-mode
   :commands (csv-align-mode))
 
+(use-package fsharp-mode
+  :mode "\\.fs\\'")
+
+(use-package eglot-fsharp
+  :after fsharp-mode)
+
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
 ;; Local Variables:
