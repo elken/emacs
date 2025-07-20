@@ -327,6 +327,7 @@ We do this by disabling all other themes then loading ours."
   :after doom-modeline
   :custom
   (doom-modeline-now-playing-interval 2)
+  (doom-modeline-now-playing-playerctl-ignored-players '("firefox" "kdeconnect" "plasma-browser-integration"))
   :config
   (doom-modeline-now-playing-timer))
 
