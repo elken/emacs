@@ -20,6 +20,24 @@
 ;;; I use this a lot for work
 ;;; Code:
 
+(defcustom lkn-macos-path '("/usr/local/opt/coreutils/libexec/gnubin"
+                            "/opt/homebrew/opt/coreutils/libexec/gnubin"
+                            "/opt/homebrew/opt/openjdk/bin"
+                            "~/flutter/sdk/bin"
+                            "/opt/homebrew/bin"
+                            "/System/Cryptexes/App/usr/bin"
+                            "/bin"
+                            "/usr/sbin"
+                            "/sbin"
+                            "/Library/Apple/usr/bin")
+  "List of paths to setup to find needed executables."
+  :type '(repeat string)
+  :set (lambda (var val)
+         (set-default var val)
+         (setq exec-path (delete-dups (append val exec-path)))
+         (setenv "PATH" (string-join exec-path ":")))
+  :group 'lkn)
+
 (setq frame-resize-pixelwise t
       ns-use-native-fullscreen nil
       ns-use-proxy-icon nil

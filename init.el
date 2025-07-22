@@ -129,11 +129,6 @@
    :after after-focus-change-function
    #'garbage-collect))
 
-(use-package exec-path-from-shell
-  :demand t
-  :custom
-  (exec-path-from-shell-arguments '("-l")))
-
 (use-package kkp
   :unless (display-graphic-p)
   :config

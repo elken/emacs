@@ -63,6 +63,29 @@ Usually defaults to Nord or my Carbon theme."
            (load-theme val t)))
   :group 'lkn)
 
+(defcustom lkn-path '("~/.rbenv/shims"
+                      "~/.local/share/nvim/mason/bin"
+                      "~/.babashka/bbin/bin"
+                      "~/.qlot/bin"
+                      "~/.config/emacs/bin"
+                      "~/.cargo/bin"
+                      "~/bin"
+                      "~/.local/bin"
+                      "~/.config/yarn/global/node_modules/.bin"
+                      "~/.dotnet/tools"
+                      "~/.luarocks/bin"
+                      "~/go/bin"
+                      "/usr/local/bin"
+                      "/usr/local/sbin"
+                      "/usr/bin")
+  "List of paths to setup to find needed executables."
+  :type '(repeat string)
+  :set (lambda (var val)
+         (set-default var val)
+         (setq exec-path (delete-dups (append val exec-path)))
+         (setenv "PATH" (string-join exec-path ":")))
+  :group 'lkn)
+
 ;;; Macros
 ;; Borrowed with love from progfolio
 (defmacro use-feature (name &rest args)
@@ -357,7 +380,7 @@ The DWIM behaviour of this command is as follows:
   "Save the current buffer as root."
   (interactive)
   (let ((file (format "/sudo::%s" buffer-file-name)))
-    (if-let (buffer (find-file-noselect file))
+    (if-let* ((buffer (find-file-noselect file)))
         (let ((origin (current-buffer)))
           (copy-to-buffer buffer (point-min) (point-max))
           (unwind-protect
@@ -377,11 +400,11 @@ The DWIM behaviour of this command is as follows:
 (defun lkn/yank-buffer-path (&optional root)
   "Copy path to file, optionally relative to ROOT."
   (interactive)
-  (when-let ((file (thread-first
-                     (buffer-base-buffer)
-                     buffer-file-name
-                     abbreviate-file-name))
-             (path (if root (file-relative-name file root) file)))
+  (when-let* ((file (thread-first
+                      (buffer-base-buffer)
+                      buffer-file-name
+                      abbreviate-file-name))
+              (path (if root (file-relative-name file root) file)))
     (kill-new path)
     (message "Copied %s" path)))
 
@@ -543,13 +566,10 @@ The DWIM behaviour of this command is as follows:
   (setq-default indent-tabs-mode nil))
 
 (use-feature server
-  :after exec-path-from-shell
-  :defer 1
   :config
   (unless
       (and (not (display-graphic-p))
            (server-running-p))
-    (exec-path-from-shell-initialize)
     (server-start)))
 
 (use-feature savehist
