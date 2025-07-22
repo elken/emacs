@@ -54,9 +54,9 @@ popper popup or similarly small window."
       (lambda (action cand)
         (cond
          ((and cand (eq action 'preview))
-          (when-let ((buffer (get-buffer cand)))
+          (when-let* ((buffer (get-buffer cand)))
             ;; Check if there's already a popup window visible
-            (if-let ((popup-win (cl-find-if (lambda (win)
+            (if-let* ((popup-win (cl-find-if (lambda (win)
                                               (and (window-live-p win)
                                                    (with-current-buffer (window-buffer win)
                                                      (eq major-mode 'vterm-mode))))
@@ -84,7 +84,7 @@ popper popup or similarly small window."
   (defun lkn/multi-vterm-project ()
     "Create a new multi-vterm in a way that pleases Popper"
     (interactive)
-    (when-let ((project (project-current)))
+    (when-let* ((project (project-current)))
       (let* ((default-directory (project-root project))
              (vterm-buffer (multi-vterm-get-buffer)))
         (setq multi-vterm-buffer-list (nconc multi-vterm-buffer-list (list vterm-buffer)))
@@ -96,7 +96,7 @@ popper popup or similarly small window."
   (defun lkn/consult-project-vterm ()
     "Switch to a project's vterm buffer using Consult."
     (interactive)
-    (when-let ((project (project-current)))
+    (when-let* ((project (project-current)))
       (let ((vterm-buffers (seq-filter
                             (lambda (buf)
                               (with-current-buffer buf

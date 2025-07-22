@@ -152,7 +152,7 @@ This macro is preferred since it also marks the needed variable as risky."
 
 (lkn-modeline-defsegment
  lkn-modeline-remote
- (when-let ((host (file-remote-p default-directory 'host)))
+ (when-let* ((host (file-remote-p default-directory 'host)))
    (propertize
     "   "
     'face 'lkn-modeline-remote
@@ -170,7 +170,7 @@ This macro is preferred since it also marks the needed variable as risky."
 
 (lkn-modeline-defsegment
  lkn-modeline-buffer-name
- (when-let ((name (buffer-name)))
+ (when-let* ((name (buffer-name)))
    (let ((name (if (project-current) (file-relative-name name (project-root (project-current))) name))
          (icon (and buffer-read-only ""))
          (echo-text (or (buffer-file-name) (format "No file associated.\n%s" default-directory))))
@@ -206,23 +206,23 @@ This macro is preferred since it also marks the needed variable as risky."
                   'face 'lkn-modeline-git
                   'mouse-face 'mode-line-highlight)
       " "
-      (when-let ((state (cond
-                         ((magit-merge-in-progress-p)
-                          (cons (nerd-icons-codicon "nf-cod-git_merge") 'lkn-modeline-git-merge))
-                         ((magit-rebase-in-progress-p)
-                          (cons (nerd-icons-codicon "nf-cod-git_pull_request") 'lkn-modeline-git-rebase))
-                         ((magit-anything-staged-p)
-                          (cons (nerd-icons-octicon "nf-oct-diff_added") 'lkn-modeline-git-staged))
-                         ((magit-anything-unstaged-p)
-                          (cons (nerd-icons-octicon "nf-oct-diff_modified") 'lkn-modeline-git-unstaged))
-                         ((magit-untracked-files)
-                          (cons (nerd-icons-octicon "nf-oct-diff") 'lkn-modeline-git-untracked))
-                         (t nil))))
+      (when-let* ((state (cond
+                          ((magit-merge-in-progress-p)
+                           (cons (nerd-icons-codicon "nf-cod-git_merge") 'lkn-modeline-git-merge))
+                          ((magit-rebase-in-progress-p)
+                           (cons (nerd-icons-codicon "nf-cod-git_pull_request") 'lkn-modeline-git-rebase))
+                          ((magit-anything-staged-p)
+                           (cons (nerd-icons-octicon "nf-oct-diff_added") 'lkn-modeline-git-staged))
+                          ((magit-anything-unstaged-p)
+                           (cons (nerd-icons-octicon "nf-oct-diff_modified") 'lkn-modeline-git-unstaged))
+                          ((magit-untracked-files)
+                           (cons (nerd-icons-octicon "nf-oct-diff") 'lkn-modeline-git-untracked))
+                          (t nil))))
         (propertize (car state) 'face (cdr state)))))))
 
 (defun lkn-modeline-flymake--text (ht key)
   "Helper function to get all KEY diagnostics from HT."
-  (when-let ((value (gethash key ht)))
+  (when-let* ((value (gethash key ht)))
     (concat
      (propertize (nerd-icons-codicon "nf-cod-error")
                  'face `(:inherit ,key :height 1.2))

@@ -102,11 +102,11 @@
     (if interactive
         (let ((completion-at-point-functions #'erb-translation-capf))
           (message "Current buffer content at point: %s"
-                   (when-let ((bounds (erb-translate-capf--in-t-call-args-p)))
+                   (when-let* ((bounds (erb-translate-capf--in-t-call-args-p)))
                      (buffer-substring-no-properties (car bounds) (cdr bounds))))
           (or (completion-at-point)
               (user-error "erb-translation-capf: No completions")))
-      (when-let ((bounds (erb-translate-capf--in-t-call-args-p)))
+      (when-let* ((bounds (erb-translate-capf--in-t-call-args-p)))
         `(,(car bounds) ,(cdr bounds)
           ,(completion-table-with-cache
             (lambda (string)

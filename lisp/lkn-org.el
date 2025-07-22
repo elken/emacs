@@ -350,7 +350,7 @@ is selected, only the bare key is returned."
 
   (defun lkn/has-time-property-p (property)
     "Gets the position of PROPETY if it exists, nil if not and empty string if it's undefined."
-    (when-let ((pos (elken/find-time-property property)))
+    (when-let* ((pos (elken/find-time-property property)))
       (save-excursion
         (goto-char pos)
         (if (and (looking-at-p " ")
@@ -362,7 +362,7 @@ is selected, only the bare key is returned."
   (defun lkn/set-time-property (property &optional pos)
     "Set the PROPERTY in the current buffer.
 Can pass the position as POS if already computed."
-    (when-let ((pos (or pos (elken/find-time-property property))))
+    (when-let* ((pos (or pos (elken/find-time-property property))))
       (save-excursion
         (goto-char pos)
         (if (looking-at-p " ")
@@ -478,7 +478,7 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
   :config
   (defun popup-frame-delete (&rest _)
     "Kill selected frame if it has parameter `popup-frame'."
-    (when-let ((bundle (frame-parameter nil 'bundle-identifier)))
+    (when-let* ((bundle (frame-parameter nil 'bundle-identifier)))
       (ns-do-applescript (format "tell application id \"%s\" to activate" bundle)))
     (when (frame-parameter nil 'popup-frame)
       (delete-frame)))

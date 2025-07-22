@@ -135,8 +135,8 @@ ARGS are style properties that affect the whole tag, with special handling for:
                              :end -1))
                           (lambda (&rest args)
                             (interactive)
-                            (when-let ((code (substring-no-properties
-                                              (thing-at-point 'symbol))))
+                            (when-let* ((code (substring-no-properties
+                                               (thing-at-point 'symbol))))
                               (when jiralib-url
                                 (browse-url-default-browser
                                  (url-recreate-url
@@ -208,7 +208,7 @@ We do this by disabling all other themes then loading ours."
                (let (replacements)
                  (map-keymap
                   (lambda (_key cmd)
-                    (when-let ((hint (and (symbolp cmd)
+                    (when-let* ((hint (and (symbolp cmd)
                                           (get cmd 'repeat-hint))))
                       (push `((nil . ,(regexp-quote (symbol-name cmd))) . (nil . ,hint))
                             replacements)))

@@ -21,8 +21,8 @@ emacs-lisp-mode
 (macro "(defmacro " p " (" p ")\n  \"" p "\"" n> r> ")")
 (alias "(defalias '" p " '" p ")")
 (fun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
-(iflet "(if-let (" p ")" n> r> ")")
-(whenlet "(when-let (" p ")" n> r> ")")
+(iflet "(if-let* (" p ")" n> r> ")")
+(whenlet "(when-let* (" p ")" n> r> ")")
 (whilelet "(while-let (" p ")" n> r> ")")
 (andlet "(and-let* (" p ")" n> r> ")")
 (cond "(cond" n "(" q "))" >)
@@ -40,21 +40,21 @@ emacs-lisp-mode
         "(advice-add #'" (p "fun") " " (p ":around") " #'" (s name) ")")
 (header ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
         " -- " p " -*- lexical-binding: t -*-" n
-	";; Sources are available from https://github.com/elken/emacs" n n
-	";; Copyright (C) 2022-" (format-time-string "%Y") " " (i me) " <" (i email) ">" n n
-	";; This file is free software; you can redistribute it and/or modify" n
-	";; it under the terms of the GNU General Public License as published by" n
-	";; the Free Software Foundation; either version 3, or (at your option)" n
-	";; any later version." n n
-	";; This file is distributed in the hope that it will be useful," n
-	";; but WITHOUT ANY WARRANTY; without even the implied warranty of" n
-	";; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" n
-	";; GNU General Public License for more details." n n
-	";; For a full copy of the GNU General Public License" n
-	";; see <https://www.gnu.org/licenses/>." n n
+        ";; Sources are available from https://github.com/elken/emacs" n n
+        ";; Copyright (C) 2022-" (format-time-string "%Y") " " (i me) " <" (i email) ">" n n
+        ";; This file is free software; you can redistribute it and/or modify" n
+        ";; it under the terms of the GNU General Public License as published by" n
+        ";; the Free Software Foundation; either version 3, or (at your option)" n
+        ";; any later version." n n
+        ";; This file is distributed in the hope that it will be useful," n
+        ";; but WITHOUT ANY WARRANTY; without even the implied warranty of" n
+        ";; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" n
+        ";; GNU General Public License for more details." n n
+        ";; For a full copy of the GNU General Public License" n
+        ";; see <https://www.gnu.org/licenses/>." n n
         ";;; Commentary:" n
-	";;; " p n>
-	";;; Code:" n n n)
+        ";;; " p n>
+        ";;; Code:" n n n)
 (provide "(provide '" (file-name-base (or (buffer-file-name) (buffer-name))) ")" n
          ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
          " ends here" n)

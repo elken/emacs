@@ -112,8 +112,8 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                        ;; Align keywords in plists if each newline begins with
                        ;; a keyword. This is useful for "unquoted plist
                        ;; function" macros, like `map!' and `defhydra'.
-                       (when-let ((first (elt state 1))
-                                  (char (char-after (1+ first))))
+                       (when-let* ((first (elt state 1))
+                                   (char (char-after (1+ first))))
                          (and (eq char ?:)
                               (ignore-errors
                                 (or (save-excursion
@@ -138,14 +138,14 @@ Adapted from URL `https://www.reddit.com/r/emacs/comments/d7x7x8/finally_fixing_
                              (quotep 0))
                          (while positions
                            (let ((point (pop positions)))
-                             (or (when-let (char (char-before point))
+                             (or (when-let* ((char (char-before point)))
                                    (cond
                                     ((eq char ?\())
                                     ((memq char '(?\' ?\`))
                                      (or (save-excursion
                                            (goto-char (1+ point))
                                            (skip-chars-forward "( ")
-                                           (when-let (fn (ignore-errors (read (current-buffer))))
+                                           (when-let* ((fn (ignore-errors (read (current-buffer)))))
                                              (if (and (symbolp fn)
                                                       (fboundp fn)
                                                       ;; Only special forms and

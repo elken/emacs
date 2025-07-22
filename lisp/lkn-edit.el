@@ -38,7 +38,7 @@
   :config
   (defun lkn-snippets-include (elt)
     (when (eq (car-safe elt) 'i)
-      (if-let (template (alist-get (cadr elt) (tempel--templates)))
+      (if-let* ((template (alist-get (cadr elt) (tempel--templates))))
           (cons 'l template)
         (message "Template %s not found" (cadr elt))
         nil)))
