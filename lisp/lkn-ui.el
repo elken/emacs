@@ -253,6 +253,7 @@ We do this by disabling all other themes then loading ours."
   (setq corfu-margin-formatters '(nerd-icons-corfu-formatter)))
 
 (use-package nerd-icons
+  :defer 1
   :config
   (when (and (not (member "Symbols Nerd Font Mono" (font-family-list)))
              (display-graphic-p))
@@ -308,6 +309,7 @@ We do this by disabling all other themes then loading ours."
      compilation-mode)))
 
 (use-package doom-modeline
+  :defer 1
   :hook (elpaca-after-init . doom-modeline-mode)
   :custom
   (doom-modeline-buffer-file-name-style 'relative-to-project)
@@ -363,7 +365,7 @@ We do this by disabling all other themes then loading ours."
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
 (use-package dape
-  :demand t
+  :bind-keymap ("C-x C-a" . dape-global-map)
   :hook
   (kill-emacs . dape-breakpoint-save)
   (after-init . dape-breakpoint-load)

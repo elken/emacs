@@ -306,6 +306,7 @@ library/userland functions.  Go until END."
   :hook (emacs-lisp-mode . eros-mode))
 
 (use-package package-lint-flymake
+  :defer t
   :after flymake
   :config
   (add-hook 'flymake-diagnostic-functions #'package-lint-flymake))
