@@ -23,8 +23,6 @@
 (setopt user-full-name "Ellis Kenyő"
         user-mail-address "emacs@lkn.mozmail.com")
 
-(setopt custom-file (make-temp-file "el-custom-"))
-
 (defvar after-load-theme-hook nil
   "Hook run after the color theme is loaded with `load-theme'.")
 
@@ -99,23 +97,25 @@
 
 (use-package no-littering
   :demand t
-  :init
-  (setopt no-littering-etc-directory (expand-file-name "config/" LITTER-DIR)
-          no-littering-var-directory (expand-file-name "share/" LITTER-DIR)
-          auto-save-file-name-transforms `((".*" ,(expand-file-name "auto-save/" no-littering-var-directory) t)))
-
-  (unless (file-exists-p (expand-file-name "cache" no-littering-var-directory))
-    (mkdir (expand-file-name "cache" no-littering-var-directory)))
+  :preface
+;;;###autoload
+  (defun lkn/cache-dir (file)
+    "Given FILE, return a valid path relative to `no-littering-var-directory/cache'."
+    (expand-file-name file (expand-file-name "cache" no-littering-var-directory)))
 
 ;;;###autoload
   (defun lkn/config-dir (file)
     "Given FILE, return a valid path relative to `no-littering-etc-directory'."
     (expand-file-name file no-littering-etc-directory))
+  :init
+  (setopt no-littering-etc-directory (expand-file-name "config/" LITTER-DIR)
+          no-littering-var-directory (expand-file-name "share/" LITTER-DIR)
+          auto-save-file-name-transforms `((".*" ,(expand-file-name "auto-save/" no-littering-var-directory) t))
+          custom-file (lkn/cache-dir "custom.el")
+          treesit-extra-load-path `(,(lkn/config-dir "tree-sitter")))
 
-;;;###autoload
-  (defun lkn/cache-dir (file)
-    "Given FILE, return a valid path relative to `no-littering-var-directory/cache'."
-    (expand-file-name file (expand-file-name "cache" no-littering-var-directory))))
+  (unless (file-exists-p (expand-file-name "cache" no-littering-var-directory))
+    (mkdir (expand-file-name "cache" no-littering-var-directory))))
 
 (use-package gcmh
   :custom
