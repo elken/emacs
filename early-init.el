@@ -90,7 +90,8 @@
       gc-cons-threshold 100000000
       gc-cons-percentage 0.6
       native-comp-jit-compilation t
-      native-comp-async-report-warnings-errors nil
+      native-comp-async-report-warnings-errors 'silent
+      native-comp-deferred-compilation t
       require-final-newline t)
 
 ;; Redirect the eln-cache into our no-littering structure
