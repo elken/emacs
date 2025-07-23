@@ -90,22 +90,27 @@
         :width 12))))
 
   (declare-function doom-blend "doom-themes")
+
   (defun +marginalia--time-colorful (time)
     "Improved local file annotations, coloured based on recency based on TIME."
     (let* ((seconds (float-time (time-subtract (current-time) time)))
+           (blend-amount (max 0.0 (min 1.0 (/ 1.0 (log (+ 3 (/ (+ 1 seconds) 345600.0)))))))
            (color (doom-blend
                    (face-attribute 'marginalia-date :foreground nil t)
                    (face-attribute 'marginalia-documentation :foreground nil t)
-                   (/ 1.0 (log (+ 3 (/ (+ 1 seconds) 345600.0)))))))
-      ;; 1 - log(3 + 1/(days + 1)) % grey
+                   blend-amount)))
+      (when (and (stringp color) (not (string-match-p "^#[0-9a-fA-F]\\{6\\}$" color)))
+        (setq color (face-attribute 'marginalia-date :foreground nil t)))
       (propertize (marginalia--time time) 'face (list :foreground color))))
 
   (defun +marginalia-file-size-colorful (size)
     "Improved local file annotations, coloured based on SIZE."
-    (let* ((size-index (/ (log (+ 1 size)) 7.0))
-           (color (if (< size-index 10000000) ; 10m
+    (let* ((size-index (max 0.0 (min 1.0 (/ (log (+ 1 size)) 7.0))))
+           (color (if (< size-index 1.0)
                       (doom-blend 'orange 'green size-index)
-                    (doom-blend 'red 'orange (- size-index 1)))))
+                    (doom-blend 'red 'orange 0.5))))
+      (when (and (stringp color) (not (string-match-p "^#[0-9a-fA-F]\\{6\\}$" color)))
+        (setq color "orange"))
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 
 (use-package consult
