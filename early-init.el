@@ -48,41 +48,44 @@
   (setenv "LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LIBRARY_PATH")))
   (setenv "LD_LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LD_LIBRARY_PATH"))))
 
-;; Get rid of the UI stuff we don't need. Doing it here prevents
-;; awkward flashing. Also get rid of the dumb startup message
-(set-face-attribute 'fringe nil :background "#000000" :foreground "#ECEFF4")
 
-(setq-default
- default-frame-alist
- `((foreground-color . "#ECEFF4")
-   (background-color . "#000000")
-   (bottom-divider-width . 1)	     ; Thin horizontal window divider
-   (fullscreen . ,'maximized)        ; Maximize the window by default
-   (horizontal-scroll-bars . nil)    ; No horizontal scroll-bars
-   (left-fringe . 8)                 ; Thin left fringe
-   (right-fringe . 8)                ; Thin right fringe
-   (right-divider-width . 10)        ; Spacious padding
-   (internal-border-width . 0)       ; My WM should add padding
-   (menu-bar-lines . 0)		     ; No menu bar
-   (tool-bar-lines . 0)		     ; No tool bar
-   (undecorated-round . IS-MAC)	     ; Remove extraneous X decorations
-   (inhibit-double-buffering  . t)   ; Resolves random flickering
-   (alpha-background . 95)	     ; Transparency (29+)
-   (vertical-scroll-bars . nil))     ; No vertical scroll-bars
- inhibit-startup-message t
- inhibit-startup-echo-area-message t
- inhibit-startup-screen t
- initial-scratch-message nil
- cursor-in-non-selected-windows nil
- mode-line-format nil
- auto-save-default nil
- backup-by-copying t
- inhibit-compacting-font-caches t
- bidi-inhibit-bpa t
- custom-theme-directory (expand-file-name "themes" user-emacs-directory))
+(when (display-graphic-p)
+  ;; Get rid of the UI stuff we don't need. Doing it here prevents
+  ;; awkward flashing. Also get rid of the dumb startup message
+  (set-face-attribute 'fringe nil :background "#2E3440" :foreground "#ECEFF4")
+
+  (setq-default
+   default-frame-alist
+   `((foreground-color . "#ECEFF4")
+     (background-color . "#2E3440")
+     (bottom-divider-width . 1)	     ; Thin horizontal window divider
+     (fullscreen . ,'maximized)      ; Maximize the window by default
+     (horizontal-scroll-bars . nil)  ; No horizontal scroll-bars
+     (left-fringe . 8)               ; Thin left fringe
+     (right-fringe . 8)              ; Thin right fringe
+     (right-divider-width . 10)      ; Spacious padding
+     (internal-border-width . 0)     ; My WM should add padding
+     (menu-bar-lines . 0)            ; No menu bar
+     (tool-bar-lines . 0)            ; No tool bar
+     (undecorated-round . IS-MAC)    ; Remove extraneous X decorations
+     (inhibit-double-buffering  . t) ; Resolves random flickering
+     (alpha-background . 95)	     ; Transparency (29+)
+     (vertical-scroll-bars . nil))))   ; No vertical scroll-bars
+
 
 ;; More free real estate tweaks
-(setq frame-inhibit-implied-resize t
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message t
+      inhibit-startup-screen t
+      initial-scratch-message nil
+      cursor-in-non-selected-windows nil
+      mode-line-format nil
+      auto-save-default nil
+      backup-by-copying t
+      inhibit-compacting-font-caches t
+      bidi-inhibit-bpa t
+      custom-theme-directory (expand-file-name "themes" user-emacs-directory)
+      frame-inhibit-implied-resize t
       native-comp-speed 3
       load-prefer-newer t
       read-process-output-max (* 1024 1024)
