@@ -567,6 +567,7 @@ The DWIM behaviour of this command is as follows:
   (setq-default indent-tabs-mode nil))
 
 (use-feature server
+  :when (display-graphic-p)
   :config
   (unless
       (and (not (display-graphic-p))

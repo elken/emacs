@@ -26,6 +26,7 @@
   :ensure (:host github :repo "rougier/svg-lib"))
 
 (use-package svg-tag-mode
+  :when (display-graphic-p)
   :hook (prog-mode . svg-tag-mode)
   :hook (text-mode . svg-tag-mode)
   :init
@@ -143,6 +144,7 @@ ARGS are style properties that affect the whole tag, with special handling for:
                                   (url-generic-parse-url (concat jiralib-url "/browse/" code))))))))))))
 
 (use-package mixed-pitch
+  :when (display-graphic-p)
   :hook (org-mode . mixed-pitch-mode)
   :hook (LaTeX-mode . mixed-pitch-mode)
   :hook (markdown-mode . mixed-pitch-mode)
@@ -236,6 +238,7 @@ We do this by disabling all other themes then loading ours."
   (which-key-setup-side-window-bottom))
 
 (use-package which-key-posframe
+  :when (display-graphic-p)
   :after which-key
   :custom
   (which-key-posframe-poshandler 'posframe-poshandler-window-bottom-left-corner)
@@ -335,13 +338,14 @@ We do this by disabling all other themes then loading ours."
 
 ;; Load the tab bar after elpaca is setup since we loosely depend on
 ;; some packages
-(add-hook 'elpaca-after-init-hook
-          (lambda ()
-            (require 'lkn-tab-bar)
-            (with-eval-after-load 'lkn-tab-bar
-              (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
-              (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
-              (customize-set-variable 'tab-bar-mode t))))
+(when (display-graphic-p)
+  (add-hook 'elpaca-after-init-hook
+            (lambda ()
+              (require 'lkn-tab-bar)
+              (with-eval-after-load 'lkn-tab-bar
+                (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
+                (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
+                (customize-set-variable 'tab-bar-mode t)))))
 
 (use-package dired-subtree
   :after dired
