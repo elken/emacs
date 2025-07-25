@@ -400,6 +400,7 @@ We do this by disabling all other themes then loading ours."
 
 (use-package spacious-padding
   :when (display-graphic-p)
+  :hook (elpaca-after-init . spacious-padding-mode)
   :bind
   ("C-c C-t S" . spacious-padding-mode)
   :custom
