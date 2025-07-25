@@ -427,7 +427,7 @@ We do this by disabling all other themes then loading ours."
 (use-package fancy-compilation
   :custom
   (fancy-compilation-term "xterm-256color")
-  :commands (fancy-compilation-mode)
+  :hook (compilation-mode . fancy-compilation-mode)
   :after compile)
 
 (provide 'lkn-ui)
