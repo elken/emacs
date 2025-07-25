@@ -471,6 +471,7 @@ The DWIM behaviour of this command is as follows:
       (let ((new-name (read-file-name "New name: " filename)))
         (if (get-buffer new-name)
             (error "A buffer named '%s' already exists!" new-name)
+          (make-directory (f-dirname new-name))
           (rename-file filename new-name 1)
           (rename-buffer new-name)
           (set-visited-file-name new-name)
