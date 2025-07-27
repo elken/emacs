@@ -68,7 +68,6 @@
    (tool-bar-lines . 0)            ; No tool bar
    (undecorated-round . IS-MAC)    ; Remove extraneous X decorations
    (inhibit-double-buffering  . t) ; Resolves random flickering
-   (alpha-background . 95)	     ; Transparency (29+)
    (vertical-scroll-bars . nil)))   ; No vertical scroll-bars
 
 
