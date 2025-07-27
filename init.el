@@ -159,6 +159,8 @@
 (require 'lkn-completion)
 (when IS-MAC
   (require 'lkn-macos))
+(when IS-LINUX
+  (require 'lkn-linux))
 (require 'lkn-llm)
 (require 'lkn-feeds)
 
