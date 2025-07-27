@@ -49,28 +49,27 @@
   (setenv "LD_LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LD_LIBRARY_PATH"))))
 
 
-(when (display-graphic-p)
-  ;; Get rid of the UI stuff we don't need. Doing it here prevents
-  ;; awkward flashing. Also get rid of the dumb startup message
-  (set-face-attribute 'fringe nil :background "#2E3440" :foreground "#ECEFF4")
+;; Get rid of the UI stuff we don't need. Doing it here prevents
+;; awkward flashing. Also get rid of the dumb startup message
+(set-face-attribute 'fringe nil :background "#2E3440" :foreground "#ECEFF4")
 
-  (setq-default
-   default-frame-alist
-   `((foreground-color . "#ECEFF4")
-     (background-color . "#2E3440")
-     (bottom-divider-width . 1)	     ; Thin horizontal window divider
-     (fullscreen . ,'maximized)      ; Maximize the window by default
-     (horizontal-scroll-bars . nil)  ; No horizontal scroll-bars
-     (left-fringe . 8)               ; Thin left fringe
-     (right-fringe . 8)              ; Thin right fringe
-     (right-divider-width . 10)      ; Spacious padding
-     (internal-border-width . 0)     ; My WM should add padding
-     (menu-bar-lines . 0)            ; No menu bar
-     (tool-bar-lines . 0)            ; No tool bar
-     (undecorated-round . IS-MAC)    ; Remove extraneous X decorations
-     (inhibit-double-buffering  . t) ; Resolves random flickering
-     (alpha-background . 95)	     ; Transparency (29+)
-     (vertical-scroll-bars . nil))))   ; No vertical scroll-bars
+(setq-default
+ default-frame-alist
+ `((foreground-color . "#ECEFF4")
+   (background-color . "#2E3440")
+   (bottom-divider-width . 1)	     ; Thin horizontal window divider
+   (fullscreen . ,'maximized)      ; Maximize the window by default
+   (horizontal-scroll-bars . nil)  ; No horizontal scroll-bars
+   (left-fringe . 8)               ; Thin left fringe
+   (right-fringe . 8)              ; Thin right fringe
+   (right-divider-width . 10)      ; Spacious padding
+   (internal-border-width . 0)     ; My WM should add padding
+   (menu-bar-lines . 0)            ; No menu bar
+   (tool-bar-lines . 0)            ; No tool bar
+   (undecorated-round . IS-MAC)    ; Remove extraneous X decorations
+   (inhibit-double-buffering  . t) ; Resolves random flickering
+   (alpha-background . 95)	     ; Transparency (29+)
+   (vertical-scroll-bars . nil)))   ; No vertical scroll-bars
 
 
 ;; More free real estate tweaks
