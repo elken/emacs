@@ -34,7 +34,8 @@
   :init
   (defun lkn/rspec-debug ()
     (interactive)
-    (let* ((cmd (format "RAILS_ENV=test bundle exec rspec %s:%d"
+    (let* ((cmd (format "RAILS_ENV=test bundle exec %s %s:%d"
+                        rspec-spec-command
                         (expand-file-name (buffer-file-name))
                         (line-number-at-pos))))
       (dape (dape--config-eval 'rdbg `(-c ,cmd)))))
