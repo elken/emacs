@@ -36,6 +36,7 @@
   ((clojure-mode clojure-ts-mode) . eglot-ensure)
   ((yaml-mode yaml-ts-mode) . eglot-ensure)
   (csharp-ts-mode . eglot-ensure)
+  (fsharp-mode . eglot-ensure)
   (racket-mode . eglot-ensure)
   (before-save . eglot-maybe-format-buffer)
   :config
