@@ -42,6 +42,20 @@
   "Face for a selected workspace tab."
   :group 'lkn-tab-bar-faces)
 
+(defface lkn-tab-bar-now-playing-text
+  `((t :inherit doom-modeline
+     :weight bold
+     :foreground ,(face-attribute 'default :foreground)))
+  "Face for the now-playing text."
+  :group 'lkn-tab-bar-faces)
+
+(defface lkn-tab-bar-now-playing-icon
+  `((t :inherit doom-modeline
+     :height 1.5
+     :foreground ,(face-attribute 'default :foreground)))
+  "Face for the now-playing icon."
+  :group 'lkn-tab-bar-faces)
+
 (defun lkn-tab-bar--workspaces ()
   "Return a list of the current workspaces."
   (nreverse
@@ -64,6 +78,22 @@
              acc)))
         persps
         `(,(propertize (persp-current-name) 'invisible t)))))))
+
+(defun lkn-tab-bar--now-playing ()
+  "Return the current now-playing status."
+  (concat
+   (doom-modeline-now-playing--icon)
+   " "
+   (propertize
+    (substring-no-properties
+     (doom-modeline-now-playing--playing))
+    'face 'lkn-tab-bar-now-playing-icon
+    'display '(raise -0.1))
+   " "
+   (propertize
+    (substring-no-properties
+     (doom-modeline-now-playing--text))
+    'face 'lkn-tab-bar-now-playing-text)))
 
 (provide 'lkn-tab-bar)
 ;;; lkn-tab-bar.el ends here

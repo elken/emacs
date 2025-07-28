@@ -326,7 +326,7 @@ We do this by disabling all other themes then loading ours."
   (with-eval-after-load 'doom-modeline-now-playing
     (doom-modeline-def-modeline 'main
       '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
-      '(now-playing check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes))))
+      '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes))))
 
 (use-package doom-modeline-now-playing
   :after doom-modeline
@@ -336,16 +336,13 @@ We do this by disabling all other themes then loading ours."
   :config
   (doom-modeline-now-playing-timer))
 
-;; Load the tab bar after elpaca is setup since we loosely depend on
-;; some packages
-(when (display-graphic-p)
-  (add-hook 'elpaca-after-init-hook
-            (lambda ()
-              (require 'lkn-tab-bar)
-              (with-eval-after-load 'lkn-tab-bar
-                (customize-set-variable 'global-mode-string '((:eval (lkn-tab-bar--workspaces)) " "))
-                (customize-set-variable 'tab-bar-format '(tab-bar-format-global))
-                (customize-set-variable 'tab-bar-mode t)))))
+(use-feature lkn-tab-bar
+  :when (display-graphic-p)
+  :after (perspective doom-modeline)
+  :custom
+  (global-mode-string '((:eval (lkn-tab-bar--workspaces)) " " (:eval (lkn-tab-bar--now-playing))))
+  (tab-bar-format '(tab-bar-format-global))
+  (tab-bar-mode t))
 
 (use-package dired-subtree
   :after dired
