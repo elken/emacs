@@ -63,7 +63,8 @@ Usually defaults to Nord or my Carbon theme."
            (load-theme val t)))
   :group 'lkn)
 
-(defcustom lkn-path '("~/.rbenv/shims"
+(defcustom lkn-path '("~/.local/share/mise/shims"
+                      "~/.rbenv/shims"
                       "~/.local/share/nvim/mason/bin"
                       "~/.babashka/bbin/bin"
                       "~/.qlot/bin"
