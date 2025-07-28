@@ -22,10 +22,6 @@
 ;;; bit on that.
 ;;; Code:
 
-(use-package rbenv
-  :defer t
-  :hook ((ruby-ts-mode ruby-mode) . global-rbenv-mode))
-
 (use-package rspec-mode
   :hook (ruby-mode . rspec-mode)
   :custom
