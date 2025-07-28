@@ -260,6 +260,52 @@ IDENTS is specified in `xref-backend-definitions'."
     ;; Extended mode
     "x" #'mc/mark-more-like-this-extended))
 
+(use-package indent-bars
+  :custom
+  (indent-bars-no-descend-lists t)
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module" "program"))
+  (indent-bars-treesit-wrap '((yaml
+                               block_mapping_pair comment)
+                              (toml
+                               table array comment)
+                              (lua
+                               expression_list function_declaration if_statement
+                               elseif_statement else_statement while_statement for_statement
+                               repeat_statement comment)
+                              (html attribute
+                                    start_tag end_tag
+                                    quoted_attribute_value)
+                              (ruby array
+                                    hash
+                                    comment
+                                    when
+                                    argument_list)))
+  (indent-bars-no-descend-string t)
+  (indent-bars-no-descend-lists t)
+  (indent-bars-treesit-scope '((html element
+                                script_element
+                                style_element)
+                               (ruby method class module
+                                     block
+                                     if case unless when
+                                     while until for
+                                     begin
+                                     block)))
+  :init
+  (defun lkn/treesit-parser-for-lang (lang)
+    "Create a parser for LANG if exists."
+    (when (and (treesit-available-p)
+               (treesit-language-available-p lang))
+      (treesit-parser-create lang)))
+  :hook
+  ((yaml-mode yaml-ts-mode) . indent-bars-mode)
+  ((toml-mode toml-ts-mode) . indent-bars-mode)
+  ((lua-mode lua-ts-mode) . indent-bars-mode)
+  (web-mode . (lambda () (lkn/treesit-parser-for-lang 'html)))
+  ((ruby-mode ruby-ts-mode) . indent-bars-mode)
+  (fsharp-mode . indent-bars-mode))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
