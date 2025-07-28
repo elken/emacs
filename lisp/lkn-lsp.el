@@ -39,6 +39,19 @@
   (fsharp-mode . eglot-ensure)
   (racket-mode . eglot-ensure)
   (before-save . eglot-maybe-format-buffer)
+  :init
+  (defmacro eglot-set-server (modes server-command)
+    "Set eglot server for MODES to SERVER-COMMAND.
+MODES can be a single mode symbol or a list of mode symbols.
+SERVER-COMMAND should be a list representing the CLI invocation."
+    (let ((mode-list (if (listp modes) modes (list modes))))
+      `(setq eglot-server-programs
+             (append (mapcar (lambda (mode)
+                               (cons mode ,server-command))
+                             ',mode-list)
+                     (cl-remove-if (lambda (x)
+                                     (memq (car-safe x) ',mode-list))
+                                   eglot-server-programs)))))
   :config
   (defun eglot-maybe-format-buffer (&optional arg)
     "Allow universal argument to disable formatting."
@@ -81,15 +94,8 @@
   ;; are network types, we can't get the command from it
   ;; (add-to-list 'eglot-server-programs '(ruby-ts-mode . ("solargraph" "stdio")) nil #'car)
 
-  (setq eglot-server-programs
-      (cons '(ruby-ts-mode . ("ruby-lsp"))
-            (cl-remove-if (lambda (x) (eq (car-safe x) 'ruby-ts-mode))
-                         eglot-server-programs)))
-
-  (setq eglot-server-programs
-        (cons '(elixir-ts-mode . ("elixir-ls"))
-              (cl-remove-if (lambda (x) (eq (car-safe x) 'elixir-ts-mode))
-                            eglot-server-programs)))
+  (eglot-set-server (ruby-mode ruby-ts-mode) '("ruby-lsp"))
+  (eglot-set-server (elixir-mode elixir-ts-mode) '("elixir-ls"))
 
   ;; Until we figure out why ruby-lsp and solargraph don't send diagnostics
   (setq eglot-stay-out-of '(flymake))
