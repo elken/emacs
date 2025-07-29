@@ -57,13 +57,10 @@
  default-frame-alist
  `((foreground-color . "#ECEFF4")
    (background-color . "#2E3440")
-   (bottom-divider-width . 1)	     ; Thin horizontal window divider
    (fullscreen . ,'maximized)      ; Maximize the window by default
    (horizontal-scroll-bars . nil)  ; No horizontal scroll-bars
    (left-fringe . 8)               ; Thin left fringe
    (right-fringe . 8)              ; Thin right fringe
-   (right-divider-width . 10)      ; Spacious padding
-   (internal-border-width . 0)     ; My WM should add padding
    (menu-bar-lines . 0)            ; No menu bar
    (tool-bar-lines . 0)            ; No tool bar
    (undecorated-round . IS-MAC)    ; Remove extraneous X decorations
