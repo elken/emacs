@@ -309,6 +309,7 @@ We do this by disabling all other themes then loading ours."
      org-journal-mode
      "\\*Org Select\\*"
      rspec-compilation-mode
+     cider-repl-mode
      compilation-mode)))
 
 (use-package doom-modeline
