@@ -20,7 +20,8 @@
 ;;; I use this a lot for work
 ;;; Code:
 
-(defcustom lkn-macos-path '("/usr/local/opt/coreutils/libexec/gnubin"
+(defcustom lkn-macos-path '("/opt/homebrew/opt/openjdk@11/bin"
+                            "/usr/local/opt/coreutils/libexec/gnubin"
                             "/opt/homebrew/opt/coreutils/libexec/gnubin"
                             "/opt/homebrew/opt/openjdk/bin"
                             "~/flutter/sdk/bin"
