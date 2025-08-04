@@ -32,25 +32,34 @@
   :group 'lkn-tab-bar)
 
 (defface lkn-tab-bar-workspace-tab
-  `((t :inherit doom-modeline
-       :foreground ,(face-attribute 'default :foreground)))
+  `((t
+     :foreground ,(face-attribute 'default :foreground)))
   "Face for a workspace tab."
   :group 'lkn-tab-bar-faces)
 
 (defface lkn-tab-bar-selected-workspace-tab
-  '((t :inherit (highlight lkn-tab-bar-workspace-tab)))
+  '((t
+     :inherit (highlight lkn-tab-bar-workspace-tab)))
   "Face for a selected workspace tab."
   :group 'lkn-tab-bar-faces)
 
 (defface lkn-tab-bar-now-playing-text
-  `((t :inherit doom-modeline
+  `((t
+     :font ,(face-attribute 'variable-pitch :font)
      :weight bold
      :foreground ,(face-attribute 'default :foreground)))
   "Face for the now-playing text."
   :group 'lkn-tab-bar-faces)
 
+(defface lkn-tab-bar-now-playing-player-icon
+  `((t
+     :height 1.5
+     :foreground ,(face-attribute 'success :foreground)))
+  "Face for the now-playing icon."
+  :group 'lkn-tab-bar-faces)
+
 (defface lkn-tab-bar-now-playing-icon
-  `((t :inherit doom-modeline
+  `((t
      :height 1.5
      :foreground ,(face-attribute 'default :foreground)))
   "Face for the now-playing icon."
@@ -82,7 +91,10 @@
 (defun lkn-tab-bar--now-playing ()
   "Return the current now-playing status."
   (concat
-   (doom-modeline-now-playing--icon)
+   (propertize
+    (substring-no-properties
+     (doom-modeline-now-playing--icon))
+    'face 'lkn-tab-bar-now-playing-player-icon)
    " "
    (propertize
     (substring-no-properties
