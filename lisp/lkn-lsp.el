@@ -38,6 +38,7 @@
   (csharp-ts-mode . eglot-ensure)
   (fsharp-mode . eglot-ensure)
   (racket-mode . eglot-ensure)
+  ((haskell-mode haskell-ts-mode) . eglot-ensure)
   (before-save . eglot-maybe-format-buffer)
   :init
   (defmacro eglot-set-server (modes server-command)

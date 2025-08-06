@@ -49,6 +49,19 @@
 (use-package eglot-fsharp
   :after fsharp-mode)
 
+(use-package haskell-ts-mode
+  :mode "\\.hs\\'"
+  :custom
+  (haskell-ts-font-lock-level 4)
+  (haskell-ts-use-indent t)
+  (haskell-ts-ghci "ghci")
+  (haskell-ts-use-indent t)
+  :config
+  (add-to-list 'treesit-language-source-alist
+   '(haskell . ("https://github.com/tree-sitter/tree-sitter-haskell" "v0.23.1")))
+  (unless (treesit-grammar-location 'haskell)
+   (treesit-install-language-grammar 'haskell)))
+
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
 ;; Local Variables:
