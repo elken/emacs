@@ -570,10 +570,12 @@ The DWIM behaviour of this command is as follows:
 
 (use-feature server
   :when (display-graphic-p)
+  :after exec-path-from-shell
   :config
   (unless
       (and (not (display-graphic-p))
            (server-running-p))
+    (exec-path-from-shell-initialize)
     (server-start)))
 
 (use-feature savehist

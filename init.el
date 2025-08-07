@@ -143,6 +143,11 @@
 (use-package dotenv
   :ensure (:host github :repo "pkulev/dotenv.el"))
 
+(use-package exec-path-from-shell
+  :demand t
+  :custom
+  (exec-path-from-shell-arguments '("-l")))
+
 (require 'lkn-defaults)
 (require 'lkn-workspaces)
 (require 'lkn-ui)
