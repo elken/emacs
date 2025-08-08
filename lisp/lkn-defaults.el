@@ -360,6 +360,15 @@ The DWIM behaviour of this command is as follows:
                (kill-buffer "*keychain-output*"))
              (setq lkn/keychain-initialized-p t))))))))
 
+;; Another Karthink gem, add repeat-mode support for a keymap
+(defun repeatize (keymap)
+  "Add `repeat-mode' support to a KEYMAP."
+  (map-keymap
+   (lambda (_key cmd)
+     (when (symbolp cmd)
+       (put cmd 'repeat-map keymap)))
+   (symbol-value keymap)))
+
 ;; Only show the compilation buffer if there are errors. Otherwise,
 ;; it's useless
 (defun bury-compile-buffer-if-successful (buffer string)
@@ -722,6 +731,10 @@ The DWIM behaviour of this command is as follows:
       (eq (char-syntax (char-before (1- (point)))) ?w)
       (eq (preceding-char) char)
       (not (eq (char-syntax (preceding-char)) ?\())))))
+
+(use-feature smerge-mode
+  :config
+  (repeatize 'smerge-basic-map))
 
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
