@@ -91,22 +91,23 @@
 
 (defun lkn-tab-bar--now-playing ()
   "Return the current now-playing status."
-  (concat
-   (propertize
-    (substring-no-properties
-     (doom-modeline-now-playing--icon))
-    'face 'lkn-tab-bar-now-playing-player-icon)
-   " "
-   (propertize
-    (substring-no-properties
-     (doom-modeline-now-playing--playing))
-    'face 'lkn-tab-bar-now-playing-icon
-    'display '(raise -0.1))
-   " "
-   (propertize
-    (substring-no-properties
-     (doom-modeline-now-playing--text))
-    'face 'lkn-tab-bar-now-playing-text)))
+  (when (eieio-object-p doom-modeline-now-playing-provider)
+    (concat
+     (propertize
+      (substring-no-properties
+       (doom-modeline-now-playing--icon))
+      'face 'lkn-tab-bar-now-playing-player-icon)
+     " "
+     (propertize
+      (substring-no-properties
+       (doom-modeline-now-playing--playing))
+      'face 'lkn-tab-bar-now-playing-icon
+      'display '(raise -0.1))
+     " "
+     (propertize
+      (substring-no-properties
+       (doom-modeline-now-playing--text))
+      'face 'lkn-tab-bar-now-playing-text))))
 
 (provide 'lkn-tab-bar)
 ;;; lkn-tab-bar.el ends here
