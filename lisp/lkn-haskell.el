@@ -70,21 +70,6 @@
 (use-package flymake-hlint
   :hook ((haskell-mode haskell-ts-mode) . flymake-hlint-load))
 
-(use-package dante
-  :after haskell-mode
-  :commands dante-mode
-
-  :hook ((haskell-mode . dante-mode)
-         (haskell-literate-mode . dante-mode))
-
-  :bind (:map dante-mode-map
-         ("C-c ." . dante-type-at)
-         ("C-c ," . dante-info)
-         ("C-c \"" . dante-eval-block)
-         ("C-c C-c" . dante-exec))
-  :config
-  (add-hook 'xref-backend-functions 'dante--xref-backend))
-
 (provide 'lkn-haskell)
 ;;; lkn-haskell.el ends here
 ;; Local Variables:
