@@ -49,6 +49,10 @@
 (use-package eglot-fsharp
   :after fsharp-mode)
 
+(use-package nushell-ts-mode
+  :config
+  (lkn/treesit-add-lang 'nushell :url "https://github.com/nushell/tree-sitter-nu"))
+
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
 ;; Local Variables:

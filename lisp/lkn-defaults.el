@@ -283,6 +283,18 @@ testing advice (when combined with `rotate-text').
        (dolist (target (cdr targets))
          (advice-remove target #',symbol)))))
 
+(cl-defun lkn/treesit-add-lang (language &key url version)
+  "Set up a tree-sitter language grammar.
+LANGUAGE is the language symbol.
+URL is optional and defaults to the standard tree-sitter GitHub URL.
+VERSION is optional version tag."
+  (let ((lang-name (symbol-name language))
+        (final-url (or url (format "https://github.com/tree-sitter/tree-sitter-%s" lang-name))))
+    (add-to-list 'treesit-language-source-alist
+                 `(,language . (,final-url ,@(when version (list version)))))
+    (unless (treesit-grammar-location language)
+      (treesit-install-language-grammar language))))
+
 ;;; Functions
 
 (defun lkn/swap-face (face &optional frame inherit)
