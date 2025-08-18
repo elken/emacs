@@ -45,30 +45,6 @@
 
   (add-to-list 'tempel-user-elements #'lkn-snippets-include))
 
-(use-package treesit-auto
-  :disabled t
-  :when (treesit-available-p)
-  :demand t
-  :custom
-  (treesit-auto-install 'prompt)
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-                                            :lang 'embedded-template
-                                            :ts-mode 'erb-ts-mode
-                                            :remap 'web-mode
-                                            :url "https://github.com/tree-sitter/tree-sitter-embedded-template"
-                                            :ext "\\.erb\\"))
-  (add-to-list 'treesit-auto-recipe-list (make-treesit-auto-recipe
-                                          :lang 'jsdoc
-                                          :ts-mode 'js-ts-mode
-                                          :url "https://github.com/tree-sitter/tree-sitter-jsdoc"))
-  (global-treesit-auto-mode))
-
-(use-package elixir-ts-mode
-  :hook ((elixir-mode elixir-ts-mode) . eglot-ensure)
-  :after treesit-auto)
-
 (use-package smartparens
   :defer t
   :hook ((prog-mode text-mode org-mode markdown-mode) . smartparens-mode)
