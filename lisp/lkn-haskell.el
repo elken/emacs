@@ -32,7 +32,8 @@
 
   :hook ((haskell-mode . interactive-haskell-mode)
          (haskell-mode . haskell-decl-scan-mode)
-         (haskell-mode . prettify-symbols-mode))
+         (haskell-mode . prettify-symbols-mode)
+         (haskell-mode . lkn/haskell-prettify-symbols))
 
   :bind (:map haskell-mode-map
          ("C-c C-l" . haskell-process-load-or-reload)
@@ -64,7 +65,64 @@
   (haskell-compiler-type 'auto)
 
   ;; Indentation (default to haskell-indentation-mode)
-  (haskell-indentation-electric-flag t))
+  (haskell-indentation-electric-flag t)
+  :init
+  (defun lkn/haskell-prettify-symbols ()
+    (setq-local prettify-symbols-alist
+                '(;; Lambda and basic operators
+                  ("\\" . "λ")
+                  ("/=" . "≠")
+                  ("->" . "→")
+                  ("=>" . "⇒")
+                  ("<-" . "←")
+                  ("<=" . "≤")
+                  (">=" . "≥")
+                  ("/<" . "≮")
+                  ("/>" . "≯")
+                  ("==" . "≡")
+                  ("&&" . "∧")
+                  ("||" . "∨")
+
+                  ;; Function composition and application
+                  (">>=" . "»=")
+                  (">>" . "»")
+                  ("=<<" . "=«")
+                  ("<<" . "«")
+
+                  ;; Type operators
+                  ("::" . "∷")
+
+                  ;; Set theory and collections
+                  ("forall" . "∀")
+                  ("exists" . "∃")
+                  ("elem" . "∈")
+                  ("notElem" . "∉")
+                  ("member" . "∈")
+                  ("notMember" . "∉")
+                  ("union" . "∪")
+                  ("intersection" . "∩")
+                  ("isSubsetOf" . "⊆")
+                  ("isProperSubsetOf" . "⊂")
+                  ("mempty" . "∅")
+                  ("empty" . "∅")
+
+                  ;; Math functions
+                  ("sum" . "∑")
+                  ("product" . "∏")
+                  ("sqrt" . "√")
+                  ("pi" . "π")
+                  ("alpha" . "α")
+                  ("beta" . "β")
+                  ("gamma" . "γ")
+                  ("delta" . "δ")
+
+                  ;; Common keywords
+                  ("undefined" . "⊥")
+                  ("bottom" . "⊥")
+                  ("not" . "¬")
+                  ("infinity" . "∞")
+                  ("Nothing" . "∅")
+                  ("Just" . "⦿")))))
 
 (use-package flymake-hlint
   :hook ((haskell-mode haskell-ts-mode) . flymake-hlint-load))
