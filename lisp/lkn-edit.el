@@ -282,6 +282,9 @@ IDENTS is specified in `xref-backend-definitions'."
   ((ruby-mode ruby-ts-mode) . indent-bars-mode)
   (fsharp-mode . indent-bars-mode))
 
+(use-package mise
+  :hook (elpaca-after-init . global-mise-mode))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
