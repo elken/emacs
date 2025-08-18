@@ -32,7 +32,6 @@
 
   :hook ((haskell-mode . interactive-haskell-mode)
          (haskell-mode . haskell-decl-scan-mode)
-         (haskell-mode . turn-on-haskell-unicode-input-method)
          (haskell-mode . prettify-symbols-mode))
 
   :bind (:map haskell-mode-map
