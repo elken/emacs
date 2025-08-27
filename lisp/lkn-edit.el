@@ -285,6 +285,44 @@ IDENTS is specified in `xref-backend-definitions'."
 (use-package mise
   :hook (elpaca-after-init . global-mise-mode))
 
+(use-package symbol-overlay-mc
+  :after symbol-overlay)
+
+(use-package symbol-overlay
+  :hook
+  (prog-mode . symbol-overlay-mode)
+  :bind
+  ("s-." . symbol-overlay-transient)
+  :init
+  (defun symbol-overlay-remove-all ()
+    "Remove all highlighted symbols in the buffer, always reset `symbol-overlay-keywords-alist'."
+    (interactive)
+    (call-interactively 'symbol-overlay-remove-all))
+
+  (require 'transient)
+  (transient-define-prefix symbol-overlay-transient ()
+    "Symbol Overlay transient"
+    ["Symbol Overlay"
+     ["Manage"
+      ("." "Toggle" symbol-overlay-put)
+      ("k" "Remove All" symbol-overlay-remove-all)]
+     ["Move"
+      ("n" "Next" symbol-overlay-switch-forward)
+      ("p" "Previous" symbol-overlay-switch-backward)]
+     ["On Overlay"
+      ("<" "First" symbol-overlay-jump-first)
+      (">" "Last" symbol-overlay-jump-last)
+      ("d" "Definition" symbol-overlay-jump-to-definition)
+      ("e" "Mark" symbol-overlay-echo-mark)
+      ("M" "MC Mark-All" symbol-overlay-mc-mark-all)]
+     ["On Overlay"
+      ("t" "Toggle Scope" symbol-overlay-toggle-in-scope)
+      ("w" "Copy" symbol-overlay-save-symbol)
+      ("r" "Rename" symbol-overlay-rename)
+      ("q" "Query Replace" symbol-overlay-query-replace)
+      ("s" "ISearch" symbol-overlay-isearch-literally)
+      ("g" "Grep" consult-ripgrep)]]))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
