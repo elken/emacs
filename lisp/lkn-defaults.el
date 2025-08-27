@@ -749,6 +749,21 @@ The DWIM behaviour of this command is as follows:
   :config
   (repeatize 'smerge-basic-map))
 
+(use-feature edebug
+  :config
+  ;; Thanks to https://xenodium.com/inline-previous-result-and-why-you-should-edebug/
+  (require 'eros)
+
+  (defun adviced:edebug-previous-result (_ &rest r)
+    "Adviced `edebug-previous-result'."
+    (eros--make-result-overlay edebug-previous-result
+      :where (point)
+      :duration eros-eval-result-duration))
+
+  (advice-add #'edebug-previous-result
+              :around
+              #'adviced:edebug-previous-result))
+
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
 ;; Local Variables:
