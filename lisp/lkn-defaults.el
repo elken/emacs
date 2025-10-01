@@ -750,6 +750,7 @@ The DWIM behaviour of this command is as follows:
   (repeatize 'smerge-basic-map))
 
 (use-feature edebug
+  :after eros
   :config
   ;; Thanks to https://xenodium.com/inline-previous-result-and-why-you-should-edebug/
   (require 'eros)
