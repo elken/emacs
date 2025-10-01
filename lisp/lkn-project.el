@@ -37,6 +37,18 @@
      (consult-ripgrep "Search" ?s)))
   (project-compilation-buffer-name-function #'project-root-prefixed-buffer-name)
   :init
+  (defun project-shell-command (command)
+    "Run COMMAND in project root and show result in minibuffer."
+    (interactive (list (read-shell-command "Project command: ")))
+    (let* ((project (project-current t))
+           (default-directory (project-root project))
+           (cmd (split-string-and-unquote command)))
+      (message "%s" (string-trim
+                     (inheritenv
+                      (with-temp-buffer
+                        (apply 'call-process (car cmd) nil t nil (cdr cmd))
+                        (buffer-string)))))))
+
   (defun project-root-prefixed-buffer-name (mode)
     (concat "*"
             (project-name (project-current))
