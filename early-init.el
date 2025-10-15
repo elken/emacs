@@ -50,7 +50,7 @@
   (setenv "LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LIBRARY_PATH")))
   (setenv "LD_LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LD_LIBRARY_PATH")))
   (setq native-comp-compiler-options '("-mcpu=apple-m1" "-O3" "-g0" "-fno-finite-math-only" "-fgraphite-identity" "-floop-nest-optimize" "-fdevirtualize-at-ltrans" "-fipa-pta" "-fno-semantic-interposition" "-flto=auto")
-        native-comp-driver-options '("-mcpu=apple-m1" "-O3" "-g0" "-fno-finite-math-only" "-fgraphite-identity" "-floop-nest-optimize" "-fdevirtualize-at-ltrans" "-fipa-pta" "-fno-semantic-interposition" "-flto=auto")))
+        native-comp-driver-options native-comp-compiler-options))
 
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
@@ -59,8 +59,8 @@
 
 (setq-default
  default-frame-alist
- `((foreground-color . "#ECEFF4")
-   (background-color         . "#2E3440")
+ `((foreground-color         . "#ECEFF4")   ; Theme-based foreground (to prevent ugly paints)
+   (background-color         . "#2E3440")   ; Theme-based background (to prevent ugly paints)
    (fullscreen               . ,'maximized) ; Maximize the window by default
    (horizontal-scroll-bars   . nil)         ; No horizontal scroll-bars
    (left-fringe              . 8)           ; Thin left fringe
@@ -73,28 +73,30 @@
    (vertical-scroll-bars     . nil)))       ; No vertical scroll-bars
 
 ;; More free real estate tweaks
-(setq inhibit-startup-message t
-      inhibit-startup-echo-area-message t
-      inhibit-startup-screen t
-      initial-scratch-message nil
-      cursor-in-non-selected-windows nil
-      mode-line-format nil
-      auto-save-default nil
-      backup-by-copying t
-      inhibit-compacting-font-caches t
-      bidi-inhibit-bpa t
-      custom-theme-directory (expand-file-name "themes" user-emacs-directory)
-      frame-inhibit-implied-resize t
-      native-comp-speed 3
-      load-prefer-newer t
-      read-process-output-max (* 1024 1024)
-      large-file-warning-threshold (* 100 1024 1024)
-      gc-cons-threshold 100000000
-      gc-cons-percentage 0.6
-      native-comp-jit-compilation t
-      native-comp-async-report-warnings-errors 'silent
-      native-comp-deferred-compilation t
-      require-final-newline t)
+(setq inhibit-startup-message t                        ; Don't show GNU Emacs startup message
+      inhibit-startup-echo-area-message t              ; Don't show startup echo area message
+      inhibit-startup-screen t                         ; Don't show the startup screen
+      initial-scratch-message nil                      ; Empty *scratch* buffer on startup
+      cursor-in-non-selected-windows nil               ; Hide cursor in inactive windows
+      mode-line-format nil                             ; Disable mode-line (set properly later)
+      auto-save-default nil                            ; Disable auto-save (handled by no-littering)
+      backup-by-copying t                              ; Copy files when backing up (safer for symlinks)
+      inhibit-compacting-font-caches t                 ; Don't compact font caches (speeds up display)
+      bidi-inhibit-bpa t                               ; Disable bidirectional parentheses (faster redisplay)
+      frame-inhibit-implied-resize t                   ; Don't resize frame implicitly (faster startup)
+      native-comp-speed 3                              ; Maximum native compilation optimization level
+      load-prefer-newer t                              ; Load newer .el files over older .elc files
+      read-process-output-max (* 1024 1024)            ; 1MB read buffer for subprocesses (LSP performance)
+      large-file-warning-threshold (* 100 1024 1024)   ; Warn for files larger than 100MB
+      gc-cons-threshold 100000000                      ; 100MB GC threshold (reduces GC during startup)
+      gc-cons-percentage 0.6                           ; GC when 60% of memory is allocated
+      native-comp-jit-compilation t                    ; Enable JIT compilation for native code
+      native-comp-async-report-warnings-errors 'silent ; Suppress native-comp warnings
+      native-comp-deferred-compilation t               ; Automatically compile .el files when loaded
+      require-final-newline t)                         ; Always add newline at end of file
+
+;; Set the custom theme directory early so we can load it properly later
+(setq custom-theme-directory (expand-file-name "themes" user-emacs-directory))
 
 ;; Redirect the eln-cache into our no-littering structure
 (when (fboundp 'startup-redirect-eln-cache)
