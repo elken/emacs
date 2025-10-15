@@ -541,6 +541,12 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
 
   (advice-add 'toc-org-insert-toc :around #'lkn/toc-org-inhibit-scrolling-a))
 
+(use-package org-roam
+  :custom
+  (org-roam-directory (expand-file-name "roam" org-directory))
+  :config
+  (org-roam-db-autosync-mode))
+
 (provide 'lkn-org)
 ;;; lkn-org.el ends here
 ;; Local Variables:

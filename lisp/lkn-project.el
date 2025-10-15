@@ -25,7 +25,7 @@
   :demand t
   :bind
   (:map project-prefix-map
-        ("G" . project-gptel))
+        ("l" . agent-shell-sidebar-toggle))
   :custom
   (project-vc-extra-root-markers '(".project"))
   (project-switch-commands
@@ -55,11 +55,6 @@
             "-"
             (downcase mode)
             "*"))
-  (defun project-gptel ()
-    "Open a gptel buffer for the current project."
-    (interactive)
-    (with-current-buffer (gptel (project-root-prefixed-buffer-name "gptel"))
-      (display-buffer (current-buffer) gptel-display-buffer-action)))
   :config
   (add-to-list 'project-kill-buffer-conditions  '(major-mode . vterm-mode)))
 
