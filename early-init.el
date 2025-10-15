@@ -48,7 +48,9 @@
 (when IS-MAC
   (setenv "PATH" (concat "/opt/homebrew/bin:" (getenv "PATH")))
   (setenv "LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LIBRARY_PATH")))
-  (setenv "LD_LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LD_LIBRARY_PATH"))))
+  (setenv "LD_LIBRARY_PATH" (concat "/opt/homebrew/lib:" (getenv "LD_LIBRARY_PATH")))
+  (setq native-comp-compiler-options '("-mcpu=apple-m1" "-O3" "-g0" "-fno-finite-math-only" "-fgraphite-identity" "-floop-nest-optimize" "-fdevirtualize-at-ltrans" "-fipa-pta" "-fno-semantic-interposition" "-flto=auto")
+        native-comp-driver-options '("-mcpu=apple-m1" "-O3" "-g0" "-fno-finite-math-only" "-fgraphite-identity" "-floop-nest-optimize" "-fdevirtualize-at-ltrans" "-fipa-pta" "-fno-semantic-interposition" "-flto=auto")))
 
 
 ;; Get rid of the UI stuff we don't need. Doing it here prevents
