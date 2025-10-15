@@ -188,6 +188,9 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 
 (use-package forge
   :after magit
+  :bind
+  (:map global-map
+        ("C-c g y" . forge-copy-url-at-point-as-kill))
   :preface
   (setq forge-database-file (lkn/cache-dir "forge/forge-database.sqlite")
         forge-add-default-bindings nil
@@ -236,13 +239,6 @@ Otherwise, behave like `magit-display-buffer-traditional'."
   :hook (diff-hl-mode . (lambda ()
                           (unless (display-graphic-p)
                             (diff-hl-margin-local-mode)))))
-
-(use-package browse-at-remote
-  :custom
-  (browse-at-remote-add-line-number-if-no-region-selected nil)
-  :bind
-  (:map global-map
-        ("C-c g y" . browse-at-remote-kill)))
 
 (provide 'lkn-vcs)
 ;;; lkn-vcs.el ends here
