@@ -338,12 +338,12 @@ We do this by disabling all other themes then loading ours."
   (doom-modeline-now-playing-timer))
 
 (use-feature lkn-tab-bar
-  :when (display-graphic-p)
   :after (perspective doom-modeline)
   :custom
   (global-mode-string '((:eval (lkn-tab-bar--workspaces)) " " (:eval (lkn-tab-bar--now-playing))))
   (tab-bar-format '(tab-bar-format-global))
-  (tab-bar-mode t))
+  (tab-bar-mode t)
+  :init (require 'lkn-tab-bar))
 
 (use-package dired-subtree
   :after dired
