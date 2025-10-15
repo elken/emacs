@@ -21,21 +21,23 @@
 ;;; packages over time.
 ;;; Code:
 
-(use-package gptel
-  :hook
-  (gptel-post-stream . corfu-quit)
-  (gptel-post-stream . gptel-auto-scroll)
-  :config
-  (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
-  (setq-hook! 'gptel-mode-hook
-    markdown-hide-markup t
-    markdown-fontify-code-blocks-natively t)
+(use-package shell-maker)
 
-  (setopt
-   gptel-model 'claude-3-sonnet-20240229
-   gptel-backend (gptel-make-anthropic "Claude"
-                   :stream t
-                   :key #'gptel-api-key-from-auth-source)))
+(use-package acp
+  :ensure (:host github :repo "xenodium/acp.el"))
+
+(use-package agent-shell
+  :ensure (:host github :repo "xenodium/agent-shell")
+  :custom
+  (agent-shell-anthropic-authentication
+   (agent-shell-anthropic-make-authentication :login t)))
+
+(use-package agent-shell-sidebar
+  :after agent-shell
+  :ensure (:host github :repo "cmacrae/agent-shell-sidebar")
+  :custom
+  (agent-shell-sidebar-default-config
+   (agent-shell-anthropic-make-claude-code-config)))
 
 (provide 'lkn-llm)
 ;;; lkn-llm.el ends here
