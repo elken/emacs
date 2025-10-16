@@ -169,6 +169,7 @@
 (require 'lkn-llm)
 (require 'lkn-feeds)
 (require 'lkn-haskell)
+(require 'lkn-cloud)
 
 (use-package request)
 ;; (use-package jira-workflow

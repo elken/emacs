@@ -28,8 +28,6 @@
 (use-package yaml-mode
   :mode ".snyk")
 
-(use-package k8s-mode)
-
 (use-package web-mode
   :custom
   (web-mode-auto-close-style 2)
