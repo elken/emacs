@@ -1,0 +1,17 @@
+alias q exit
+alias f find-file $1
+alias ff find-file-other-window $1
+alias d dired $1
+alias bd eshell-up $1
+alias rg rg --color=always $*
+alias l lsd --git --icon=always $*
+alias ll lsd --git --icon=always -l $*
+alias la lsd --git --icon=always -al $*
+alias .. cd ..
+alias mkdir mkdir -p $*
+alias rm rm -i $*
+alias cp cp -i $*
+alias mv mv -i $*
+alias git git --no-pager $*
+alias gg magit-status
+alias clear clear-scrollback

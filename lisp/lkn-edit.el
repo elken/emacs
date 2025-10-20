@@ -323,39 +323,6 @@ IDENTS is specified in `xref-backend-definitions'."
       ("s" "ISearch" symbol-overlay-isearch-literally)
       ("g" "Grep" consult-ripgrep)]]))
 
-(use-package pcre2el
-  :ensure (:host github :repo "joddie/pcre2el")
-  :config
-  (defmacro prx (&rest expressions)
-    "Convert the rx-compatible regular EXPRESSIONS to PCRE.
-  Most shell applications accept Perl Compatible Regular Expressions."
-    `(rx-let ((integer (1+ digit))
-              (float   (seq integer "." integer))
-              (b256    (seq (optional (or "1" "2"))
-                            (regexp "[0-9]\\{1,2\\}")))
-              (ipaddr  (seq b256 "." b256 "." b256 "." b256))
-              (ipv6    (seq (1+ (seq (1+ hex) ":")) (1+ hex)))
-              (mac-address (seq (= 2 hex) ":" (= 2 hex) ":" (= 2 hex) ":"
-                                (= 2 hex) ":" (= 2 hex) ":" (= 2 hex)))
-              (hostname (seq (1+ (any alnum "-")) (0+ (seq "." (1+ (any alnum "-"))))))
-              (url     (seq (or "http" "https") "://"
-                            (1+ (any alnum "-._~:/?#[]@!$&'()*+,;=%"))))
-              (time    (seq digit (optional digit) ":" (= 2 digit) (optional ":" (= 2 digit))))
-              (email   (seq (1+ (regexp "[^,< ]")) "@" (1+ (seq (1+ (any alnum "-"))) ".") (1+ alnum)))
-              (date    (seq (= 2 digit) (or "/" "-") (= 2 digit) (or "/" "-") (= 4 digit)))
-              (ymd     (seq (= 4 digit) (or "/" "-") (= 2 digit) (or "/" "-") (= 2 digit)))
-              (uuid    (seq (= 8 hex) "-" (= 3 (seq (= 4 hex) "-")) (= 12 hex)))
-              (guid    (seq uuid))
-              (filepath (seq (optional "/") (1+ (seq (1+ (any alnum "-._")) (optional "/")))))
-              (win-path (seq (any alpha) ":\\" (1+ (seq (1+ (any alnum "-._")) (optional "\\")))))
-              (hex-color (seq "#" (or (= 3 hex) (= 6 hex) (= 8 hex))))
-              (semver  (seq (1+ digit) "." (1+ digit) "." (1+ digit)
-                            (optional (seq "-" (1+ (any alnum ".-"))))))
-              (git-sha (or (= 40 hex) (= 7 hex)))
-              (json-string (seq "\"" (0+ (or (not (any "\"\\"))
-                                             (seq "\\" anything))) "\"")))
-       (rxt-elisp-to-pcre (rx ,@expressions)))))
-
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:

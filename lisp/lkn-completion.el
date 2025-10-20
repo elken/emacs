@@ -189,6 +189,9 @@
   :bind
   (([remap dabbrev-expand] . cape-dabbrev))
   :init
+  (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-silent)
+  (advice-add #'pcomplete-completions-at-point :around #'cape-wrap-purify)
+
   (defun lkn/corfu--latex-set-capf ()
     (add-to-list 'completion-at-point-functions #'cape-tex))
   (add-hook 'latex-mode-hook #'lkn/corfu--latex-set-capf)

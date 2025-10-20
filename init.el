@@ -149,6 +149,7 @@
   (exec-path-from-shell-arguments '("-l")))
 
 (require 'lkn-defaults)
+(require 'lkn-eshell)
 (require 'lkn-workspaces)
 (require 'lkn-ui)
 (require 'lkn-edit)
