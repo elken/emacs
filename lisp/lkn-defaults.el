@@ -765,6 +765,26 @@ The DWIM behaviour of this command is as follows:
               :around
               #'adviced:edebug-previous-result))
 
+(use-feature eshell
+  :config
+  (require 'pcre2el)
+  (defun eshell/less (&rest files)
+    "Essentially an alias to the `view-file' function."
+    (eshell-fn-on-files 'view-file 'view-file-other-window files))
+  (defalias 'eshell/more 'eshell/less)
+
+  (defun eshell-maybe-bol ()
+    "Jump to the beginning of the command line, or the real beginning of the
+line if already there."
+    (interactive)
+    (let ((p (point)))
+      (eshell-bol)
+      (if (= p (point))
+          (beginning-of-line))))
+
+  (with-eval-after-load 'esh-mode
+    (define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
+
 (provide 'lkn-defaults)
 ;;; lkn-defaults.el ends here
 ;; Local Variables:

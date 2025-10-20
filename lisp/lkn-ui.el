@@ -302,6 +302,7 @@ We do this by disabling all other themes then loading ours."
      "\\*Claude\\*"
      "\\*Async Shell Command\\*"
      "-gptel\\*"
+     eshell-mode
      help-mode
      helpful-mode
      Info-mode
