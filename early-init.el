@@ -41,7 +41,6 @@
               package-gnupghome-dir (expand-file-name "gnupg" package-user-dir)
               use-package-always-ensure t
               use-package-compute-statistics t
-              use-package-always-defer t
               package-quickstart t)
 
 ;; Need to set this so we can definitely find libgccjit
