@@ -87,32 +87,36 @@ IS-CURRENT indicates if this is the current workspace."
   (let* ((face (if is-current
                    'lkn-tab-bar-selected-workspace-tab
                  'lkn-tab-bar-workspace-tab))
+         (close-map (let ((map (make-sparse-keymap)))
+                      (define-key map [tab-bar mouse-1]
+                        `(lambda (event)
+                           (interactive "e")
+                           (when (yes-or-no-p (format "Close workspace '%s'? " ,name))
+                             (persp-kill ,name))))
+                      map))
+         (tab-map (let ((map (make-sparse-keymap)))
+                    (define-key map [tab-bar mouse-1]
+                      `(lambda (event)
+                         (interactive "e")
+                         (unless ,is-current
+                           (persp-switch ,name))))
+                    map))
          (close-button (propertize " × "
                                    'face `(:inherit ,face :weight bold)
-                                   'close-tab t
+                                   'keymap close-map
                                    'help-echo "Close workspace"))
-         (separator (propertize " " 'face 'tab-bar))
          (label (concat
-                 separator
                  (propertize (format " %d" (1+ index))
-                             'face `(:inherit ,face :weight bold))
+                             'face `(:inherit ,face :weight bold)
+                             'keymap tab-map)
                  (propertize (format " %s" name)
-                             'face `,face)
-                 close-button
-                 separator)))
+                             'face `,face
+                             'keymap tab-map)
+                 close-button)))
     `(,(intern (format "workspace-%s" name))
       menu-item
       ,label
-      ,(lambda (event)
-         (interactive "e")
-         (let ((target (posn-string (event-start event))))
-           (if (and target (get-text-property (cdr target) 'close-tab (car target)))
-               ;; Close button clicked
-               (when (yes-or-no-p (format "Close workspace '%s'? " name))
-                 (persp-kill name))
-             ;; Tab clicked - switch to workspace
-             (unless is-current
-               (persp-switch name))))))))
+      ignore)))
 
 (defun lkn-tab-bar--workspaces ()
   "Return a list of workspace tab items for the tab-bar."
@@ -129,10 +133,9 @@ IS-CURRENT indicates if this is the current workspace."
 (defun lkn-tab-bar--now-playing ()
   "Return the current now-playing status."
   (when (eieio-object-p doom-modeline-now-playing-current-provider)
-    (let ((padding-left (propertize " " 'face 'lkn-tab-bar-now-playing-container))
-          (padding-right (propertize " " 'face 'lkn-tab-bar-now-playing-container))
+    (let* ((doom-modeline-now-playing-max-length 2000)
           (player-icon (propertize
-                        (substring-no-properties (doom-modeline-now-playing--icon))
+                        (concat (substring-no-properties (doom-modeline-now-playing--icon)) " ")
                         'face 'lkn-tab-bar-now-playing-player-icon))
           (playing-icon (propertize
                          (concat " "
@@ -140,13 +143,11 @@ IS-CURRENT indicates if this is the current workspace."
                                  " ")
                          'face 'lkn-tab-bar-now-playing-icon))
           (text (propertize
-                 (substring-no-properties (doom-modeline-now-playing--text))
+                 (concat " " (substring-no-properties (doom-modeline-now-playing--text)))
                  'face 'lkn-tab-bar-now-playing-text)))
-      (concat padding-left
-              player-icon
+      (concat text
               playing-icon
-              text
-              padding-right))))
+              player-icon))))
 
 (defun lkn-tab-bar-workspaces-format ()
   "Format workspaces for tab-bar."
@@ -161,23 +162,19 @@ IS-CURRENT indicates if this is the current workspace."
   "Align tab-bar items to the center.
 This calculates the necessary spacing to center the workspaces."
   (let* ((rest (cdr (memq 'lkn-tab-bar-format-align-center tab-bar-format)))
-         ;; Get items to center (until next alignment marker)
          (items-to-center (seq-take-while
                            (lambda (item)
                              (not (memq item '(tab-bar-format-align-right
                                                lkn-tab-bar-format-align-center))))
                            rest))
-         ;; Calculate the formatted string
          (center-str (format-mode-line
                       (mapcan (lambda (item)
                                 (when (functionp item)
                                   (funcall item)))
                               items-to-center)))
-         ;; Get character width (simpler and more reliable for tab-bar)
          (center-chars (length center-str)))
     `((align-center menu-item
                     ,(propertize " " 'display
-                                 ;; Align to center, then back up by half the content width
                                  `(space :align-to (- center ,(/ center-chars 2))))
                     ignore))))
 

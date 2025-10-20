@@ -345,8 +345,6 @@ We do this by disabling all other themes then loading ours."
                     tab-bar-format-align-right
                     lkn-tab-bar-now-playing-format))
   (tab-bar-mode t)
-  (tab-bar-close-button-show nil)  ; Don't show default close button
-  (tab-bar-new-button-show nil)    ; Don't show new tab button
   :init (require 'lkn-tab-bar))
 
 (use-package dired-subtree
