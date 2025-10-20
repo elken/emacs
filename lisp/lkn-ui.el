@@ -338,11 +338,14 @@ We do this by disabling all other themes then loading ours."
   (doom-modeline-now-playing-timer))
 
 (use-feature lkn-tab-bar
-  :after (perspective doom-modeline)
   :custom
-  (global-mode-string '((:eval (lkn-tab-bar--workspaces)) " " (:eval (lkn-tab-bar--now-playing))))
-  (tab-bar-format '(tab-bar-format-global))
+  (tab-bar-format '(lkn-tab-bar-format-align-center
+                    lkn-tab-bar-workspaces-format
+                    tab-bar-format-align-right
+                    lkn-tab-bar-now-playing-format))
   (tab-bar-mode t)
+  (tab-bar-close-button-show nil)  ; Don't show default close button
+  (tab-bar-new-button-show nil)    ; Don't show new tab button
   :init (require 'lkn-tab-bar))
 
 (use-package dired-subtree
