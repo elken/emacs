@@ -342,8 +342,7 @@ We do this by disabling all other themes then loading ours."
   :custom
   (tab-bar-format '(lkn-tab-bar-format-align-center
                     lkn-tab-bar-workspaces-format
-                    tab-bar-format-align-right
-                    lkn-tab-bar-now-playing-format))
+                    tab-bar-format-align-right))
   (tab-bar-mode t)
   :init (require 'lkn-tab-bar))
 
