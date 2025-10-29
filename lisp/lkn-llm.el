@@ -39,6 +39,10 @@
   (agent-shell-sidebar-default-config
    (agent-shell-anthropic-make-claude-code-config)))
 
+(use-package eca
+  :ensure (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el"))
+  )
+
 (provide 'lkn-llm)
 ;;; lkn-llm.el ends here
 ;; Local Variables:
