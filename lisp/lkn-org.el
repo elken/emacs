@@ -68,7 +68,7 @@
   :hook (org-capture-mode . hide-mode-line-mode))
 
 (use-package doct
-  :after org-capture
+  :after (nerd-icons org-capture)
   :config
   (defun org-capture-select-template (&optional keys)
     "Select a capture template, in a prettier way than default
