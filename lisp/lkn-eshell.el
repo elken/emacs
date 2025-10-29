@@ -124,10 +124,6 @@ line if already there."
 (use-package pcmpl-args
   :after pcomplete)
 
-(use-package esh-help
-  :after eshell
-  :config (setup-esh-help-eldoc))
-
 (use-package fish-completion
   :when (executable-find "fish")
   :ensure (:host github :repo "LemonBreezes/emacs-fish-completion")
