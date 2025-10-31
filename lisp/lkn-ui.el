@@ -329,6 +329,7 @@ We do this by disabling all other themes then loading ours."
       '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
 
 (use-feature lkn-tab-bar
+  :after (doom-themes)
   :custom
   (tab-bar-format '(lkn-tab-bar-format-align-center
                     lkn-tab-bar-workspaces-format
