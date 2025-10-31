@@ -561,6 +561,7 @@ The DWIM behaviour of this command is as follows:
   (after-init                   . global-subword-mode)
   (after-init                   . delete-selection-mode)
   (after-init                   . lkn/keychain-setup)
+  (after-init                   . winner-mode)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   (elpaca-after-init            . minibuffer-electric-default-mode)
   (elpaca-after-init            . global-completion-preview-mode)
