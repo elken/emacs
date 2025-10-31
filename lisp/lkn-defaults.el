@@ -516,6 +516,8 @@ The DWIM behaviour of this command is as follows:
 
 (use-feature emacs
   :custom
+  (trusted-content `("~/code/moj/"
+                     ,user-emacs-directory))
   (source-directory (expand-file-name "~/code/emacs"))
   (next-error-recenter '(4))
   (scroll-preserve-screen-position t)
