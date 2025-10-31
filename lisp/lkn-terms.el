@@ -28,7 +28,7 @@
          ("C-c d" . multi-vterm-dedicated-toggle)
          ("C-c V" . lkn/consult-project-vterm))
   :custom
-  (vterm-shell (or (executable-find "nu") (executable-find "zsh")))
+  (vterm-shell (executable-find "zsh"))
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 5000)
   :config
