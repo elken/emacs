@@ -115,6 +115,7 @@
           custom-file (lkn/cache-dir "custom.el")
           treesit-extra-load-path `(,(lkn/config-dir "tree-sitter")))
 
+  (load custom-file)
   (unless (file-exists-p (expand-file-name "cache" no-littering-var-directory))
     (mkdir (expand-file-name "cache" no-littering-var-directory))))
 
