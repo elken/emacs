@@ -220,7 +220,6 @@ We do this by disabling all other themes then loading ours."
           (which-key--update)
           (which-key--create-buffer-and-show nil keymap))
       (which-key--hide-popup)))
-  :diminish which-key-mode
   :custom
   (repeat-echo-function #'repeat-echo-which-key)
   (which-key-idle-delay 1.0)

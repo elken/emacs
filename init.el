@@ -94,7 +94,7 @@
 
 (use-package diminish
   :demand t
-  :diminish (subword-mode eldoc-mode))
+  :diminish (subword-mode eldoc-mode completion-preview-mode which-key-mode symbol-overlay-mode))
 
 (use-package no-littering
   :demand t
