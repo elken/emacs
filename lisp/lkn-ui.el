@@ -314,7 +314,6 @@ We do this by disabling all other themes then loading ours."
      compilation-mode)))
 
 (use-package doom-modeline
-  :defer 1
   :hook (elpaca-after-init . doom-modeline-mode)
   :custom
   (doom-modeline-buffer-file-name-style 'relative-to-project)
@@ -325,18 +324,9 @@ We do this by disabling all other themes then loading ours."
   (doom-modeline-vcs-max-length 60)
   :config
   (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
-  (with-eval-after-load 'doom-modeline-now-playing
-    (doom-modeline-def-modeline 'main
+      (doom-modeline-def-modeline 'main
       '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
-      '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes))))
-
-(use-package doom-modeline-now-playing
-  :after doom-modeline
-  :custom
-  (doom-modeline-now-playing-interval 2)
-  (doom-modeline-now-playing-playerctl-ignored-players '("firefox" "kdeconnect" "plasma-browser-integration" "GSConnect"))
-  :config
-  (doom-modeline-now-playing-timer))
+      '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
 
 (use-feature lkn-tab-bar
   :custom
