@@ -46,26 +46,63 @@
       "0" "switch to 10"))
 
   ;; Inspired by <https://github.com/bbatsov/persp-projectile>
-  (defadvice project-switch-project (around project-persp-switch-project (project) activate)
-    "Switch to perspective for project."
+  (defun project-persp-switch-project (project)
+    "Switch to perspective for project.
+If the perspective already exists and is not current, switch to it.
+If the perspective doesn't exist, create it.
+In all cases, run the project switch command."
     (interactive (list (project-prompt-project-dir)))
-    (let* ((name (project-name (project-current nil project)))
+    (let* ((project-current-directory-override project)
+           (name (project-name (project-current nil project)))
            (persp (gethash name (perspectives-hash)))
            (command (if (symbolp project-switch-commands)
                         project-switch-commands
-                      (project--switch-project-command)))
-           (project-current-directory-override project))
-      (persp-switch name)
-      (unless (equal persp (persp-curr))
-        (call-interactively command))))
+                      (project--switch-project-command))))
+      (ignore project-current-directory-override)
+      (cond
+       ;; project-specific perspective already exists but is not current
+       ((and persp (not (equal persp (persp-curr))))
+        (persp-switch name)
+        (call-interactively command))
+       ;; project-specific perspective doesn't exist
+       ((not persp)
+        (persp-switch name)
+        (call-interactively command))
+       ;; already in the correct perspective
+       (t
+        (call-interactively command)))))
 
-  (defadvice persp-init-frame (after project-persp-init-frame activate)
+  (advice-add 'project-switch-project :override #'project-persp-switch-project)
+
+  (defun project-persp-init-frame (frame)
     "Rename initial perspective to the project name when a new frame
 is created in a known project."
     (with-selected-frame frame
-      (when (project-current)
-        (persp-rename (project-name (project-current)))
-        (setq-local default-directory (project-root (project-current))))))
+      (when-let* ((proj (project-current)))
+        (persp-rename (project-name proj))
+        (setq-local default-directory (project-root proj)))))
+
+  (advice-add 'persp-init-frame :after #'project-persp-init-frame)
+
+  ;; Trust scratch buffer content by default
+  (defun persp-get-scratch-buffer (&optional name)
+    "Return the \"*scratch* (NAME)\" buffer.
+Create it if the current perspective doesn't have one yet."
+    (let* ((scratch-buffer-name (persp-scratch-buffer name))
+           (scratch-buffer (get-buffer scratch-buffer-name)))
+      ;; Do not interfere with an existing scratch buffer's status.
+      (unless scratch-buffer
+        (setq scratch-buffer (get-buffer-create scratch-buffer-name))
+        (with-current-buffer scratch-buffer
+          ;; We trust the content of an empty scratch buffer
+          (setq-local trusted-content :all)
+          (when (eq major-mode 'fundamental-mode)
+            (funcall initial-major-mode))
+          (when (and (zerop (buffer-size))
+                     initial-scratch-message)
+            (insert (substitute-command-keys initial-scratch-message))
+            (set-buffer-modified-p nil))))
+      scratch-buffer))
 
   ;; Handle vterm buffer scrollback
 
