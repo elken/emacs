@@ -28,6 +28,8 @@
 
 (use-package agent-shell
   :ensure (:host github :repo "xenodium/agent-shell")
+  :commands (agent-shell agent-shell-sidebar-toggle)
+  :hook (agent-shell-mode . hide-mode-line-mode)
   :custom
   (agent-shell-anthropic-authentication
    (agent-shell-anthropic-make-authentication :login t)))
@@ -40,8 +42,8 @@
    (agent-shell-anthropic-make-claude-code-config)))
 
 (use-package eca
-  :ensure (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el"))
-  )
+  :commands (eca)
+  :ensure (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el")))
 
 (provide 'lkn-llm)
 ;;; lkn-llm.el ends here
