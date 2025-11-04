@@ -23,9 +23,6 @@
 
 (use-feature project
   :demand t
-  :bind
-  (:map project-prefix-map
-        ("l" . agent-shell-sidebar-toggle))
   :custom
   (project-vc-extra-root-markers '(".project"))
   (project-switch-commands

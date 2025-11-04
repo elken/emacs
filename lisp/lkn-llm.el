@@ -28,15 +28,53 @@
 
 (use-package agent-shell
   :ensure (:host github :repo "xenodium/agent-shell")
-  :commands (agent-shell agent-shell-sidebar-toggle)
-  :hook (agent-shell-mode . hide-mode-line-mode)
+  :commands (agent-shell lkn/agent-shell-toggle)
+  :bind
+  (:map project-prefix-map
+        ("l" . lkn/agent-shell-toggle))
   :custom
   (agent-shell-file-completion-enabled t)
   (agent-shell-show-welcome-message nil)
   (agent-shell-anthropic-authentication
-   (agent-shell-anthropic-make-authentication :login t)))
+   (agent-shell-anthropic-make-authentication :login t))
+  :config
+;;;###autoload
+  (defun lkn/agent-shell-toggle ()
+    "Toggle an agent-shell buffer.
+Creates or toggles an agent-shell buffer specific to the current perspective and project."
+    (interactive)
+    (let* ((project (project-current))
+           (agent-config (agent-shell-anthropic-make-claude-code-config))
+           (buffer-name (format "%s Agent @ %s" (alist-get :buffer-name agent-config) (persp-current-name)))
+           (default-directory (if project (project-root project) default-directory))
+           (buffer (get-buffer buffer-name)))
+      (if-let ((win (and buffer (get-buffer-window buffer))))
+          (delete-window win)
+        (unless buffer
+          (setq buffer (agent-shell--start :config agent-config
+                                           :no-focus t
+                                           :new-session t))
+          (persp-add-buffer buffer)
+          (with-current-buffer buffer
+            (add-hook 'kill-buffer-hook
+                      (lambda ()
+                        (when-let ((window (get-buffer-window (current-buffer))))
+                          (ignore-errors (delete-window window))))
+                      t t)))
+        (display-buffer-in-side-window
+         buffer
+         '((side . right)
+           (slot . 0)
+           (window-width . 0.3)
+           (preserve-size . (t . nil))
+           (dedicated . t)
+           (window-parameters . ((no-delete-other-windows . t)
+                                 (mode-line-format . none)))))
+        (select-window (get-buffer-window buffer))))))
 
 (use-package agent-shell-sidebar
+  ;; Currently broken
+  :disabled t
   :after agent-shell
   :ensure (:host github :repo "cmacrae/agent-shell-sidebar")
   :custom
