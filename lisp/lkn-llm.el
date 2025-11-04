@@ -31,6 +31,8 @@
   :commands (agent-shell agent-shell-sidebar-toggle)
   :hook (agent-shell-mode . hide-mode-line-mode)
   :custom
+  (agent-shell-file-completion-enabled t)
+  (agent-shell-show-welcome-message nil)
   (agent-shell-anthropic-authentication
    (agent-shell-anthropic-make-authentication :login t)))
 
