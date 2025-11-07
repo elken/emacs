@@ -323,6 +323,20 @@ IDENTS is specified in `xref-backend-definitions'."
       ("s" "ISearch" symbol-overlay-isearch-literally)
       ("g" "Grep" consult-ripgrep)]]))
 
+(use-package atomic-chrome
+  :custom
+  (atomic-chrome-default-major-mode 'markdown-mode)
+  :bind
+  (:map atomic-chrome-edit-mode-map
+        ("C-c C-k" . kill-current-buffer))
+  :config
+  (ignore-errors
+    (atomic-chrome-start-server))
+  (advice-add 'atomic-chrome-close-current-buffer
+              :before
+              (cmd!
+               (clipboard-kill-ring-save (point-min) (point-max)))))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
