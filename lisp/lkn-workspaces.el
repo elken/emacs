@@ -94,6 +94,7 @@ Create it if the current perspective doesn't have one yet."
       (unless scratch-buffer
         (setq scratch-buffer (get-buffer-create scratch-buffer-name))
         (with-current-buffer scratch-buffer
+          (setq-local default-directory (project-root (project-current)))
           (when (eq major-mode 'fundamental-mode)
             (funcall initial-major-mode))
           (when (and (zerop (buffer-size))
