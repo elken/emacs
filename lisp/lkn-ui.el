@@ -314,7 +314,6 @@ We do this by disabling all other themes then loading ours."
      compilation-mode)))
 
 (use-package doom-modeline
-  :disabled t
   :hook (elpaca-after-init . doom-modeline-mode)
   :custom
   (doom-modeline-buffer-file-name-style 'relative-to-project)
