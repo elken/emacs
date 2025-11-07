@@ -424,6 +424,12 @@ We do this by disabling all other themes then loading ours."
   :diminish (beacon-mode)
   :config (beacon-mode))
 
+(use-package diredfl
+  :init (diredfl-global-mode))
+
+(use-package dired-git-info
+  :hook (dired-after-readin . dired-git-info-auto-enable))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
 ;; Local Variables:
