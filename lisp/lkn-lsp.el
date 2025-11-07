@@ -109,7 +109,24 @@ SERVER-COMMAND should be a list representing the CLI invocation."
                 '((:solargraph . (:formatting t
                                   :diagnostics t))
                   (:ruby-lsp . (:linters ["rubocop"]
-                                :experimentalFeaturesEnabled t)))))
+                                :experimentalFeaturesEnabled t))))
+  ;; Eglot wipes out `before-save-hook' and `after-save-hook' in
+  ;; favour of its own buffer-local versions.
+  ;; I'd rather keep mine still, so we pull them in after
+
+  (defun lkn/eglot-preserve-save-hooks ()
+    "Preserve global save hooks when enabling or disabling Eglot."
+    (let ((global-before-save (default-value 'before-save-hook))
+          (global-after-save (default-value 'after-save-hook)))
+      (run-with-idle-timer
+       0 nil
+       (lambda ()
+         (dolist (hook global-before-save)
+           (add-hook 'before-save-hook hook nil t))
+         (dolist (hook global-after-save)
+           (add-hook 'after-save-hook hook nil t))))))
+
+  (add-hook 'after-change-major-mode-hook #'lkn/eglot-preserve-save-hooks))
 
 (use-package consult-xref-stack
   :ensure
