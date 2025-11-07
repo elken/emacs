@@ -571,7 +571,9 @@ The DWIM behaviour of this command is as follows:
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   (elpaca-after-init            . minibuffer-electric-default-mode)
   (elpaca-after-init            . global-completion-preview-mode)
+  ;; Line numbers
   (prog-mode                    . display-line-numbers-mode)
+  (help-mode                    . (lambda () (display-line-numbers-mode -1)))
   :bind
   (("C-x k"                    . kill-current-buffer)
    ("C-x C-k"                  . lkn/sudo-kill-current-buffer)
