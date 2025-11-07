@@ -556,6 +556,9 @@ The DWIM behaviour of this command is as follows:
    '((display-buffer-reuse-window display-buffer-same-window)
      (reusable-frames . t)))
   (even-window-sizes nil)
+
+  ;; Improve performance for files with long-lines
+  (bidi-paragraph-direction 'left-to-right)
   :hook
   (before-save                  . executable-make-buffer-file-executable-if-script-p)
   (before-save                  . whitespace-cleanup)
