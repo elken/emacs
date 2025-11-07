@@ -538,6 +538,7 @@ The DWIM behaviour of this command is as follows:
   (minibuffer-default-prompt-format " [%s]")
   (scroll-conservatively 101)
   (apropos-do-all t)
+  (display-line-numbers 'relative)
 
   ;; Backups
   (backup-directory-alist
@@ -567,6 +568,7 @@ The DWIM behaviour of this command is as follows:
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   (elpaca-after-init            . minibuffer-electric-default-mode)
   (elpaca-after-init            . global-completion-preview-mode)
+  (prog-mode                    . display-line-numbers-mode)
   :bind
   (("C-x k"                    . kill-current-buffer)
    ("C-x C-k"                  . lkn/sudo-kill-current-buffer)
@@ -579,7 +581,6 @@ The DWIM behaviour of this command is as follows:
    ("M-q"                      . lkn/fill-region)
    ("C-c f p"                  . lkn/find-file-emacs)
    ("C-x p y"                  . lkn/yank-buffer-project-path)
-   ([remap goto-line]          . lkn/goto-line-feedback)
    ([remap split-window-below] . lkn/split-window-below)
    ([remap split-window-right] . lkn/split-window-right))
   :init

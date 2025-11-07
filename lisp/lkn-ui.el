@@ -164,6 +164,7 @@ ARGS are style properties that affect the whole tag, with special handling for:
 
 (use-package helpful
   :hook (helpful-mode . visual-line-mode)
+  :hook (helpful-mode . (lambda ()  (display-line-numbers-mode -1)))
   :custom
   (apropos-do-all t)
   :bind (([remap describe-function] . helpful-callable)

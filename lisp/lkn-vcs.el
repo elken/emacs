@@ -39,6 +39,7 @@
         ("@" . forge-dispatch))
   :hook
   (magit-mode . lkn/keychain-setup)
+  (magit-mode . (lambda () (display-line-numbers-mode -1)))
   (magit-post-refresh . magit-run-post-commit-hook)
   (magit-post-refresh . magit-run-post-stage-hook)
   (magit-post-refresh . magit-run-post-unstage-hook)
