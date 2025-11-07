@@ -420,6 +420,10 @@ We do this by disabling all other themes then loading ours."
   :hook (compilation-mode . fancy-compilation-mode)
   :after compile)
 
+(use-package beacon
+  :diminish (beacon-mode)
+  :config (beacon-mode))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
 ;; Local Variables:
