@@ -15,3 +15,4 @@ alias mv mv -i $*
 alias git git --no-pager $*
 alias gg magit-status
 alias clear clear-scrollback
+alias v eshell-exec-visual $@*
