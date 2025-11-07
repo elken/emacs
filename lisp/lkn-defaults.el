@@ -640,8 +640,9 @@ The DWIM behaviour of this command is as follows:
   (delete-by-moving-to-trash t)
   (dired-dwim-target t)
   :hook
-  ((dired-mode . dired-hide-details-mode)
-   (dired-mode . hl-line-mode)))
+  (dired-mode . (lambda () (display-line-numbers-mode -1)))
+  (dired-mode . dired-hide-details-mode)
+  (dired-mode . hl-line-mode))
 
 (use-feature repeat
   :hook (after-init . repeat-mode))
