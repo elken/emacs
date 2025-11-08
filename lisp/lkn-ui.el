@@ -174,7 +174,109 @@ ARGS are style properties that affect the whole tag, with special handling for:
          ([remap describe-symbol]   . helpful-symbol)
          ("C-h '"                   . describe-char)
          ("C-h F"                   . describe-face)
-         ("C-h C-k"                 . describe-keymap)))
+         ("C-h C-k"                 . describe-keymap)
+         ("C-h C-f"                 . describe-buffer-faces))
+  :config
+;;;###autoload
+  (defun describe-buffer-faces (&optional buffer)
+    "Display list of font faces used in BUFFER with examples and navigation.
+
+If not specified, or called interactively, BUFFER defaults to `current-buffer'.
+Each face entry shows an example of text with that face and buttons to
+navigate to occurrences in the buffer."
+    (interactive)
+    (let* ((working-buffer (or buffer (current-buffer)))
+           (face-data (describe-buffer-faces--collect-data working-buffer)))
+
+      (help-setup-xref (list 'describe-buffer-faces working-buffer)
+                       (called-interactively-p 'interactive))
+
+      (with-help-window (help-buffer)
+        (insert (format "Faces found in buffer '%s':\n\n" (buffer-name working-buffer)))
+        (dolist (entry (sort face-data (lambda (a b)
+                                          (> (plist-get a :count)
+                                             (plist-get b :count)))))
+          (describe-buffer-faces--insert-entry working-buffer entry)))))
+
+  (defun describe-buffer-faces--collect-data (buffer)
+    "Collect face data from BUFFER.
+Returns a list of plists with :face, :first-pos, :count, and :example."
+    (let ((face-table (make-hash-table :test 'equal)))
+      (with-current-buffer buffer
+        (save-excursion
+          (goto-char (point-min))
+          (while (< (point) (point-max))
+            (when-let ((face (get-text-property (point) 'face)))
+              (let* ((pos (point))
+                     (entry (or (gethash face face-table)
+                               (puthash face (list :face face :first-pos pos :count 0)
+                                       face-table))))
+                (cl-incf (plist-get entry :count))
+                (unless (plist-get entry :example)
+                  (let ((end (next-property-change pos nil (point-max))))
+                    (plist-put entry :example
+                              (buffer-substring-no-properties pos (min end (+ pos 50))))))))
+            (goto-char (next-property-change (point) nil (point-max))))))
+      (hash-table-values face-table)))
+
+  (defun describe-buffer-faces--insert-entry (buffer entry)
+    "Insert a formatted ENTRY for BUFFER in the help window."
+    (let ((face (plist-get entry :face))
+          (first-pos (plist-get entry :first-pos))
+          (count (plist-get entry :count))
+          (example (plist-get entry :example)))
+
+      ;; Face name and count
+      (help-insert-xref-button (format "  %s" face) 'help-face face)
+      (insert (format " (%d occurrence%s)\n" count (if (> count 1) "s" "")))
+
+      ;; Example text
+      (when example
+        (insert "    Example: "
+                (propertize (truncate-string-to-width example 60 nil nil "…") 'face face)
+                "\n"))
+
+      ;; Navigation buttons
+      (insert "    ")
+      (describe-buffer-faces--insert-button "Next" buffer face 'next)
+      (insert " ")
+      (describe-buffer-faces--insert-button "Previous" buffer face 'prev)
+      (insert " ")
+      (describe-buffer-faces--insert-button "First" buffer face first-pos)
+      (insert "\n\n")))
+
+  (defun describe-buffer-faces--insert-button (label buffer face action)
+    "Insert a navigation button with LABEL for FACE in BUFFER.
+ACTION is either 'next, 'prev, or a position number."
+    (insert-button (format "[%s]" label)
+                  'action (lambda (_)
+                            (pop-to-buffer buffer)
+                            (if (numberp action)
+                                (goto-char action)
+                              (describe-buffer-faces--find-face face action))
+                            (recenter))
+                  'follow-link t
+                  'help-echo (format "Jump to %s occurrence in buffer"
+                                    (if (numberp action) "first" (symbol-name action)))))
+
+  (defun describe-buffer-faces--find-face (face direction)
+    "Find occurrence of FACE in DIRECTION ('next or 'prev), wrapping if needed."
+    (let* ((forward (eq direction 'next))
+           (start (point))
+           (limit (if forward (point-max) (point-min)))
+           (move-fn (if forward #'next-property-change #'previous-property-change))
+           (compare (if forward #'< #'>)))
+      ;; Search in primary direction
+      (goto-char (funcall move-fn (point) nil limit))
+      (while (and (funcall compare (point) limit)
+                  (not (equal (get-text-property (point) 'face) face)))
+        (goto-char (funcall move-fn (point) nil limit)))
+      ;; Wrap around if we didn't find it
+      (when (funcall compare limit (point))
+        (goto-char (if forward (point-min) (point-max)))
+        (while (and (funcall compare (point) start)
+                    (not (equal (get-text-property (point) 'face) face)))
+          (goto-char (funcall move-fn (point) nil limit)))))))
 
 (use-package doom-themes
   :demand t
