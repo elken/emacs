@@ -228,7 +228,6 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 ;; Disabled until we can find a performant way to use it
 ;; I really want it, so I'm not removing it just yet
 (use-package diff-hl
-  :disabled t
   :config
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
@@ -240,6 +239,9 @@ Otherwise, behave like `magit-display-buffer-traditional'."
   :hook (diff-hl-mode . (lambda ()
                           (unless (display-graphic-p)
                             (diff-hl-margin-local-mode)))))
+
+(use-package git-timemachine
+  :commands (git-timemachine))
 
 (provide 'lkn-vcs)
 ;;; lkn-vcs.el ends here
