@@ -431,6 +431,29 @@ We do this by disabling all other themes then loading ours."
       '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
       '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
 
+(use-feature lkn-modeline
+  :disabled t
+  :custom
+  (mode-line-compact nil)
+  (mode-line-format '("%e"
+                      lkn-modeline-macro
+                      lkn-modeline-narrow
+                      lkn-modeline-remote
+                      " "
+                      lkn-modeline-meow-mode
+                      lkn-modeline-major-mode
+                      " "
+                      lkn-modeline-buffer-name
+                      " "
+                      lkn-modeline-git-branch
+                      " "
+                      lkn-modeline-flymake))
+  :config
+  (let ((subtle (face-foreground 'shadow)))
+    (custom-set-faces
+     `(mode-line ((t :background unspecified :box unspecified :overline ,subtle)))
+     `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified :overline ,subtle))))))
+
 (use-feature lkn-tab-bar
   :after (doom-themes)
   :custom
@@ -439,17 +462,6 @@ We do this by disabling all other themes then loading ours."
                     tab-bar-format-align-right))
   (tab-bar-mode t)
   :init (require 'lkn-tab-bar))
-
-(use-package dired-subtree
-  :after dired
-  :custom
-  (dired-subtree-use-backgrounds nil)
-  :bind
-  (:map dired-mode-map
-    ("<tab>" . dired-subtree-toggle)
-    ("TAB" . dired-subtree-toggle)
-    ("<backtab>" . dired-subtree-remove)
-    ("S-TAB" . dired-subtree-remove)))
 
 (use-package trashed
   :after dired
@@ -529,9 +541,6 @@ We do this by disabling all other themes then loading ours."
 
 (use-package diredfl
   :init (diredfl-global-mode))
-
-(use-package dired-git-info
-  :hook (dired-after-readin . dired-git-info-auto-enable))
 
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
