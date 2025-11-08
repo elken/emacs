@@ -172,6 +172,9 @@
   (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t)
   (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-local t))
 
+(use-package consult-jq
+  :ensure (:host github :repo "elken/consult-jq"))
+
 (use-package orderless
   :custom
   (completion-pcm-leading-wildcard t)
