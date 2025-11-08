@@ -56,6 +56,8 @@ Creates or toggles an agent-shell buffer specific to the current perspective and
                                            :new-session t))
           (persp-add-buffer buffer)
           (with-current-buffer buffer
+            (display-line-numbers-mode -1))
+          (with-current-buffer buffer
             (add-hook 'kill-buffer-hook
                       (lambda ()
                         (when-let ((window (get-buffer-window (current-buffer))))
