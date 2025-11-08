@@ -27,6 +27,10 @@
   :bind
   ("C-'" . avy-goto-char))
 
+(use-package ace-link
+  :config
+  (ace-link-setup-default))
+
 (use-package tempel
   :custom
   (tempel-path (expand-file-name "templates.eld" user-emacs-directory))
