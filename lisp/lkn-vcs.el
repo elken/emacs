@@ -26,12 +26,26 @@
 (use-package magit
   :custom
   (magit-refresh-status-buffer nil)
+  (magit-auto-revert-mode nil)
+  (magit-auto-revert-immediately nil)
+  (magit-auto-revert-tracked-only nil)
+  (auto-revert-buffer-list-filter nil)
+  (magit-revision-insert-related-refs nil)
+  (magit-save-repository-buffers nil)
+  (magit-diff-refine-hunk nil)
+  (magit-revision-show-gravatars nil)
+  (magit-section-initial-visibility-alist
+   '((stashes . hide)
+     (untracked . hide)
+     (unpushed . show)))
   (magit-git-global-arguments
    '("--no-pager"
      "--literal-pathspecs"
      "-c" "core.preloadindex=true"
+     "-c" "log.showSignature=false"
      "-c" "gc.auto=0"
-     "-c" "core.commitGraph=true"))
+     "-c" "core.commitGraph=true"
+     "-c" "core.untrackedCache=true"))
   (magit-git-executable (executable-find "git"))
   (magit-format-file-function #'magit-format-file-nerd-icons)
   :bind
@@ -43,12 +57,12 @@
   (magit-post-refresh . magit-run-post-commit-hook)
   (magit-post-refresh . magit-run-post-stage-hook)
   (magit-post-refresh . magit-run-post-unstage-hook)
-  :config
-  ;; Prevent magit-auto-revert-mode from running
+  :init
+  (setq magit-auto-revert-mode-lighter "")
   (advice-add 'magit-auto-revert-mode :override #'ignore)
-
-  ;; Or disable the underlying functionality
   (advice-add 'magit-auto-revert-buffers :override #'ignore)
+  (advice-add 'auto-revert-buffers :override #'ignore)
+  :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)
         magit-display-buffer-function #'lkn/magit-fullscreen-same-windows
         magit-bury-buffer-function #'magit-restore-window-configuration)
@@ -96,7 +110,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 
   (defun magit-revert-buffer-maybe-h (&rest _window)
     "Revert the buffer if out of date."
-    (when magit-stale-p
+    (when (and (boundp 'magit-stale-p) magit-stale-p)
       (magit-revert-buffer (current-buffer))))
 
   (defun magit-set-window-state-h ()
@@ -217,13 +231,9 @@ Otherwise, behave like `magit-display-buffer-traditional'."
         ([escape] . transient-quit-one))
   :init
   (setq transient-default-level 5
-        magit-diff-refine-hunk t
-        magit-save-repository-buffers nil
-        magit-revision-insert-related-refs nil
         transient-levels-file  (expand-file-name "transient/levels" no-littering-var-directory)
         transient-values-file  (expand-file-name "transient/values" no-littering-var-directory)
-        transient-history-file (expand-file-name "transient/history" no-littering-var-directory)
-        transient-default-level 5))
+        transient-history-file (expand-file-name "transient/history" no-littering-var-directory)))
 
 ;; Disabled until we can find a performant way to use it
 ;; I really want it, so I'm not removing it just yet
