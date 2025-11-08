@@ -89,17 +89,24 @@
 
 (setopt dired-listing-switches "-ahl -v --group-directories-first --color=auto")
 
+;; Show all unbound keys, useful for new mappings
 (use-package free-keys)
 
+;; Benchmark startup time, useful for debugging, probably doesn't need
+;; to be on all the time
+;; If it's on, it needs `:demand t'
 (use-package benchmark-init
-  :demand t
+  :disabled t
   :config
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
+;; Hide minor mode names in the modeline
 (use-package diminish
   :demand t
   :diminish (subword-mode eldoc-mode completion-preview-mode which-key-mode symbol-overlay-mode))
 
+;; Keep Emacs files out of top-level Emacs directory
+;; NOTE Can honestly probably be removed, unsure
 (use-package no-littering
   :demand t
   :preface
@@ -123,6 +130,9 @@
   (unless (file-exists-p (expand-file-name "cache" no-littering-var-directory))
     (mkdir (expand-file-name "cache" no-littering-var-directory))))
 
+
+;; Garbage-Collect hack to improve performance, could try turning off
+;; for a bit
 (use-package gcmh
   :custom
   (gcmh-high-cons-threshold (* 16 1024 1024))
@@ -135,19 +145,26 @@
    :after after-focus-change-function
    #'garbage-collect))
 
+
+;; Kitty keyboard protocol, makes more keys work in TUI in a terminal
+;; with kkp eg wezterm
 (use-package kkp
   :unless (display-graphic-p)
   :config
   (global-kkp-mode))
 
+;; Obvious from the name, various async things
 (use-package async
   :custom
   (message-send-mail-function 'async-smtpmail-send-it)
   :hook (dired-mode . dired-async-mode))
 
+;; .env support, mostly a library package
 (use-package dotenv
   :ensure (:host github :repo "pkulev/dotenv.el"))
 
+;; Load `exec-path' from the shell so I can load exes
+;; NOTE Could argue it's redundant now I use eshell more
 (use-package exec-path-from-shell
   :demand t
   :custom
@@ -177,6 +194,7 @@
 (require 'lkn-haskell)
 (require 'lkn-cloud)
 
+;; Library pacakge
 (use-package request)
 ;; (use-package jira-workflow
   ;; :ensure (:host github :repo "elken/jira-workflow"))
