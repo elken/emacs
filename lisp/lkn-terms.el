@@ -23,6 +23,7 @@
 
 (use-package vterm
   :hook (vterm-mode . hide-mode-line-mode)
+  :hook (vterm-mode . (lambda () (display-line-numbers-mode -1)))
   :bind (("C-c v" . multi-vterm-project)
          ("C-c t" . lkn/multi-vterm-project)
          ("C-c d" . multi-vterm-dedicated-toggle)
