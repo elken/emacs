@@ -102,7 +102,7 @@ popper popup or similarly small window."
                             (lambda (buf)
                               (with-current-buffer buf
                                 (eq major-mode 'vterm-mode)))
-                            (persp-current-buffers))))
+                            (tabspaces--buffer-list))))
         (if vterm-buffers
             (let ((selected-buffer (get-buffer
                                     (consult--read (mapcar #'buffer-name vterm-buffers)

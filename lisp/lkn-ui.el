@@ -386,7 +386,7 @@ We do this by disabling all other themes then loading ours."
   :hook (prog-mode . hl-todo-mode))
 
 (use-package popper
-  :after perspective
+  ;; :after perspective
   :init (popper-mode)
   :hook (popper-mode . popper-echo-mode)
   :bind (("M-`"   . popper-toggle)
@@ -396,7 +396,7 @@ We do this by disabling all other themes then loading ours."
   (popper-mode-line
    '(:eval
      (propertize "  " 'face 'mode-line-emphasis)))
-  (popper-group-function #'popper-group-by-perspective)
+  (popper-group-function #'popper-group-by-project)
   (popper-reference-buffers
    '("\\*Messages\\*"
      "Output\\*$"
@@ -428,7 +428,7 @@ We do this by disabling all other themes then loading ours."
   :config
   (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
       (doom-modeline-def-modeline 'main
-      '(matches bar modals workspace-name window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
+      '(matches bar modals window-number persp-name buffer-info remote-host debug vcs media-info pdf-pages)
       '(check compilation objed-state process github mu4e grip gnus misc-info repl lsp minor-modes)))
 
 (use-feature lkn-modeline
@@ -455,6 +455,7 @@ We do this by disabling all other themes then loading ours."
      `(mode-line-inactive ((t :background unspecified :foreground ,subtle :box unspecified :overline ,subtle))))))
 
 (use-feature lkn-tab-bar
+  :disabled t
   :after (doom-themes)
   :custom
   (tab-bar-format '(lkn-tab-bar-format-align-center
