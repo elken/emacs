@@ -39,7 +39,8 @@
   (markdown-fontify-code-block-natively t))
 
 (use-package csv-mode
-  :commands (csv-align-mode))
+  :commands (csv-align-mode)
+  :mode "\\.csv\\'")
 
 (use-package fsharp-mode
   :mode "\\.fs\\'")
@@ -48,14 +49,15 @@
   :after fsharp-mode)
 
 (use-package nushell-ts-mode
-  :config
-  ;; (lkn/treesit-add-lang 'nu :url "https://github.com/nushell/tree-sitter-nu")
-  )
+  :mode "\\.nu\\'")
 
 (use-package elixir-ts-mode
   :hook ((elixir-mode elixir-ts-mode) . eglot-ensure)
-;;  :config  (lkn/treesit-add-lang 'elixir)
-  )
+  :mode "\\.ex\\'")
+
+(use-package pet
+  :config
+  (add-hook 'python-base-mode-hook 'pet-mode -10))
 
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
