@@ -30,14 +30,9 @@
 (defconst LITTER-DIR    (expand-file-name ".local/" user-emacs-directory))
 (defconst CACHE-DIR     (expand-file-name "cache/" LITTER-DIR))
 
-;; No need to enable packages here yet.
-(setq package-enable-at-startup nil)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("nongnu" . "https://elpa.gnu.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(setq-default package-user-dir (expand-file-name "packages/" LITTER-DIR)
+;; Package management setup
+(setq-default package-enable-at-startup nil
+              package-user-dir (expand-file-name "packages/" LITTER-DIR)
               package-gnupghome-dir (expand-file-name "gnupg" package-user-dir)
               use-package-always-ensure t
               use-package-compute-statistics t
@@ -96,12 +91,6 @@
 
 ;; Set the custom theme directory early so we can load it properly later
 (setq custom-theme-directory (expand-file-name "themes" user-emacs-directory))
-
-;; Redirect the eln-cache into our no-littering structure
-(when (fboundp 'startup-redirect-eln-cache)
-  (startup-redirect-eln-cache
-   (convert-standard-filename
-    (expand-file-name  ".local/var/eln-cache/" user-emacs-directory))))
 
 ;; Inspired by <https://github.com/daviwil/emacs-from-scratch/blob/d23348b4a52dde97f4f7cbcd66a519b5fd0a143c/init.el#L14-L19>
 ;; Compute and print the startup time for Emacs after loading
