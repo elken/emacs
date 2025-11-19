@@ -49,11 +49,13 @@
 
 (use-package nushell-ts-mode
   :config
-  (lkn/treesit-add-lang 'nu :url "https://github.com/nushell/tree-sitter-nu"))
+  ;; (lkn/treesit-add-lang 'nu :url "https://github.com/nushell/tree-sitter-nu")
+  )
 
 (use-package elixir-ts-mode
   :hook ((elixir-mode elixir-ts-mode) . eglot-ensure)
-  :config (lkn/treesit-add-lang 'elixir))
+;;  :config  (lkn/treesit-add-lang 'elixir)
+  )
 
 (provide 'lkn-langs)
 ;;; lkn-langs.el ends here
