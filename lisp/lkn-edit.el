@@ -342,6 +342,18 @@ IDENTS is specified in `xref-backend-definitions'."
               (cmd!
                (clipboard-kill-ring-save (point-min) (point-max)))))
 
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+(use-package combobulate
+  :ensure (:host github :repo "mickeynp/combobulate")
+  :hook (python-ts-mode . combobulate-mode)
+  :hook (yaml-ts-mode . combobulate-mode))
+
 (provide 'lkn-edit)
 ;;; lkn-edit.el ends here
 ;; Local Variables:
