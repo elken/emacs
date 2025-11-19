@@ -328,14 +328,15 @@ IDENTS is specified in `xref-backend-definitions'."
       ("g" "Grep" consult-ripgrep)]]))
 
 (use-package atomic-chrome
+  :commands (atomic-chrome-start-server)
   :custom
   (atomic-chrome-default-major-mode 'markdown-mode)
+  (atomic-chrome-url-major-mode-alist
+   '(("github\\.com" . gfm-mode)))
   :bind
   (:map atomic-chrome-edit-mode-map
         ("C-c C-k" . kill-current-buffer))
   :config
-  (ignore-errors
-    (atomic-chrome-start-server))
   (advice-add 'atomic-chrome-close-current-buffer
               :before
               (cmd!

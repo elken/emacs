@@ -467,6 +467,7 @@ The DWIM behaviour of this command is as follows:
       (and (not (display-graphic-p))
            (server-running-p))
     (exec-path-from-shell-initialize)
+    (atomic-chrome-start-server)
     (server-start)))
 
 (use-feature savehist
