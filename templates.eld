@@ -38,20 +38,21 @@ emacs-lisp-mode
 (command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive" p ")" n> r> ")")
 (advice "(defun " (p "adv" name) " (&rest app)" n> p n> "(apply app))" n>
         "(advice-add #'" (p "fun") " " (p ":around") " #'" (s name) ")")
+(license ";; Sources are available from https://github.com/elken/emacs" n n
+         ";; Copyright (C) 2022-" (format-time-string "%Y") " " (i me) " <" (i email) ">" n n
+         ";; This file is free software; you can redistribute it and/or modify" n
+         ";; it under the terms of the GNU General Public License as published by" n
+         ";; the Free Software Foundation; either version 3, or (at your option)" n
+         ";; any later version." n n
+         ";; This file is distributed in the hope that it will be useful," n
+         ";; but WITHOUT ANY WARRANTY; without even the implied warranty of" n
+         ";; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" n
+         ";; GNU General Public License for more details." n n
+         ";; For a full copy of the GNU General Public License" n
+         ";; see <https://www.gnu.org/licenses/>." n n)
 (header ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
         " -- " p " -*- lexical-binding: t -*-" n
-        ";; Sources are available from https://github.com/elken/emacs" n n
-        ";; Copyright (C) 2022-" (format-time-string "%Y") " " (i me) " <" (i email) ">" n n
-        ";; This file is free software; you can redistribute it and/or modify" n
-        ";; it under the terms of the GNU General Public License as published by" n
-        ";; the Free Software Foundation; either version 3, or (at your option)" n
-        ";; any later version." n n
-        ";; This file is distributed in the hope that it will be useful," n
-        ";; but WITHOUT ANY WARRANTY; without even the implied warranty of" n
-        ";; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" n
-        ";; GNU General Public License for more details." n n
-        ";; For a full copy of the GNU General Public License" n
-        ";; see <https://www.gnu.org/licenses/>." n n
+        (i license) n
         ";;; Commentary:" n
         ";;; " p n>
         ";;; Code:" n n n)
@@ -68,6 +69,25 @@ emacs-lisp-mode
 (package (i header) r n n (i provide) (i default-locals))
 (usep "(use-package " p n> r>
       ")")
+
+org-mode
+
+(module "* " (s fn) n
+        ":PROPERTIES:" n
+        ":ID: " fn n
+        ":header-args:emacs-lisp: :tangle lisp/lkn-" fn ".el" n
+        ":END:" n n
+        (s comment) n n>
+        "#+begin_src emacs-lisp" n
+        ";;; lkn-" fn " -*- lexical-binding: t; -*-" n n
+        "<<license>>" n n
+        ";; Commentary:" n
+        ";; `org-babel-tangle-jump-to-org' to view comments" n
+        ";; Code:" n n
+        q n n>
+        "(provide 'lkn-" fn ")" n
+        ";;; lkn-" fn ".el ends here" n
+        "#+end_src" :post (org-edit-src-code))
 
 ;; Local Variables:
 ;; mode: lisp-data
