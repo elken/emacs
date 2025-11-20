@@ -28,6 +28,8 @@
      ("https://planet.emacslife.com/atom.xml" emacs)
      ("https://sachachua.com/blog/category/emacs-news/feed/atom/index.xml" emacs)))
   :bind
+  (:map elfeed-search-mode-map
+        ("q" . delete-frame))
   ("C-x w" . elfeed))
 
 (use-package elfeed-goodies

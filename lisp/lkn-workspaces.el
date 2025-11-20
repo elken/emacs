@@ -21,7 +21,17 @@
 ;;; these buffers at once isn't fun.
 ;;; Code:
 
+(use-package beframe
+  :when IS-MAC
+  :init (beframe-mode)
+  :custom (beframe-functions-in-frames '(project-prompt-project-dir
+                                         elfeed))
+  :bind (("C-x f"   . other-frame-prefix)
+         ("C-x b"   . beframe-switch-buffer)
+         ("C-x C-b" . beframe-buffer-menu)))
+
 (use-package tabspaces
+  :disabled IS-MAC
   :hook (after-init . tabspaces-mode)
   :bind
   (:map project-prefix-map
