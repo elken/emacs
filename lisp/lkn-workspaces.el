@@ -53,7 +53,7 @@
 
   (defun lkn/current-perspective-name ()
     "Used by various tools to get the current perspective name."
-    (tabspaces--current-name))
+    (tabspaces--current-tab-name))
   :bind
   (:map project-prefix-map
         ("p" . tabspaces-open-or-create-project-and-workspace))
