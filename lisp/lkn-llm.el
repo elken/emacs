@@ -45,7 +45,7 @@ Creates or toggles an agent-shell buffer specific to the current perspective and
     (interactive)
     (let* ((project (project-current))
            (agent-config (agent-shell-anthropic-make-claude-code-config))
-           (buffer-name (format "%s Agent @ %s" (alist-get :buffer-name agent-config) (tabspaces--current-tab-name)))
+           (buffer-name (format "%s Agent @ %s" (alist-get :buffer-name agent-config) (lkn/current-perspective-name)))
            (default-directory (if project (project-root project) default-directory))
            (buffer (get-buffer buffer-name)))
       (if-let ((win (and buffer (get-buffer-window buffer))))

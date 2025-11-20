@@ -22,10 +22,14 @@
 ;;; Code:
 
 (use-package beframe
-  :when IS-MAC
+  :disabled t
   :init
   (beframe-mode)
   (setq lkn/beframe-switch-timer nil)
+
+  (defun lkn/current-perspective-name ()
+    "Used by various tools to get the current perspective name."
+    (frame-parameter nil 'name))
 
   (defun lkn/other-frame (direction)
     "Switch to the next frame in DIRECTION."
@@ -44,8 +48,12 @@
          ("<wheel-right>" . (lambda () (interactive) (lkn/other-frame 1)))))
 
 (use-package tabspaces
-  :disabled IS-MAC
-  :hook (after-init . tabspaces-mode)
+  :init
+  (tabspaces-mode)
+
+  (defun lkn/current-perspective-name ()
+    "Used by various tools to get the current perspective name."
+    (tabspaces--current-name))
   :bind
   (:map project-prefix-map
         ("p" . tabspaces-open-or-create-project-and-workspace))
