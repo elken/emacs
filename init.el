@@ -96,7 +96,7 @@
 ;; to be on all the time
 ;; If it's on, it needs `:demand t'
 (use-package benchmark-init
-  :disabled t
+  :when elpaca--debug-init
   :config
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
