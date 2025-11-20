@@ -30,22 +30,11 @@
   (defun lkn/current-perspective-name ()
     "Used by various tools to get the current perspective name."
     (frame-parameter nil 'name))
-
-  (defun lkn/other-frame (direction)
-    "Switch to the next frame in DIRECTION."
-    (when lkn/beframe-switch-timer
-      (cancel-timer lkn/beframe-switch-timer))
-    (setq lkn/beframe-switch-timer
-          (run-with-idle-timer 0.0 nil
-                               (cmd! (other-frame direction)
-                                     (setq lkn/beframe-switch-timer nil)))))
   :custom (beframe-functions-in-frames '(project-prompt-project-dir
                                          elfeed))
   :bind (("C-x f"   . other-frame-prefix)
          ("C-x b"   . beframe-switch-buffer)
-         ("C-x C-b" . beframe-buffer-menu)
-         ("<wheel-left>" . (lambda () (interactive) (lkn/other-frame -1)))
-         ("<wheel-right>" . (lambda () (interactive) (lkn/other-frame 1)))))
+         ("C-x C-b" . beframe-buffer-menu)))
 
 (use-package tabspaces
   :init
