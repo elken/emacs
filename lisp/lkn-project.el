@@ -28,10 +28,9 @@
   (project-switch-commands
    '((project-find-file "Find file" ?f)
      (project-dired "Dired" ?d)
-     (project-gptel "gptel" ?g)
-     (lkn/vterm-toggle "Terminal" ?t)
      (magit-project-status "Magit" ?m)
-     (consult-ripgrep "Search" ?s)))
+     (consult-ripgrep "Search" ?s)
+     (tabspaces-restore-session "Restore Session" ?r)))
   (project-compilation-buffer-name-function #'project-root-prefixed-buffer-name)
   :init
   (defun project-shell-command (command)

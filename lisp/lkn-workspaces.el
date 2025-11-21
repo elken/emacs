@@ -51,8 +51,7 @@
   (tabspaces-use-filtered-buffers-as-default t)
   (tabspaces-default-tab "Default")
   (tabspaces-include-buffers '("*scratch*"))
-  (tabspaces-session t)
-  (tabspaces-session-auto-restore t))
+  (tabspaces-session t))
 
 (provide 'lkn-workspaces)
 ;;; lkn-workspaces.el ends here
