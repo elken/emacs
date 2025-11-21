@@ -96,9 +96,8 @@
 ;; to be on all the time
 ;; If it's on, it needs `:demand t'
 (use-package benchmark-init
-  :when elpaca--debug-init
   :config
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  (add-hook 'elpaca-after-init-hook 'benchmark-init/deactivate))
 
 ;; Hide minor mode names in the modeline
 (use-package diminish
@@ -195,12 +194,16 @@
 (require 'lkn-cloud)
 
 ;; Library pacakge
-(use-package request)
+;;(use-package request)
 ;; (use-package jira-workflow
   ;; :ensure (:host github :repo "elken/jira-workflow"))
 
-(when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
-  (load (expand-file-name "init-local.el" user-emacs-directory)))
+(defun lkn/load-init-local ()
+  "Load the local init file."
+  (when (file-exists-p (expand-file-name "init-local.el" user-emacs-directory))
+    (load (expand-file-name "init-local.el" user-emacs-directory))))
+
+(add-hook 'elpaca-after-init-hook #'lkn/load-init-local)
 
 (provide 'init)
 ;;; init.el ends here

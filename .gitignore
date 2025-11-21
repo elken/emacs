@@ -12,3 +12,9 @@ config.el
 /tree-sitter/
 /init-local.el
 /.emacs-colours.el
+.emacs-tabspaces-session.el
+rails-routes-cache
+rake.cache
+eca
+/transient/
+/dape-breakpoints

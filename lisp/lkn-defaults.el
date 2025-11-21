@@ -429,8 +429,8 @@ The DWIM behaviour of this command is as follows:
   (after-init                   . lkn/keychain-setup)
   (after-init                   . winner-mode)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
-  (elpaca-after-init            . minibuffer-electric-default-mode)
-  (elpaca-after-init            . global-completion-preview-mode)
+  (after-init                   . minibuffer-electric-default-mode)
+  (after-init                   . global-completion-preview-mode)
   ;; Line numbers
   (prog-mode                    . display-line-numbers-mode)
   (help-mode                    . (lambda () (display-line-numbers-mode -1)))

@@ -478,8 +478,8 @@ We do this by disabling all other themes then loading ours."
   :bind-keymap ("C-x C-a" . dape-global-map)
   :hook
   (kill-emacs . dape-breakpoint-save)
-  (after-init . dape-breakpoint-load)
-  (after-init . dape-breakpoint-global-mode)
+  (elpaca-after-init . dape-breakpoint-load)
+  (elpaca-after-init . dape-breakpoint-global-mode)
   (dape-compile . kill-buffer)
   :custom
   (dape-inlay-hints t)

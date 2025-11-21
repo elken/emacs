@@ -130,18 +130,6 @@ line if already there."
   :hook
   (eshell-mode . fish-completion-mode))
 
-(use-package eshell-vterm
-  :hook (eshell-mode . eshell-vterm-mode)
-  :config
-  (defun lkn/eshell-vterm-preserve-windows (orig-fn &rest args)
-    "Preserve the window configuration to prevent the eshell popup closing."
-    (let ((parent eshell-parent-buffer))
-      (save-window-excursion
-        (apply orig-fn args))
-      (switch-to-buffer parent)))
-
-  (advice-add 'eshell-vterm-sentinel :around #'lkn/eshell-vterm-preserve-windows))
-
 (provide 'lkn-eshell)
 ;;; lkn-eshell.el ends here
 ;; Local Variables:

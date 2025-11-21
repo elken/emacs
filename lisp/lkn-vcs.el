@@ -21,7 +21,7 @@
 ;;; Code:
 
 (use-package with-editor
-  :hook (after-init . shell-command-with-editor-mode))
+  :hook (elpaca-after-init . shell-command-with-editor-mode))
 
 (use-package magit
   :custom
