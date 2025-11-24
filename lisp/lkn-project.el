@@ -23,6 +23,9 @@
 
 (use-feature project
   :demand t
+  :bind
+  (:map project-prefix-map
+          ("y" . lkn/yank-buffer-project-path))
   :custom
   (project-vc-extra-root-markers '(".project"))
   (project-switch-commands
