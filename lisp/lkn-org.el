@@ -285,6 +285,7 @@ is selected, only the bare key is returned."
 ;; [1] https://git.savannah.gnu.org/cgit/emacs/org-mode.git/commit/?id=2ade16bbc
 (use-feature org
   :custom
+  (org-outline-path-complete-in-steps nil)
   (org-return-follows-link t)
   (org-startup-indented t)
   (org-hide-emphasis-markers t)
