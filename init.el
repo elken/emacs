@@ -175,6 +175,7 @@
 (require 'lkn-ui)
 (require 'lkn-edit)
 (require 'lkn-vcs)
+(require 'lkn-popup-frame)
 (require 'lkn-org)
 (require 'lkn-project)
 (require 'lkn-terms)

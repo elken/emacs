@@ -476,43 +476,6 @@ If SPEC-OR-ALIAS is omitted and FLAG is nil, unfold everything in the region."
 
 (use-feature org-protocol
   :config
-  (defun popup-frame-delete (&rest _)
-    "Kill selected frame if it has parameter `popup-frame'."
-    (when-let* ((bundle (frame-parameter nil 'bundle-identifier)))
-      (ns-do-applescript (format "tell application id \"%s\" to activate" bundle)))
-    (when (frame-parameter nil 'popup-frame)
-      (delete-frame)))
-
-  (defmacro popup-frame-define (command)
-    "Define interactive function to call COMMAND in frame with TITLE."
-    `(defun ,(intern (format "popup-frame-%s" command)) ()
-       (interactive)
-       (let* ((display-buffer-alist '(("")
-                                      (display-buffer-full-frame)))
-              (bundle-identifier (when IS-MAC
-                                   (ns-do-applescript "tell application \"System Events\" to get bundle identifier of first process whose frontmost is true")))
-              (frame (make-frame
-                      `((title . ,(format "popup-frame-%s" ',command))
-                        (window-system . ns)
-                        (menu-bar-lines . 1)
-                        (transient . t)
-                        (height . 25)
-                        (width . 70)
-                        (popup-frame . t)
-                        (bundle-identifier . ,bundle-identifier)))))
-         (select-frame-set-input-focus frame)
-         (switch-to-buffer " popup-frame-hidden-buffer")
-         (condition-case nil
-             (progn
-               (call-interactively ',command)
-               (delete-other-windows)
-               (hide-mode-line-mode))
-           ((quit error user-error)
-            (progn
-              (when bundle-identifier
-                (ns-do-applescript (format "tell application id \"%s\" to activate" bundle-identifier)))
-              (delete-frame frame)))))))
-
   (popup-frame-define org-capture)
   (add-hook 'org-capture-after-finalize-hook #'popup-frame-delete))
 

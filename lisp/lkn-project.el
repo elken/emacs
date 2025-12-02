@@ -52,6 +52,7 @@
             (downcase mode)
             "*"))
   :config
+  (popup-frame-define project-switch-project)
   (add-to-list 'project-kill-buffer-conditions  '(major-mode . vterm-mode)))
 
 (provide 'lkn-project)
