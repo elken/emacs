@@ -192,6 +192,7 @@
 (require 'lkn-feeds)
 (require 'lkn-haskell)
 (require 'lkn-cloud)
+(require 'lkn-screencast-mode)
 
 ;; Library pacakge
 ;;(use-package request)
