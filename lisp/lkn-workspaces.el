@@ -33,7 +33,6 @@
   :custom (beframe-functions-in-frames '(project-prompt-project-dir
                                          elfeed))
   :bind (("C-x f"   . other-frame-prefix)
-         ("C-x b"   . beframe-switch-buffer)
          ("C-x C-b" . beframe-buffer-menu)))
 
 (use-package tabspaces
@@ -47,6 +46,7 @@
   (:map project-prefix-map
         ("p" . tabspaces-open-or-create-project-and-workspace))
   :custom
+  (tabspaces-session-project-session-store no-littering-var-directory)
   (tabspaces-echo-area-enable nil)
   (tabspaces-use-filtered-buffers-as-default t)
   (tabspaces-default-tab "Default")
