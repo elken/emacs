@@ -46,11 +46,12 @@
   (:map project-prefix-map
         ("p" . tabspaces-open-or-create-project-and-workspace))
   :custom
+  (tab-bar-new-tab-choice "*scratch*")
   (tabspaces-session-project-session-store no-littering-var-directory)
   (tabspaces-echo-area-enable nil)
   (tabspaces-use-filtered-buffers-as-default t)
   (tabspaces-default-tab "Default")
-  (tabspaces-include-buffers '("*scratch*"))
+  (tabspaces-include-buffers '("*scratch*" "*Messages*"))
   (tabspaces-session t))
 
 (provide 'lkn-workspaces)
