@@ -500,6 +500,7 @@ We do this by disabling all other themes then loading ours."
 (use-package ace-window
   :custom
   (aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+  (aw-scope 'frame)
   :bind
   (:map global-map
         ("M-o" . ace-window)))
