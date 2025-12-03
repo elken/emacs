@@ -72,15 +72,6 @@ Creates or toggles an agent-shell buffer specific to the current perspective and
                                  (mode-line-format . none)))))
         (select-window (get-buffer-window buffer))))))
 
-(use-package agent-shell-sidebar
-  ;; Currently broken
-  :disabled t
-  :after agent-shell
-  :ensure (:host github :repo "cmacrae/agent-shell-sidebar")
-  :custom
-  (agent-shell-sidebar-default-config
-   (agent-shell-anthropic-make-claude-code-config)))
-
 (use-package eca
   :commands (eca)
   :ensure (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el")))
