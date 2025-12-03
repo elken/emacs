@@ -24,10 +24,9 @@
 (use-package vterm
   :hook (vterm-mode . hide-mode-line-mode)
   :hook (vterm-mode . (lambda () (display-line-numbers-mode -1)))
-  :bind (("C-c v" . multi-vterm-project)
-         ("C-c t" . lkn/multi-vterm-project)
-         ("C-c d" . multi-vterm-dedicated-toggle)
-         ("C-c V" . lkn/consult-project-vterm))
+  :bind
+  (:map project-prefix-map
+        ("v" . lkn/vterm-toggle))
   :custom
   (vterm-shell (executable-find "zsh"))
   (vterm-kill-buffer-on-exit t)
@@ -42,7 +41,38 @@
   (dolist (cmd '(("woman" . (lambda (topic) (woman topic)))
                  ("magit-status" . (lambda (path) (magit-status path)))
                  ("dired" . (lambda (dir) (dired dir)))))
-    (setf (alist-get (car cmd) vterm-eval-cmds nil nil #'equal) (list (cdr cmd)))))
+    (setf (alist-get (car cmd) vterm-eval-cmds nil nil #'equal) (list (cdr cmd))))
+
+;;;###autoload
+  (defun lkn/vterm-toggle ()
+    "Toggle a vterm buffer.
+Creates or toggles a vterm buffer specific to the current perspective and project."
+    (interactive)
+    (let* ((project (project-current))
+           (buffer-name (format "*vterm @ %s*" (lkn/current-perspective-name)))
+           (default-directory (if project (project-root project) default-directory))
+           (buffer (get-buffer buffer-name)))
+      (if-let ((win (and buffer (get-buffer-window buffer))))
+          (delete-window win)
+        (unless buffer
+          (setq buffer (vterm buffer-name))
+          (with-current-buffer buffer
+            (display-line-numbers-mode -1)
+            (add-hook 'kill-buffer-hook
+                      (lambda ()
+                        (when-let ((window (get-buffer-window (current-buffer))))
+                          (ignore-errors (delete-window window))))
+                      t t)))
+        (display-buffer-in-side-window
+         buffer
+         '((side . bottom)
+           (slot . 0)
+           (window-width . 0.3)
+           (preserve-size . (t . nil))
+           (dedicated . t)
+           (window-parameters . ((no-delete-other-windows . t)
+                                 (mode-line-format . none)))))
+        (select-window (get-buffer-window buffer))))))
 
 (provide 'lkn-terms)
 ;;; lkn-terms.el ends here
