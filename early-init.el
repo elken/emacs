@@ -53,18 +53,18 @@
 
 (setq-default
  default-frame-alist
- `((foreground-color         . "#ECEFF4")   ; Theme-based foreground (to prevent ugly paints)
-   (background-color         . "#2E3440")   ; Theme-based background (to prevent ugly paints)
-   (fullscreen               . ,'maximized) ; Maximize the window by default
-   (horizontal-scroll-bars   . nil)         ; No horizontal scroll-bars
-   (left-fringe              . 8)           ; Thin left fringe
-   (right-fringe             . 8)           ; Thin right fringe
-   (menu-bar-lines           . 0)           ; No menu bar
-   (tool-bar-lines           . 0)           ; No tool bar
-   (ns-transparent-titlebar  . IS-MAC)      ; Make titlebar same colour as background
-   (undecorated-round        . IS-MAC)      ; Remove extraneous X decorations
-   (inhibit-double-buffering . t)           ; Resolves random flickering
-   (vertical-scroll-bars     . nil)))       ; No vertical scroll-bars
+ `((foreground-color         . "#ECEFF4") ; Theme-based foreground (to prevent ugly paints)
+   (background-color         . "#2E3440") ; Theme-based background (to prevent ugly paints)
+   (fullscreen               . maximized) ; Maximize the window by default
+   (horizontal-scroll-bars   . nil)       ; No horizontal scroll-bars
+   (left-fringe              . 8)         ; Thin left fringe
+   (right-fringe             . 8)         ; Thin right fringe
+   (menu-bar-lines           . 0)         ; No menu bar
+   (tool-bar-lines           . 0)         ; No tool bar
+   (ns-transparent-titlebar  . IS-MAC)    ; Make titlebar same colour as background
+   (undecorated-round        . IS-MAC)    ; Remove extraneous X decorations
+   (inhibit-double-buffering . t)         ; Resolves random flickering
+   (vertical-scroll-bars     . nil)))     ; No vertical scroll-bars
 
 ;; More free real estate tweaks
 (setq inhibit-startup-message t                        ; Don't show GNU Emacs startup message
