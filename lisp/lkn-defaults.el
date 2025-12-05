@@ -79,6 +79,7 @@ Usually defaults to Nord or my Carbon theme."
                       "~/go/bin"
                       "/usr/local/bin"
                       "/usr/local/sbin"
+                      "/home/linuxbrew/.linuxbrew/bin"
                       "/usr/bin")
   "List of paths to setup to find needed executables."
   :type '(repeat string)
