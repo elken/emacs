@@ -72,9 +72,23 @@ Creates or toggles an agent-shell buffer specific to the current perspective and
                                  (mode-line-format . none)))))
         (select-window (get-buffer-window buffer))))))
 
-(use-package eca
-  :commands (eca)
-  :ensure (:host github :repo "editor-code-assistant/eca-emacs" :files ("*.el")))
+(use-package gptel
+  :custom
+  (gptel-model 'gpt-4o)
+  (gptel-backend (gptel-make-gh-copilot "Copilot"))
+  :hook
+  (gptel-post-stream . corfu-quit)
+  (gptel-post-stream . gptel-auto-scroll)
+  (gptel-mode . gptel-highlight-mode)
+  (gptel-mode . (lambda ()
+                  (display-line-numbers-mode -1)
+                  (setq-local markdown-hide-markup t
+                              markdown-fontify-code-blocks-natively t)))
+  :config
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+  (add-hook 'gptel-post-response-functions (lambda (&rest _)
+                                             (markdown-toggle-markup-hiding "enabled")))
+  )
 
 (provide 'lkn-llm)
 ;;; lkn-llm.el ends here
