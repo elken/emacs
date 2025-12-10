@@ -169,6 +169,11 @@
   :custom
   (exec-path-from-shell-arguments '("-l")))
 
+(use-package ssh-agency
+  :after magit
+  :custom
+  (ssh-agency-keys '("~/.ssh/git")))
+
 (require 'lkn-defaults)
 (require 'lkn-eshell)
 (require 'lkn-workspaces)

@@ -207,31 +207,6 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-;; Ensure that keychain's environment is setup in Emacs
-;; Needed so magit can access GPG and SSH keys
-;;;###autoload
-(defun lkn/keychain-setup ()
-  "Load keychain env after Emacs."
-  (interactive)
-  (unless (bound-and-true-p lkn/keychain-initialized-p)
-    (let ((kill-buffer-query-functions nil))
-      (when (executable-find "keychain")
-        (make-process
-         :name "keychain-setup"
-         :command '("keychain" "-q" "--noask" "--agents" "ssh,gpg" "--eval")
-         :buffer "*keychain-output*"
-         :sentinel
-         (lambda (process _event)
-           (when (eq 'exit (process-status process))
-             (with-current-buffer (process-buffer process)
-               (let ((output (buffer-string)))
-                 (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO"))
-                   (when (string-match (format "%s[=\s]\\([^\s;\n]*\\)" var) output)
-                     (setenv var (match-string 1 output))))))
-             (when (buffer-live-p (get-buffer "*keychain-output*"))
-               (kill-buffer "*keychain-output*"))
-             (setq lkn/keychain-initialized-p t))))))))
-
 ;; Another Karthink gem, add repeat-mode support for a keymap
 (defun repeatize (keymap)
   "Add `repeat-mode' support to a KEYMAP."
@@ -426,7 +401,6 @@ The DWIM behaviour of this command is as follows:
   (after-init                   . global-so-long-mode)
   (after-init                   . global-subword-mode)
   (after-init                   . delete-selection-mode)
-  (after-init                   . lkn/keychain-setup)
   (after-init                   . winner-mode)
   (compilation-finish-functions . bury-compile-buffer-if-successful)
   (after-init                   . minibuffer-electric-default-mode)
