@@ -36,9 +36,9 @@
       :variable-pitch-family ,lkn-variable-pitch-font)
      (screencast
       :default-family ,lkn-default-font
-      :default-height 220
+      :default-height 250
       :fixed-pitch-family ,lkn-default-font
-      :fixed-pitch-height 220
+      :fixed-pitch-height 250
       :variable-pitch-family ,lkn-variable-pitch-font)))
   :config
   ;; Set initial preset
