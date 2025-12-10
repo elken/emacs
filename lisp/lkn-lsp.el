@@ -156,6 +156,51 @@ SERVER-COMMAND should be a list representing the CLI invocation."
   :after eglot
   :config (eglot-booster-mode))
 
+(use-package mason
+  :init
+  (setq lkn/mason-packages
+        '(;; LSP
+          "bash-language-server"
+          "clojure-lsp"
+          "docker-compose-language-service"
+          "docker-language-server"
+          "dot-language-server"
+          "elixir-language-server"
+          "emmet-language-server"
+          "html-lsp"
+          "json-language-server"
+          "lua-language-server"
+          "marksman"
+          "ruby-lsp"
+          "sql-language-server"
+          "tailwindcss"
+          "taplo"
+          "terraform-language-server"
+          "typst-lsp"
+
+          ;; Linters
+          "clj-kondo"
+          "erb-lint"
+          "markdownlint"
+          "selene"
+          "shellcheck"
+          "vale"
+
+          ;; Formatters
+          "erb-formatter"
+          "mdformat"
+          "prettierd"
+          "rubocop"
+          "rustywind"
+          "shfmt"
+          "sql-formatter"
+          "stylua"))
+  :config
+  (mason-ensure
+   (lambda ()
+     (dolist (package lkn/mason-packages)
+       (ignore-errors (mason-install package))))))
+
 (provide 'lkn-lsp)
 ;;; lkn-lsp.el ends here
 ;; Local Variables:
