@@ -25,19 +25,9 @@
 
 (use-package magit
   :custom
-  (magit-refresh-status-buffer nil)
   (magit-auto-revert-mode nil)
   (magit-auto-revert-immediately nil)
   (magit-auto-revert-tracked-only nil)
-  (auto-revert-buffer-list-filter nil)
-  (magit-revision-insert-related-refs nil)
-  (magit-save-repository-buffers nil)
-  (magit-diff-refine-hunk nil)
-  (magit-revision-show-gravatars nil)
-  (magit-section-initial-visibility-alist
-   '((stashes . hide)
-     (untracked . hide)
-     (unpushed . show)))
   (magit-git-global-arguments
    '("--no-pager"
      "--literal-pathspecs"
