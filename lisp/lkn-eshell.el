@@ -27,7 +27,9 @@
   (eshell-scroll-to-bottom-on-output 'all)
   (eshell-term-name "xterm-256color")
   :hook
-  (eshell-mode . (lambda () (completion-preview-mode -1)))
+  (eshell-mode . (lambda ()
+                   (display-line-numbers-mode -1)
+                   (completion-preview-mode -1)))
   :config
   ;; We use popper for this but for whatever reason it doesn't work
   ;; the first time it's opened
@@ -62,6 +64,30 @@ Call FUN2 on all the rest of the elements in ARGS."
     (make-directory dir t)
     (eshell/cd dir))
 
+;;;###autoload
+  (defun eshell/rinku (&rest args)
+    "Fetch link preview with rinku and display image inline.
+
+Usage: rinku https://soundcloud.com/shehackedyou
+       rinku --render https://soundcloud.com/shehackedyou"
+    (unless args
+      (error "rinku: No arguments provided"))
+    (let* ((output (with-temp-buffer
+                     (apply #'call-process "rinku" nil t nil (seq-uniq (cons "--preview" args)))
+                     (buffer-string)))
+           (metadata (condition-case nil
+                         (json-read-from-string output)
+                       (error nil))))
+      (if metadata
+          (concat
+           (if (map-elt metadata 'image)
+               (eshell/cat (map-elt metadata 'image))
+             "\n")
+           (when (map-elt metadata 'title)
+             (concat (map-elt metadata 'title)
+                     "\n\n")))
+        output)))
+
   (defun eshell-maybe-bol ()
     "Jump to the beginning of the command line, or the real beginning of the
 line if already there."
@@ -72,7 +98,31 @@ line if already there."
           (beginning-of-line))))
 
   (with-eval-after-load 'esh-mode
-    (define-key eshell-mode-map (kbd "C-a") 'eshell-bol)))
+    (define-key eshell-mode-map (kbd "C-a") 'eshell-bol))
+
+  (defun adviced:eshell/cat (orig-fun &rest args)
+  "Like `eshell/cat' but with image support."
+  (if (seq-every-p (lambda (arg)
+                     (and (stringp arg)
+                          (file-exists-p arg)
+                          (image-supported-file-p arg)))
+                   args)
+      (with-temp-buffer
+        (insert "\n")
+        (dolist (path args)
+          (let ((spec (create-image
+                       (expand-file-name path)
+                       (image-type-from-file-name path)
+                       nil :max-width 350
+                       :conversion (lambda (data) data))))
+            (image-flush spec)
+            (insert-image spec))
+          (insert "\n"))
+        (insert "\n")
+        (buffer-string))
+    (apply orig-fun args)))
+
+(advice-add #'eshell/cat :around #'adviced:eshell/cat))
 
 (use-feature em-xtra
   :after eshell)
