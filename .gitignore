@@ -18,3 +18,5 @@ rake.cache
 eca
 /transient/
 /dape-breakpoints
+mason
+.cache

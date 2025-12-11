@@ -206,7 +206,7 @@ Returns a list of plists with :face, :first-pos, :count, and :example."
         (save-excursion
           (goto-char (point-min))
           (while (< (point) (point-max))
-            (when-let ((face (get-text-property (point) 'face)))
+            (when-let* ((face (get-text-property (point) 'face)))
               (let* ((pos (point))
                      (entry (or (gethash face face-table)
                                (puthash face (list :face face :first-pos pos :count 0)
@@ -247,7 +247,7 @@ Returns a list of plists with :face, :first-pos, :count, and :example."
 
   (defun describe-buffer-faces--insert-button (label buffer face action)
     "Insert a navigation button with LABEL for FACE in BUFFER.
-ACTION is either 'next, 'prev, or a position number."
+ACTION is either next, prev, or a position number."
     (insert-button (format "[%s]" label)
                   'action (lambda (_)
                             (pop-to-buffer buffer)
@@ -260,7 +260,7 @@ ACTION is either 'next, 'prev, or a position number."
                                     (if (numberp action) "first" (symbol-name action)))))
 
   (defun describe-buffer-faces--find-face (face direction)
-    "Find occurrence of FACE in DIRECTION ('next or 'prev), wrapping if needed."
+    "Find occurrence of FACE in DIRECTION (next or prev), wrapping if needed."
     (let* ((forward (eq direction 'next))
            (start (point))
            (limit (if forward (point-max) (point-min)))
