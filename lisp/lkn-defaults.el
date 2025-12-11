@@ -338,15 +338,6 @@ The DWIM behaviour of this command is as follows:
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-(defun lkn/goto-line-feedback ()
-  "Show the line numbers before executing `goto-line'."
-  (interactive)
-  (unwind-protect
-      (progn
-        (display-line-numbers-mode 1)
-        (goto-line (read-number "Jump to line: ")))
-    (display-line-numbers-mode -1)))
-
 ;;; Packages
 
 (use-feature emacs
