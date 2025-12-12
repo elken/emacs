@@ -544,6 +544,11 @@ We do this by disabling all other themes then loading ours."
 (use-package diredfl
   :init (diredfl-global-mode))
 
+(use-package ansi-colorful
+  :ensure (:host github :repo "jcs-elpa/ansi-colorful")
+  :commands (ansi-colorful-mode)
+  :hook (logview-mode . ansi-colorful-mode))
+
 (provide 'lkn-ui)
 ;;; lkn-ui.el ends here
 ;; Local Variables:
