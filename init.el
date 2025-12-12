@@ -174,6 +174,9 @@
   :custom
   (ssh-agency-keys '("~/.ssh/git")))
 
+(use-package envrc
+  :hook (after-elpaca-init . envrc-global-mode))
+
 (require 'lkn-defaults)
 (require 'lkn-eshell)
 (require 'lkn-workspaces)
