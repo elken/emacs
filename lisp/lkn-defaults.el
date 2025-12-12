@@ -364,6 +364,7 @@ The DWIM behaviour of this command is as follows:
   (minibuffer-default-prompt-format " [%s]")
   (scroll-conservatively 101)
   (apropos-do-all t)
+  (initial-major-mode 'emacs-lisp-mode)
 
   ;; Backups
   (backup-directory-alist
