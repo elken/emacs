@@ -399,8 +399,9 @@ The DWIM behaviour of this command is as follows:
   ;; Line numbers
   (prog-mode                    . display-line-numbers-mode)
   (help-mode                    . (lambda () (display-line-numbers-mode -1)))
-  (display-line-numbers-mode . (lambda ()
-                                 (setq-local display-line-numbers 'relative)))
+  (display-line-numbers-mode    . (lambda ()
+                                    (when display-line-numbers-mode
+                                      (setq-local display-line-numbers 'relative))))
   :bind
   (("C-x k"                    . kill-current-buffer)
    ("C-x C-k"                  . lkn/sudo-kill-current-buffer)
