@@ -53,7 +53,63 @@
   :defer t
   :hook ((prog-mode text-mode org-mode markdown-mode) . smartparens-mode)
   :config
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+  (defvar-keymap structural-edit-map
+    :doc "Unified keymap for structural editing"
+    :repeat t
+    ;; Navigation
+    "f" #'forward-sexp
+    "b" #'backward-sexp
+    "n" #'sp-next-sexp
+    "p" #'sp-previous-sexp
+    "u" #'backward-up-list
+    "d" #'down-list
+
+    ;; Slurp & Barf
+    "]" #'sp-forward-slurp-sexp
+    "[" #'sp-backward-slurp-sexp
+    "}" #'sp-forward-barf-sexp
+    "{" #'sp-backward-barf-sexp
+
+    ;; Kill & Manipulation
+    "k" #'kill-sexp
+    "K" #'sp-kill-hybrid-sexp
+    "t" #'transpose-sexps
+
+    ;; Wrapping (with prefix w)
+    "w (" #'sp-wrap-round
+    "w [" #'sp-wrap-square
+    "w {" #'sp-wrap-curly
+    "w r" #'sp-rewrap-sexp
+
+    ;; Unwrapping & Splicing
+    "w u" #'sp-unwrap-sexp
+    "w U" #'sp-backward-unwrap-sexp
+    "w s" #'sp-splice-sexp
+    "w S" #'sp-splice-sexp-killing-around
+    "w f" #'sp-splice-sexp-killing-forward
+    "w b" #'sp-splice-sexp-killing-backward
+
+    ;; Absorb & Emit
+    "w a" #'sp-absorb-sexp
+    "w e" #'sp-emit-sexp
+
+    ;; Change
+    "w c" #'sp-change-inner
+    "w C" #'sp-change-enclosing
+
+    ;; Advanced manipulation
+    "C" #'sp-convolute-sexp
+    "J" #'sp-join-sexp
+    "S" #'sp-split-sexp
+    "R" #'sp-raise-sexp
+
+    ;; Utility
+    "\\" #'indent-region
+    "/" #'undo
+    "x" #'eval-defun)
+
+  (keymap-global-set "C-." structural-edit-map))
 
 (use-package paredit
   :hook (emacs-lisp-mode . paredit-mode)
