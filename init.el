@@ -172,7 +172,7 @@
 (use-package ssh-agency
   :after magit
   :custom
-  (ssh-agency-keys '("~/.ssh/git")))
+  (ssh-agency-keys `(,(when (file-exists-p "~/.ssh/git") "~/.ssh/git"))))
 
 (use-package envrc
   :hook (after-elpaca-init . envrc-global-mode))
