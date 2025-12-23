@@ -157,6 +157,7 @@ SERVER-COMMAND should be a list representing the CLI invocation."
   :config (eglot-booster-mode))
 
 (use-package mason
+  :ensure (:host github :repo "deirn/mason.el")
   :init
   (setq lkn/mason-packages
         '(;; LSP
