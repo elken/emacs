@@ -132,8 +132,7 @@
    ([remap recentf-open-files]            . consult-recent-file)
    ([remap switch-to-buffer]              . consult-buffer)
    ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
-   ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame)
-   ("C-c /"                               . consult-ripgrep))
+   ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame))
   :config
   (consult-customize
    consult-ripgrep consult-grep consult-git-grep consult-recent-file
@@ -186,6 +185,11 @@
   (completion-category-defaults nil)
   :config
   (add-to-list 'orderless-style-dispatchers #'orderless-kwd-dispatch))
+
+(use-package consult-ripfd
+  :bind
+  (("C-c /" . consult-ripfd))
+  :ensure (:host github :repo "jdtsmith/consult-ripfd"))
 
 (use-package cape
   :after corfu
