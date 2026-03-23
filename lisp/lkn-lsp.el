@@ -197,6 +197,12 @@ SERVER-COMMAND should be a list representing the CLI invocation."
           "sql-formatter"
           "stylua"))
   :config
+  ;; Pre-compute target in main process to avoid upstream bug where the
+  ;; subprocess uses `message' (stderr) but the filter reads stdout, leaving
+  ;; `output' nil and causing `(read nil)' to prompt "Lisp expression: "
+  (require 'mason-basic)
+  (unless mason--target
+    (setq mason--target (mason--get-target)))
   (mason-ensure
    (lambda ()
      (dolist (package lkn/mason-packages)
