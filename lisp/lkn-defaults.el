@@ -207,15 +207,6 @@ The DWIM behaviour of this command is as follows:
    (t
     (keyboard-quit))))
 
-;; Another Karthink gem, add repeat-mode support for a keymap
-(defun repeatize (keymap)
-  "Add `repeat-mode' support to a KEYMAP."
-  (map-keymap
-   (lambda (_key cmd)
-     (when (symbolp cmd)
-       (put cmd 'repeat-map keymap)))
-   (symbol-value keymap)))
-
 ;; Only show the compilation buffer if there are errors. Otherwise,
 ;; it's useless
 (defun bury-compile-buffer-if-successful (buffer string)
@@ -475,14 +466,14 @@ The DWIM behaviour of this command is as follows:
 
 (use-feature repeat
   :hook (after-init . repeat-mode)
-  :config
+  :init
   (defun repeatize (keymap)
-  "Add `repeat-mode' support to a KEYMAP."
-  (map-keymap
-   (lambda (_key cmd)
-     (when (symbolp cmd)
-       (put cmd 'repeat-map keymap)))
-   (symbol-value keymap))))
+    "Add `repeat-mode' support to a KEYMAP."
+    (map-keymap
+     (lambda (_key cmd)
+       (when (symbolp cmd)
+         (put cmd 'repeat-map keymap)))
+     (symbol-value keymap))))
 
 (use-feature treesit
   :custom
