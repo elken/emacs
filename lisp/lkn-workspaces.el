@@ -36,7 +36,8 @@
          ("C-x C-b" . beframe-buffer-menu)))
 
 (use-package tabspaces
-  :init
+  :demand t
+  :config
   (tabspaces-mode)
 
   (defun lkn/current-perspective-name ()
