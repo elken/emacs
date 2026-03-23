@@ -43,6 +43,7 @@
         ("@" . forge-dispatch))
   :hook
   (magit-mode . (lambda () (display-line-numbers-mode -1)))
+  (magit-status-sections-hook . magit-insert-worktrees)
   (magit-post-refresh . magit-run-post-commit-hook)
   (magit-post-refresh . magit-run-post-stage-hook)
   (magit-post-refresh . magit-run-post-unstage-hook)
@@ -50,7 +51,6 @@
   (setq magit-auto-revert-mode-lighter "")
   (advice-add 'magit-auto-revert-mode :override #'ignore)
   (advice-add 'magit-auto-revert-buffers :override #'ignore)
-  (advice-add 'auto-revert-buffers :override #'ignore)
   :config
   (setq transient-display-buffer-action '(display-buffer-below-selected)
         magit-display-buffer-function #'lkn/magit-fullscreen-same-windows
@@ -117,7 +117,6 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 
   (remove-hook 'post-command-hook #'magit-auto-revert-buffers)
 
-  (add-hook 'buffer-list-update-hook #'magit-revert-buffer-maybe-h)
   (add-hook 'magit-post-refresh-hook #'magit-mark-stale-buffers-a)
   (add-hook 'window-buffer-change-functions #'magit-revert-buffer-maybe-h)
   (add-hook 'window-selection-change-functions #'magit-revert-buffer-maybe-h)
@@ -139,6 +138,9 @@ Otherwise, behave like `magit-display-buffer-traditional'."
 
   (dolist (fn '(magit-rev-parse-safe magit-get magit-get-boolean))
     (advice-add fn :around #'magit-git--memoize))
+
+  (add-hook 'magit-post-refresh-hook
+            (lambda () (clrhash magit-git--cache)))
 
   ;; Custom helper functions to end up in jira-workflow one day
 
