@@ -73,34 +73,39 @@ Otherwise, behave like `magit-display-buffer-traditional'."
          (or (buffer-file-name buffer)
              (buffer-local-value 'default-directory buffer))))
 
-  (defun magit-revert-buffer (buffer)
-    "Revert the current buffer and update the modeline."
-    (with-current-buffer buffer
-      (kill-local-variable 'magit-stale-p)
-      (when (and buffer-file-name
-                 (file-exists-p buffer-file-name)
-                 (magit-auto-revert-repository-buffer-p buffer)
-                 (not (buffer-modified-p buffer)))
-        (revert-buffer t t t))
-      (force-mode-line-update)))
+  (with-eval-after-load 'magit-autorevert
+    (defun magit-revert-buffer (&optional buffer)
+      "Revert BUFFER if visible, otherwise defer by marking it stale."
+      (let ((buf (or buffer (current-buffer))))
+        (if (get-buffer-window buf 'visible)
+            (with-current-buffer buf
+              (kill-local-variable 'magit-stale-p)
+              (when (and buffer-file-name
+                         (file-exists-p buffer-file-name)
+                         (magit-auto-revert-repository-buffer-p buf)
+                         (not (buffer-modified-p)))
+                (revert-buffer t t t))
+              (force-mode-line-update))
+          (with-current-buffer buf
+            (setq-local magit-stale-p t))))))
 
   (defun magit-mark-stale-buffers-a (&rest _)
-    "Revert all visible buffers and marked buried ones as stale."
-    (let* ((visible-windows (window-list))
-           (visible-buffers (mapcar #'window-buffer visible-windows)))
-      (dolist (buffer (buffer-list))
-        (when (magit-revertable-buffer-p buffer)
-          (if (memq buffer visible-buffers)
-              (progn
-                (magit-revert-buffer buffer)
-                (setq visible-buffers (delq buffer visible-buffers)))
-            (with-current-buffer buffer
-              (setq-local magit-stale-p t)))))))
+    "Mark all revertable buffers as stale or revert if visible."
+    (dolist (buffer (buffer-list))
+      (when (magit-revertable-buffer-p buffer)
+        (magit-revert-buffer buffer))))
 
   (defun magit-revert-buffer-maybe-h (&rest _window)
-    "Revert the buffer if out of date."
+    "Revert the current buffer if it is stale."
     (when (and (boundp 'magit-stale-p) magit-stale-p)
       (magit-revert-buffer (current-buffer))))
+
+  (defun lkn/magit-revert-visible-stale-buffers (&rest _)
+    "Revert all visible stale buffers after window config is restored."
+    (dolist (window (window-list))
+      (let ((buf (window-buffer window)))
+        (when (buffer-local-value 'magit-stale-p buf)
+          (magit-revert-buffer buf)))))
 
   (defun magit-set-window-state-h ()
     "Store the current buffer, point and window start before reverting."
@@ -120,6 +125,7 @@ Otherwise, behave like `magit-display-buffer-traditional'."
   (add-hook 'magit-post-refresh-hook #'magit-mark-stale-buffers-a)
   (add-hook 'window-buffer-change-functions #'magit-revert-buffer-maybe-h)
   (add-hook 'window-selection-change-functions #'magit-revert-buffer-maybe-h)
+  (advice-add 'magit-restore-window-configuration :after #'lkn/magit-revert-visible-stale-buffers)
 
   (add-hook 'magit-pre-refresh-hook #'magit-set-window-state-h)
   (add-hook 'magit-post-refresh-hook #'magit-restore-window-state-h)
