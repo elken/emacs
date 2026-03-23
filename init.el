@@ -44,16 +44,15 @@
         ("gnu" . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/")
         ("nongnu" . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/nongnu/")))
 
-(defvar elpaca-installer-version 0.11)
+(defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" LITTER-DIR))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1
+                              :ref nil :depth 1 :inherit ignore
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(defvar elpaca-lock-file (expand-file-name "elpaca.lock" user-emacs-directory))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+                              :build (:not elpaca-activate)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
        (default-directory repo))
@@ -81,7 +80,7 @@
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
     (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
-(advice-add #'command-line-1 :after (lambda (&rest _) (elpaca-process-queues)))
+(add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
 (elpaca elpaca-use-package
@@ -125,7 +124,7 @@
           custom-file (lkn/cache-dir "custom.el")
           treesit-extra-load-path `(,(lkn/config-dir "tree-sitter")))
 
-  (load custom-file)
+  (load custom-file t)
   (unless (file-exists-p (expand-file-name "cache" no-littering-var-directory))
     (mkdir (expand-file-name "cache" no-littering-var-directory))))
 
